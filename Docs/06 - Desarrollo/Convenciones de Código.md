@@ -41,6 +41,13 @@ Mantener codigo consistente.
 - Releases versionadas.
 - `main` estable.
 
+## Documentacion continua
+- Cada cambio debe revisar si requiere actualizar documentacion.
+- Los cambios de comportamiento deben actualizar los `.md` relacionados en el mismo ciclo de trabajo.
+- Cambios de rutas, setup, seguridad, correo, tickets, actualizaciones o infraestructura deben reflejarse en `Docs/` y, cuando aplique, en `README.md` y `AGENTS.md`.
+- Cambios de schema deben actualizar `Docs/03 - Base de Datos/`.
+- No cerrar una tarea como terminada si la documentacion necesaria quedo pendiente.
+
 ## UI
 - Minimalista, calmada, legible.
 - Accesible.

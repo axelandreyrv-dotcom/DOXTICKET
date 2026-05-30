@@ -148,6 +148,9 @@ Estas decisiones estan tomadas. No proponer alternativas sin justificacion docum
 
 ## Reglas de Documentacion
 
+- Cada cambio funcional, tecnico, visual, de infraestructura, seguridad, dependencias, rutas, schema, instalacion o comportamiento debe revisar y actualizar los `.md` necesarios en el mismo ciclo de trabajo.
+- Antes de cerrar una tarea con cambios, verificar si corresponde actualizar `Docs/`, `README.md`, `AGENTS.md`, `SECURITY.md`, `CONTRIBUTING.md` o documentacion especifica del modulo tocado.
+- No dejar la documentacion para despues si el cambio ya modifica el comportamiento esperado del proyecto.
 - Cuando se tome una decision de arquitectura, producto, seguridad, licencia, instalacion o comunidad, actualizar `Docs/`.
 - Si cambia el schema de base de datos, actualizar `Docs/03 - Base de Datos/`.
 - Si cambia una ruta, comportamiento de tickets, correo, setup, actualizaciones o seguridad, actualizar este `AGENTS.md` y `README.md`.

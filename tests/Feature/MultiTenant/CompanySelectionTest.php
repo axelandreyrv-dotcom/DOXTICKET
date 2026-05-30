@@ -51,4 +51,16 @@ class CompanySelectionTest extends TestCase
             ->get('/app/dashboard')
             ->assertRedirect('/app/companies');
     }
+
+    public function test_app_dashboard_displays_the_active_company_name(): void
+    {
+        $user = User::factory()->create();
+        $company = Company::factory()->create(['name' => 'Dox IT QA']);
+        Membership::factory()->for($user)->for($company)->create(['status' => 'active']);
+
+        $this->actingAs($user)
+            ->get('/app/dashboard')
+            ->assertOk()
+            ->assertSee('Dox IT QA');
+    }
 }

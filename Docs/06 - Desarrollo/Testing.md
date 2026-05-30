@@ -8,6 +8,7 @@ Definir estrategia de pruebas.
 - PHPUnit compatible.
 - Factories Eloquent.
 - Mockery.
+- Playwright para QA visual local, screenshots y validacion de flujos UI.
 
 ## Cobertura obligatoria
 - Setup.
@@ -68,6 +69,12 @@ tests/
 - PHPStan/Psalm.
 - Tests.
 - Secret scan.
+
+## QA visual
+- Usar Playwright para revisar pantallas importantes en desktop y movil antes de cerrar cambios de UI.
+- Guardar screenshots y snapshots locales en `output/playwright/`.
+- `output/playwright/` y `.playwright-cli/` son artifacts locales y no deben versionarse.
+- Revisar consola del navegador, overflow horizontal, presencia de `Powered by DoxTicket` y estados responsive.
 
 ## Relacion
 - `04 - Seguridad/Checklist Producción.md`

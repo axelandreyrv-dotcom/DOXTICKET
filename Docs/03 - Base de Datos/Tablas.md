@@ -97,6 +97,8 @@ Uso: setup completado, idioma por defecto, telemetria, version, update checks, b
 
 Regla v1: una cuenta activa por empresa, reforzada con indice unico parcial por `company_id` cuando `is_active = true`.
 
+Estado implementado actual: una cuenta de soporte por empresa se refuerza con `UNIQUE (company_id)`. Esto simplifica v1 y evita cuentas ambiguas mientras no exista flujo de multiples cuentas inactivas.
+
 ---
 
 ## `categories`
@@ -192,10 +194,10 @@ Estados: `new|open|in_progress|waiting_customer|waiting_internal|resolved|closed
 - `created_at`, `deleted_at`
 
 ## Estado implementado actual
-- Implementadas en migraciones: `system_settings`, `companies`, `users` extendido, `memberships`, `categories`, `tickets`, `ticket_messages`, `ticket_events` y `attachments`.
+- Implementadas en migraciones: `system_settings`, `companies`, `users` extendido, `memberships`, `mail_accounts`, `categories`, `tickets`, `ticket_messages`, `ticket_events` y `attachments`.
 - La base de tickets usa scope de tenant por `company_id` en los modelos principales de empresa.
 - La creacion manual de tickets no acepta `company_id` confiable desde input del usuario; el valor se deriva de la membresia activa en sesion.
-- `mail_account_id` existe como campo nullable en `tickets`, pero la tabla `mail_accounts` se implementara en la fase de correo estable.
+- `mail_accounts` guarda credenciales por empresa cifradas y no expone secretos en vistas.
 
 ---
 

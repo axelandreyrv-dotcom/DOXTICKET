@@ -38,6 +38,8 @@ Describir la capa de presentacion de DoxTicket self-hosted.
 - Detalle de ticket.
 - Settings de empresa/correo/usuarios/SLA/KB.
 
+Estado implementado actual: `/app/settings` contiene la configuracion base de correo IMAP/SMTP del tenant.
+
 ### Admin (`/admin`)
 - Filament tematizado.
 - Empresas.
@@ -55,6 +57,8 @@ Describir la capa de presentacion de DoxTicket self-hosted.
 - Link a `/admin` visible solo para superadmins.
 - Breadcrumbs en pantallas internas, por ejemplo `Tickets / DT-123`.
 - En mobile: menu superior compacto.
+
+La navegacion actual incluye Dashboard, Tickets, Empresa y Configuracion. Base de conocimiento se agregara cuando exista el modulo.
 
 ### Web oficial futura
 `doxticket.com` sera hub del proyecto:

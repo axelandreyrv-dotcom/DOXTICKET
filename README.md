@@ -46,6 +46,7 @@ Construir un helpdesk IT open source, multiempresa, seguro y facil de autoalojar
 | `/app/tickets` | Gestion de tickets |
 | `/app/tickets/create` | Creacion manual de ticket |
 | `/app/settings` | Configuracion del tenant |
+| `/app/settings/mail` | Guardado de cuenta IMAP/SMTP del tenant |
 | `/admin` | Panel superadmin de la instalacion |
 
 ---
@@ -56,6 +57,7 @@ Construir un helpdesk IT open source, multiempresa, seguro y facil de autoalojar
 - Usuarios globales con email unico y membresias por empresa.
 - Un usuario puede pertenecer a varias empresas con roles distintos.
 - Una cuenta de soporte por empresa.
+- Configuracion base de cuenta IMAP/SMTP por empresa.
 - SMTP global del sistema para invitaciones, reset y alertas.
 - IMAP/SMTP generico, Gmail y Microsoft 365 planificados desde v1.
 - Confirmacion automatica de recibido.

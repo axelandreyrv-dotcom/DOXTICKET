@@ -50,6 +50,7 @@ Permite que departamentos de TI instalen su propio sistema de tickets, conecten 
 | `/app/tickets` | Gestion de tickets |
 | `/app/tickets/create` | Creacion manual de ticket |
 | `/app/settings` | Configuracion del tenant |
+| `/app/settings/mail` | Guardado de cuenta IMAP/SMTP del tenant |
 | `/admin` | Panel superadmin de la instalacion |
 
 ---

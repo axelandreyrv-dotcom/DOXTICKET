@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\App\DashboardController;
+use App\Http\Controllers\App\SettingsController;
 use App\Http\Controllers\App\TicketController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Tenant\CompanySelectionController;
@@ -30,5 +31,7 @@ Route::middleware('auth')->group(function (): void {
         Route::get('/app/tickets', [TicketController::class, 'index'])->name('app.tickets.index');
         Route::get('/app/tickets/create', [TicketController::class, 'create'])->name('app.tickets.create');
         Route::post('/app/tickets', [TicketController::class, 'store'])->name('app.tickets.store');
+        Route::get('/app/settings', [SettingsController::class, 'index'])->name('app.settings');
+        Route::post('/app/settings/mail', [SettingsController::class, 'storeMail'])->name('app.settings.mail.store');
     });
 });

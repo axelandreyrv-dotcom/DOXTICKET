@@ -25,6 +25,8 @@ Definir como se almacenan, despliegan y rotan secretos.
 
 Todos cifrados con Laravel encryption.
 
+Estado implementado actual: `mail_accounts.password_encrypted` usa cast cifrado de Eloquent; el formulario de settings nunca renderiza la contrasena guardada.
+
 ## Docker
 - `.env` local del usuario.
 - No versionar volumenes con datos reales.

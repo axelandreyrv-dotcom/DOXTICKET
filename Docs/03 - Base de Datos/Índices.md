@@ -36,6 +36,8 @@ Listar indices recomendados para PostgreSQL.
 - `UNIQUE (company_id, from_email)`
 - `UNIQUE (company_id) WHERE is_active = true`
 
+Estado implementado actual: se usa `UNIQUE (company_id)` para reforzar una sola cuenta de soporte por empresa en v1.
+
 ## `categories`
 - `UNIQUE (company_id, name)`
 - `INDEX (company_id, is_active)`
@@ -77,6 +79,7 @@ Listar indices recomendados para PostgreSQL.
 
 ## Estado implementado actual
 - Implementados indices de `categories`, `tickets`, `ticket_messages`, `ticket_events` y `attachments` necesarios para lista activa, dashboard y auditoria inicial.
+- Implementados indices de `mail_accounts` para configuracion tenant-safe de una cuenta por empresa.
 - La lista de tickets usa `company_id`, `status` y `last_activity_at`.
 - Las metricas por agente usan `company_id`, `assigned_to_membership_id` y `status`.
 - La busqueda full-text queda pendiente para una fase posterior.

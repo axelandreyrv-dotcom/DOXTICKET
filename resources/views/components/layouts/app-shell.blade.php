@@ -17,7 +17,7 @@
                     @endisset
                 </div>
 
-                <nav class="flex items-center gap-1 text-sm">
+                <nav class="flex w-full flex-wrap items-center gap-1 text-sm sm:w-auto">
                     <a href="{{ url('/app/dashboard') }}" class="rounded-md px-3 py-2 text-[var(--color-text-secondary)] transition hover:bg-[var(--color-bg-surface-alt)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-focus)]">
                         Dashboard
                     </a>
@@ -26,6 +26,9 @@
                     </a>
                     <a href="{{ url('/app/companies') }}" class="rounded-md px-3 py-2 text-[var(--color-text-secondary)] transition hover:bg-[var(--color-bg-surface-alt)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-focus)]">
                         Empresa
+                    </a>
+                    <a href="{{ url('/app/settings') }}" class="rounded-md px-3 py-2 text-[var(--color-text-secondary)] transition hover:bg-[var(--color-bg-surface-alt)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-focus)]">
+                        Configuracion
                     </a>
                     <form method="POST" action="{{ url('/logout') }}">
                         @csrf

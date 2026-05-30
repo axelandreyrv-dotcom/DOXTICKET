@@ -59,6 +59,8 @@ No seedear configuracion comercial de billing en v1.
 - `ticket_messages` conserva visibilidad, direccion, cuerpos texto/HTML, headers de correo y bloqueo de imagenes externas.
 - `ticket_events` audita eventos internos por `actor_user_id` y `actor_membership_id`.
 - `attachments` queda preparado para almacenamiento privado y bloqueo por privacidad/seguridad.
+- Migracion inicial de `mail_accounts` creada para una cuenta IMAP/SMTP por empresa.
+- `mail_accounts.password_encrypted` y futuros tokens OAuth se manejan cifrados por el modelo Eloquent.
 - Las bases locales SQLite de desarrollo (`database/*.sqlite`) deben quedar fuera de Git.
 
 ## Reglas de cambio

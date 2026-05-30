@@ -12,6 +12,16 @@ Correo entrante estable. Evitar duplicados es mas importante que procesar automa
 - IMAP/SMTP generico.
 - Gmail y Microsoft 365 desde v1 segun roadmap.
 
+## Configuracion por empresa
+- Ruta UI implementada: `/app/settings`.
+- Guardado implementado: `POST /app/settings/mail`.
+- El formulario configura IMAP y SMTP generico para la empresa activa.
+- El servidor ignora cualquier `company_id` enviado por el cliente y usa el tenant de sesion.
+- La contrasena se guarda cifrada en `mail_accounts.password_encrypted`.
+- Al actualizar la cuenta, dejar la contrasena vacia conserva el secreto existente.
+- En v1 se refuerza una sola cuenta de soporte por empresa.
+- La confirmacion automatica queda configurable y activa por defecto, aunque el envio real depende de la ingesta posterior.
+
 ## Ingesta
 1. Job con lock por `mail_account_id`.
 2. Lee mensajes nuevos.
@@ -51,6 +61,8 @@ Correo entrante estable. Evitar duplicados es mas importante que procesar automa
 ## Errores
 - Errores de cuenta visibles en settings y `/admin/health`.
 - Logs claros sin secretos.
+
+Estado implementado actual: `last_error` ya puede mostrarse en `/app/settings`; la escritura de errores desde jobs queda pendiente para la ingesta IMAP.
 
 ## Loops
 - Deteccion por headers (`Auto-Submitted`, `Precedence`, etc.).

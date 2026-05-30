@@ -50,7 +50,7 @@ Trazar las fases planificadas de DoxTicket como proyecto open source self-hosted
 
 ## Fase 4 — Correo estable
 - SMTP global del sistema.
-- Configuracion de una cuenta de soporte por empresa.
+- Configuracion de una cuenta de soporte por empresa. **Base implementada para IMAP/SMTP generico.**
 - Ingesta IMAP.
 - Envio SMTP.
 - Confirmacion automatica de recibido.

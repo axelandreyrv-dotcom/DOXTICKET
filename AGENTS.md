@@ -213,6 +213,8 @@ DoxTicket/
  Brand/
     DoxTicketSVG.svg
  Docs/
+ app/Contracts/
+ app/Jobs/
  .gitignore
 ```
 

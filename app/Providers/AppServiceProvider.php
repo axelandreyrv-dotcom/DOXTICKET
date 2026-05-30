@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Contracts\Mail\MailboxClient;
+use App\Services\Mail\ImapMailboxClient;
 use App\Support\Tenant\TenantContext;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
@@ -17,6 +19,7 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->singleton(TenantContext::class);
+        $this->app->bind(MailboxClient::class, ImapMailboxClient::class);
     }
 
     /**

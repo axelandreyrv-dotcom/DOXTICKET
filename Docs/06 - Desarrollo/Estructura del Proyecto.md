@@ -8,6 +8,8 @@ Definir layout del repo.
 ```
 doxticket/
   app/
+    Contracts/
+      Mail/
     Domain/
       Setup/
       Companies/
@@ -26,6 +28,8 @@ doxticket/
       Middleware/
       Requests/
       Livewire/
+    Jobs/
+      Mail/
     Integrations/
       Imap/
       Smtp/
@@ -34,6 +38,7 @@ doxticket/
       GitHub/
       Telemetry/
     Support/
+      Mail/
       Tenant/
       Security/
       Installer/
@@ -96,6 +101,9 @@ doxticket/
 - Dominio en `app/Domain`.
 - La base actual usa modelos Eloquent estandar en `app/Models` hasta que el dominio necesite separar casos de uso mas complejos.
 - Los modelos multiempresa reutilizan `app/Models/Concerns/BelongsToCompany.php` para scope y escritura de `company_id` desde el tenant activo.
+- Contratos de integraciones pueden vivir en `app/Contracts`.
+- Jobs de colas viven en `app/Jobs`.
+- DTOs internos compartidos viven en `app/Support`.
 - HTTP delgado.
 - Integraciones externas detras de adaptadores.
 - Adjuntos en `storage/app/private`.

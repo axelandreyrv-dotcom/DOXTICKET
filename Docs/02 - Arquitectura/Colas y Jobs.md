@@ -29,7 +29,15 @@ Describir como DoxTicket maneja trabajo en segundo plano.
 - Prioriza evitar duplicados.
 - Crea o actualiza tickets.
 
-Estado implementado actual: la logica de negocio posterior al parseo vive en `App\Services\Mail\InboundMailProcessor`; el job IMAP debe normalizar el mensaje y delegar ahi.
+Estado implementado actual:
+- Job implementado: `App\Jobs\Mail\IngestMailboxJob`.
+- Contrato implementado: `App\Contracts\Mail\MailboxClient`.
+- DTO de fetch implementado: `App\Support\Mail\FetchedMailMessage`.
+- Scheduler implementado en `routes/console.php` para despachar cuentas activas cada minuto.
+- El job usa `WithoutOverlapping` por `mail_account_id`.
+- El job actualiza `last_uid`, `last_sync_at` y `last_error`.
+- La logica de negocio posterior al parseo vive en `App\Services\Mail\InboundMailProcessor`.
+- El cliente `App\Services\Mail\ImapMailboxClient` es placeholder seguro; el adaptador IMAP real queda pendiente.
 
 ### ProcessAttachmentsJob (`mail`)
 - Valida MIME real y tamano.
@@ -78,10 +86,12 @@ Estado implementado actual: la logica de negocio posterior al parseo vive en `Ap
 - Updates: version destino.
 
 Estado implementado actual: el procesador deduplica por `Message-Id` dentro de `company_id`. La deduplicacion por UID de IMAP queda para el adaptador/job.
+El job avanza `mail_accounts.last_uid` con el UID entregado por el cliente de buzon tras procesar cada mensaje.
 
 ## Observabilidad
 - Logs con `company_id`, `ticket_id`, `mail_account_id`, `job_name`.
 - Failed jobs visibles en `/admin/health`.
+- `last_error` en `mail_accounts` guarda errores sanitizados para settings y health.
 
 ## Relacion con otros documentos
 - `05 - Módulos/Correo.md`

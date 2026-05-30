@@ -62,12 +62,15 @@ tests/
 - `Message-Id` duplicado no crea otro ticket ni mensaje.
 - Headers de threading solo relacionan mensajes dentro de la misma empresa.
 - Auto-respuestas por `Auto-Submitted` o `Precedence` se ignoran como loop.
+- Job de ingesta avanza `last_uid`, limpia errores al exito y no procesa cuentas inactivas.
+- Errores de ingesta se guardan sanitizados sin contrasenas ni tokens.
 - Adjunto peligroso crea evento interno.
 - Telemetria no envia datos si no se activo.
 
 ## Estado implementado actual
 - `tests/Feature/Mail/MailAccountSettingsTest.php` cubre configuracion tenant-safe de cuenta IMAP/SMTP y secreto cifrado.
 - `tests/Feature/Mail/InboundMailProcessorTest.php` cubre creacion por correo, sanitizacion, imagenes externas, deduplicacion, threading y loops.
+- `tests/Feature/Mail/IngestMailboxJobTest.php` cubre el job de ingesta, avance de UID, errores sanitizados y cuentas inactivas.
 
 ## CI minimo
 - Composer install.

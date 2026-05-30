@@ -32,6 +32,13 @@ Correo entrante estable. Evitar duplicados es mas importante que procesar automa
 7. Crea o actualiza ticket.
 8. Envia confirmacion automatica de recibido.
 
+Estado implementado actual:
+- `IngestMailboxJob` se despacha cada minuto para cuentas activas.
+- El job delega lectura a `MailboxClient` y procesamiento a `InboundMailProcessor`.
+- En exito actualiza `last_uid`, limpia `last_error` y marca `last_sync_at`.
+- En error guarda `last_error` sanitizado y no expone contrasenas, tokens ni usuario.
+- El adaptador IMAP real queda pendiente; el contrato ya permite testearlo sin acoplar la logica de tickets.
+
 ## Procesador normalizado
 - Clase implementada: `App\Services\Mail\InboundMailProcessor`.
 - Entrada implementada: `App\Support\Mail\InboundMailMessage`.
@@ -78,7 +85,7 @@ Estado implementado actual: el procesador elimina tags peligrosos basicos, remue
 - Errores de cuenta visibles en settings y `/admin/health`.
 - Logs claros sin secretos.
 
-Estado implementado actual: `last_error` ya puede mostrarse en `/app/settings`; la escritura de errores desde jobs queda pendiente para la ingesta IMAP.
+Estado implementado actual: `last_error` se muestra en `/app/settings` y el job de ingesta lo actualiza con mensajes sanitizados.
 
 ## Loops
 - Deteccion por headers (`Auto-Submitted`, `Precedence`, etc.).

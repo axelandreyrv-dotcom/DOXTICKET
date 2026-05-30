@@ -53,6 +53,7 @@ Ayudar a saber que atender ahora mismo. Debe ser completo, bonito, calmado y acc
 - Listas accionables.
 - Sin graficos pesados en primera version usable.
 - Graficos pequenos pueden agregarse despues.
+- La base inicial muestra resumen del dia, acceso a tickets e inbox vacio hasta implementar el nucleo de tickets.
 
 ## Estilo
 - Minimalista.

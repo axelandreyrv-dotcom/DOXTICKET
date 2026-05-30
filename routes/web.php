@@ -1,15 +1,30 @@
 <?php
 
+use App\Http\Controllers\App\DashboardController;
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Tenant\CompanySelectionController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/login', function () {
-    return view('auth.placeholder');
-})->name('login');
+Route::middleware('guest')->group(function (): void {
+    Route::get('/login', [AuthenticatedSessionController::class, 'create'])->name('login');
+    Route::post('/login', [AuthenticatedSessionController::class, 'store'])
+        ->middleware('throttle:login')
+        ->name('login.store');
+});
 
-Route::get('/app/dashboard', function () {
-    return view('app.placeholder');
-})->name('app.dashboard');
+Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
+    ->middleware('auth')
+    ->name('logout');
+
+Route::middleware('auth')->group(function (): void {
+    Route::get('/app/companies', [CompanySelectionController::class, 'index'])->name('app.companies');
+    Route::post('/app/companies/select', [CompanySelectionController::class, 'store'])->name('app.companies.select');
+
+    Route::middleware('tenant')->group(function (): void {
+        Route::get('/app/dashboard', DashboardController::class)->name('app.dashboard');
+    });
+});

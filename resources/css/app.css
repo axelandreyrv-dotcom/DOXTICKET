@@ -8,17 +8,43 @@
 }
 
 :root {
-    --color-bg-page: #f8fafc;
-    --color-bg-surface: #ffffff;
-    --color-bg-surface-alt: #f1f5f9;
-    --color-text-primary: #0f172a;
-    --color-text-secondary: #475569;
-    --color-text-muted: #94a3b8;
-    --color-border-default: #e2e8f0;
+    --color-bg-page: #f7f9fc;
+    --color-bg-surface: #fbfdff;
+    --color-bg-surface-alt: #f0f5fb;
+    --color-text-primary: #111827;
+    --color-text-secondary: #4b5563;
+    --color-text-muted: #7d8a9a;
+    --color-border-default: #dde5ef;
+    --color-border-strong: #b9c6d6;
     --color-action-primary: #2563eb;
     --color-action-primary-hover: #1d4ed8;
+    --color-focus: rgba(37, 99, 235, 0.2);
     --color-success: #15803d;
+    --color-success-bg: #edf7ef;
+    --color-success-border: #cce8d2;
     --color-warning: #b45309;
     --color-danger: #b91c1c;
     --color-info: #2563eb;
+    --color-info-bg: #e8f1ff;
+}
+
+.skip-link {
+    position: fixed;
+    inset-block-start: 0.75rem;
+    inset-inline-start: 0.75rem;
+    z-index: 50;
+    transform: translateY(-150%);
+    border-radius: 0.375rem;
+    background: var(--color-text-primary);
+    color: var(--color-bg-surface);
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    transition: transform 160ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.skip-link:focus-visible {
+    transform: translateY(0);
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
 }

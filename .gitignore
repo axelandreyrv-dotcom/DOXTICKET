@@ -15,6 +15,8 @@ auth.json
 # Laravel generated files
 /public/build/
 /public/hot
+/database/*.sqlite
+/database/*.sqlite-*
 /storage/*.key
 /storage/app/public/
 /storage/debugbar/
@@ -51,4 +53,3 @@ Docs/.obsidian/
 docker-compose.override.yml
 *.pid
 *.log
-

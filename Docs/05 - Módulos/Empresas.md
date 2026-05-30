@@ -41,6 +41,8 @@ No hay estados de trial/pago en v1.
 - Admin de empresa gestiona su configuracion desde `/app/settings`.
 - Los usuarios acceden a una empresa mediante memberships.
 - La empresa activa en la app sale de la membership seleccionada.
+- `/app/companies` permite elegir una membership activa propia.
+- El selector rechaza memberships de otros usuarios, inactivas o de empresas no activas.
 
 ## Auditoria
 - `company.created`

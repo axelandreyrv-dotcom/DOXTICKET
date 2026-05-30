@@ -1,8 +1,9 @@
 <?php
 
+use App\Http\Controllers\Setup\SetupController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/setup', function () {
-    return view('setup.placeholder');
-})->name('setup');
-
+Route::middleware('throttle:setup')->group(function (): void {
+    Route::get('/setup', [SetupController::class, 'create'])->name('setup');
+    Route::post('/setup', [SetupController::class, 'store'])->name('setup.store');
+});

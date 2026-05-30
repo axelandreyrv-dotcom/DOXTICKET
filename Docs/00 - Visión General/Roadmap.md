@@ -25,13 +25,13 @@ Trazar las fases planificadas de DoxTicket como proyecto open source self-hosted
 ## Fase 2 — Setup, autenticacion y multiempresa
 - `/setup` con idioma primero.
 - Validaciones de entorno.
-- Creacion de superadmin.
-- Creacion de empresa inicial.
-- Creacion de membresia admin inicial.
-- Bloqueo de setup tras finalizar.
-- Login centralizado.
-- Selector de empresa para usuarios con multiples membresias.
-- Middleware de tenant por `company_id`.
+- Creacion de superadmin. **Base implementada.**
+- Creacion de empresa inicial. **Base implementada.**
+- Creacion de membresia admin inicial. **Base implementada.**
+- Bloqueo de setup tras finalizar. **Base implementada.**
+- Login centralizado. **Base implementada.**
+- Selector de empresa para usuarios con multiples membresias. **Base implementada.**
+- Middleware de tenant por `company_id`. **Base implementada.**
 - 2FA opcional.
 
 **Entregable:** una instalacion nueva queda operativa y segura.

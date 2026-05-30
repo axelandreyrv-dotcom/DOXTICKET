@@ -44,6 +44,8 @@ Permite que departamentos de TI instalen su propio sistema de tickets, conecten 
 | `/` | Entrada publica de la instalacion |
 | `/setup` | Instalador inicial; debe bloquearse tras finalizar |
 | `/login` | Login centralizado |
+| `/logout` | Cierre de sesion autenticado |
+| `/app/companies` | Selector de empresa activa |
 | `/app/dashboard` | Panel principal del tenant |
 | `/app/tickets` | Gestion de tickets |
 | `/app/settings` | Configuracion del tenant |

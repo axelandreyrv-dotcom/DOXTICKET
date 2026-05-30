@@ -40,6 +40,8 @@ Construir un helpdesk IT open source, multiempresa, seguro y facil de autoalojar
 | `/` | Entrada publica de la instalacion |
 | `/setup` | Instalador inicial, bloqueado tras finalizar |
 | `/login` | Login centralizado |
+| `/logout` | Cierre de sesion |
+| `/app/companies` | Selector de empresa activa |
 | `/app/dashboard` | Dashboard del tenant |
 | `/app/tickets` | Gestion de tickets |
 | `/app/settings` | Configuracion del tenant |

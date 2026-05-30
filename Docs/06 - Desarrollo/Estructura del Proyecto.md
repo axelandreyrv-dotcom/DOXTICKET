@@ -50,7 +50,8 @@ doxticket/
   public/
   resources/
     views/
-      layouts/
+      components/
+        layouts/
       setup/
       public/
       app/
@@ -96,6 +97,8 @@ doxticket/
 - HTTP delgado.
 - Integraciones externas detras de adaptadores.
 - Adjuntos en `storage/app/private`.
+- Layouts Blade reutilizables pueden vivir en `resources/views/components/layouts`.
+- Bases SQLite locales de QA/desarrollo se ignoran y no se versionan.
 - No billing integrado en v1.
 - `Powered by DoxTicket` en layouts.
 

@@ -33,6 +33,15 @@ Definir login, recuperacion, sesiones, verificacion y 2FA.
 - La sesion guarda `active_membership_id`.
 - La busqueda, dashboard y notificaciones se limitan a la empresa activa.
 
+### Estado implementado
+- Login POST valida correo/contrasena en servidor.
+- Fallo de credenciales usa mensaje generico.
+- Login correcto regenera la sesion y registra `last_login_at`.
+- Si hay una sola membership activa, se guarda `active_membership_id`.
+- Si hay varias memberships activas, redirige a `/app/companies`.
+- `/logout` invalida sesion y token CSRF.
+- Rate limit base aplicado a `/login`.
+
 ## 2FA
 - TOTP.
 - Opcional para todos los roles en v1.
@@ -50,6 +59,7 @@ Definir login, recuperacion, sesiones, verificacion y 2FA.
 - Cookies `HttpOnly`.
 - `Secure` cuando la instalacion usa HTTPS.
 - `SameSite=Lax`.
+- En desarrollo local sin `.env`, puede usarse `SESSION_DRIVER=file`; en Docker/self-hosted se mantiene Redis mediante `.env.example`.
 
 ## Restricciones
 - Empresa `disabled` o `archived`: sin acceso normal.

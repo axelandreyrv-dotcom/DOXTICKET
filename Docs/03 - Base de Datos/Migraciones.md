@@ -50,6 +50,12 @@ No seedear configuracion comercial de billing en v1.
 - Membresia `admin` del superadmin en la empresa inicial.
 - Configuracion base.
 
+## Estado implementado
+- Migraciones iniciales creadas para `system_settings`, `companies`, `users` extendido y `memberships`.
+- `users` incluye `uuid`, `is_superadmin`, campos de 2FA opcional, estado activo, locale, zona horaria, ultima empresa activa y soft deletes.
+- `memberships` incluye `uuid`, `company_id`, `user_id`, `role`, `status`, invitacion, aceptacion, ultima seleccion y preferencias JSON.
+- Las bases locales SQLite de desarrollo (`database/*.sqlite`) deben quedar fuera de Git.
+
 ## Reglas de cambio
 - Antes de update: verificar backup reciente.
 - Migraciones destructivas deben estar marcadas como no rollback automatico.

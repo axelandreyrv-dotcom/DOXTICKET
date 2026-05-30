@@ -7,7 +7,8 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="min-h-screen bg-[var(--color-bg-page)] text-[var(--color-text-primary)] antialiased">
-        <main class="mx-auto flex min-h-screen w-full max-w-5xl flex-col px-6 py-8">
+        <a href="#main-content" class="skip-link">Saltar al contenido</a>
+        <main id="main-content" class="mx-auto flex min-h-screen w-full max-w-5xl flex-col px-6 py-8">
             <header class="flex items-center justify-between border-b border-[var(--color-border-default)] pb-5">
                 <div>
                     <p class="text-lg font-semibold tracking-normal">DoxTicket</p>
@@ -59,4 +60,3 @@
         </main>
     </body>
 </html>
-

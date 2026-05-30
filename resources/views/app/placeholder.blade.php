@@ -1,32 +1,49 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Dashboard | {{ config('app.name', 'DoxTicket') }}</title>
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
-    </head>
-    <body class="min-h-screen bg-[var(--color-bg-page)] text-[var(--color-text-primary)] antialiased">
-        <main class="mx-auto flex min-h-screen w-full max-w-4xl flex-col px-6 py-8">
-            <header class="flex items-center justify-between border-b border-[var(--color-border-default)] pb-5">
-                <div>
-                    <p class="text-lg font-semibold tracking-normal">DoxTicket</p>
-                    <p class="mt-1 text-sm text-[var(--color-text-muted)]">Dashboard</p>
-                </div>
-                <a class="rounded-md border border-[var(--color-border-default)] px-3 py-2 text-sm font-medium text-[var(--color-text-secondary)]" href="{{ url('/') }}">
-                    Inicio
-                </a>
-            </header>
-            <section class="flex flex-1 flex-col justify-center py-16">
-                <h1 class="text-3xl font-semibold tracking-normal">App pendiente</h1>
-                <p class="mt-4 max-w-2xl text-base leading-7 text-[var(--color-text-secondary)]">
-                    Aqui se construira el dashboard operativo, lista tipo inbox, tickets y configuracion por empresa.
-                </p>
-            </section>
-            <footer class="border-t border-[var(--color-border-default)] py-5 text-sm text-[var(--color-text-muted)]">
-                Powered by DoxTicket
-            </footer>
-        </main>
-    </body>
-</html>
+<x-layouts.app-shell :title="'Dashboard | '.config('app.name', 'DoxTicket')" :subtitle="$company?->name ?? 'Empresa activa'">
+    <section class="py-6">
+        <div class="flex flex-wrap items-end justify-between gap-4">
+            <div>
+                <p class="text-xs font-semibold uppercase tracking-[0.14em] text-[var(--color-text-muted)]">Trabajo pendiente</p>
+                <h1 class="mt-2 text-2xl font-semibold">Dashboard</h1>
+            </div>
+            <a href="{{ url('/app/tickets') }}" class="rounded-md border border-[var(--color-border-default)] bg-[var(--color-bg-surface)] px-3 py-2 text-sm font-medium text-[var(--color-text-secondary)] transition hover:border-[var(--color-border-strong)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-focus)]">
+                Ver tickets
+            </a>
+        </div>
 
+        <div class="mt-6 grid gap-4 lg:grid-cols-[0.8fr_1.2fr]">
+            <section class="rounded-lg border border-[var(--color-border-default)] bg-[var(--color-bg-surface)] p-4">
+                <h2 class="text-sm font-semibold">Resumen del dia</h2>
+                <dl class="mt-4 grid grid-cols-2 gap-3 text-sm">
+                    <div class="rounded-md bg-[var(--color-bg-surface-alt)] p-3">
+                        <dt class="text-xs text-[var(--color-text-muted)]">Nuevos</dt>
+                        <dd class="mt-1 text-xl font-semibold">0</dd>
+                    </div>
+                    <div class="rounded-md bg-[var(--color-bg-surface-alt)] p-3">
+                        <dt class="text-xs text-[var(--color-text-muted)]">Activos</dt>
+                        <dd class="mt-1 text-xl font-semibold">0</dd>
+                    </div>
+                    <div class="rounded-md bg-[var(--color-bg-surface-alt)] p-3">
+                        <dt class="text-xs text-[var(--color-text-muted)]">Asignados</dt>
+                        <dd class="mt-1 text-xl font-semibold">0</dd>
+                    </div>
+                    <div class="rounded-md bg-[var(--color-bg-surface-alt)] p-3">
+                        <dt class="text-xs text-[var(--color-text-muted)]">Resueltos</dt>
+                        <dd class="mt-1 text-xl font-semibold">0</dd>
+                    </div>
+                </dl>
+            </section>
+
+            <section class="rounded-lg border border-[var(--color-border-default)] bg-[var(--color-bg-surface)]">
+                <div class="flex items-center justify-between border-b border-[var(--color-border-default)] px-4 py-3">
+                    <h2 class="text-sm font-semibold">Inbox</h2>
+                    <span class="rounded-full bg-[var(--color-info-bg)] px-2 py-1 text-xs font-medium text-[var(--color-info)]">Sin tickets</span>
+                </div>
+                <div class="p-4">
+                    <div class="rounded-md border border-dashed border-[var(--color-border-default)] p-6 text-center text-sm text-[var(--color-text-secondary)]">
+                        Los tickets activos apareceran aqui.
+                    </div>
+                </div>
+            </section>
+        </div>
+    </section>
+</x-layouts.app-shell>

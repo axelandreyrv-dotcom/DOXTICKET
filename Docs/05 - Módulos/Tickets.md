@@ -59,6 +59,9 @@ Describir el nucleo de tickets.
 - Secundaria frente al correo.
 - Permite ticket interno o externo.
 - No hay limites comerciales por plan en v1.
+- Ruta implementada: `/app/tickets/create`.
+- El formulario no envia `company_id`; el servidor usa la empresa activa de la sesion.
+- La descripcion inicial se guarda como `ticket_messages` con `direction=internal` y `visibility=internal`.
 
 ## Fusion
 - Pueden fusionar agentes, supervisores y admins.
@@ -84,6 +87,14 @@ Debe mostrar:
 - Adjuntos.
 - Eventos.
 - Acciones principales.
+
+## Estado implementado actual
+- `/app/tickets` muestra la lista de tickets activos de la empresa seleccionada, con filtro por estado y paginacion.
+- `/app/tickets/create` permite crear tickets manuales con solicitante, correo, asunto, prioridad, categoria y agente.
+- La clave visible se genera como `DT-<numero>` por empresa.
+- La primera version de creacion manual registra evento interno `ticket.created_manual`.
+- El aislamiento se aplica con scope de tenant y tests de regresion para evitar filtrar datos de otra empresa.
+- Pendiente: detalle de ticket, abrir/asignarse desde accion rapida, respuestas, adjuntos, resolucion/cierre y fusion.
 
 ## Relacion con otros documentos
 - `Correo.md`

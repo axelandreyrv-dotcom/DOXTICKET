@@ -54,6 +54,11 @@ No seedear configuracion comercial de billing en v1.
 - Migraciones iniciales creadas para `system_settings`, `companies`, `users` extendido y `memberships`.
 - `users` incluye `uuid`, `is_superadmin`, campos de 2FA opcional, estado activo, locale, zona horaria, ultima empresa activa y soft deletes.
 - `memberships` incluye `uuid`, `company_id`, `user_id`, `role`, `status`, invitacion, aceptacion, ultima seleccion y preferencias JSON.
+- Migracion inicial de tickets creada para `categories`, `tickets`, `ticket_messages`, `ticket_events` y `attachments`.
+- `tickets` incluye claves visibles `DT-123`, estados/prioridades, asignacion por `assigned_to_membership_id`, origen, fusion futura, fechas operativas y soft deletes.
+- `ticket_messages` conserva visibilidad, direccion, cuerpos texto/HTML, headers de correo y bloqueo de imagenes externas.
+- `ticket_events` audita eventos internos por `actor_user_id` y `actor_membership_id`.
+- `attachments` queda preparado para almacenamiento privado y bloqueo por privacidad/seguridad.
 - Las bases locales SQLite de desarrollo (`database/*.sqlite`) deben quedar fuera de Git.
 
 ## Reglas de cambio

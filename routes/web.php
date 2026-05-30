@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\App\DashboardController;
+use App\Http\Controllers\App\TicketController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Tenant\CompanySelectionController;
 use Illuminate\Support\Facades\Route;
@@ -26,5 +27,8 @@ Route::middleware('auth')->group(function (): void {
 
     Route::middleware('tenant')->group(function (): void {
         Route::get('/app/dashboard', DashboardController::class)->name('app.dashboard');
+        Route::get('/app/tickets', [TicketController::class, 'index'])->name('app.tickets.index');
+        Route::get('/app/tickets/create', [TicketController::class, 'create'])->name('app.tickets.create');
+        Route::post('/app/tickets', [TicketController::class, 'store'])->name('app.tickets.store');
     });
 });

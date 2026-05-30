@@ -94,6 +94,8 @@ doxticket/
 
 ## Reglas
 - Dominio en `app/Domain`.
+- La base actual usa modelos Eloquent estandar en `app/Models` hasta que el dominio necesite separar casos de uso mas complejos.
+- Los modelos multiempresa reutilizan `app/Models/Concerns/BelongsToCompany.php` para scope y escritura de `company_id` desde el tenant activo.
 - HTTP delgado.
 - Integraciones externas detras de adaptadores.
 - Adjuntos en `storage/app/private`.

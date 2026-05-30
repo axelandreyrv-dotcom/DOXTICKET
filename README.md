@@ -44,6 +44,7 @@ Construir un helpdesk IT open source, multiempresa, seguro y facil de autoalojar
 | `/app/companies` | Selector de empresa activa |
 | `/app/dashboard` | Dashboard del tenant |
 | `/app/tickets` | Gestion de tickets |
+| `/app/tickets/create` | Creacion manual de ticket |
 | `/app/settings` | Configuracion del tenant |
 | `/admin` | Panel superadmin de la instalacion |
 

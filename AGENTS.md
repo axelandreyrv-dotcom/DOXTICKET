@@ -48,6 +48,7 @@ Permite que departamentos de TI instalen su propio sistema de tickets, conecten 
 | `/app/companies` | Selector de empresa activa |
 | `/app/dashboard` | Panel principal del tenant |
 | `/app/tickets` | Gestion de tickets |
+| `/app/tickets/create` | Creacion manual de ticket |
 | `/app/settings` | Configuracion del tenant |
 | `/admin` | Panel superadmin de la instalacion |
 

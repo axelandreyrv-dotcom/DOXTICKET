@@ -37,13 +37,14 @@ Trazar las fases planificadas de DoxTicket como proyecto open source self-hosted
 **Entregable:** una instalacion nueva queda operativa y segura.
 
 ## Fase 3 — Tickets nucleo
-- Modelos `companies`, `users`, `tickets`, `ticket_messages`, `ticket_events`, `attachments`, `categories`.
-- CRUD de tickets manuales.
-- Estados, prioridades, asignacion manual y categorias.
-- Notas internas.
+- Modelos `tickets`, `ticket_messages`, `ticket_events`, `attachments`, `categories`. **Base implementada.**
+- Creacion manual de tickets. **Base implementada.**
+- Lista de tickets activos con filtro por estado y paginacion. **Base implementada.**
+- Dashboard operativo con metricas reales del tenant. **Base implementada.**
+- Estados, prioridades, asignacion manual y categorias. **Base parcial implementada.**
+- Notas internas. **Base implementada como primer mensaje interno en creacion manual.**
 - Adjuntos privados.
-- Filtros y paginacion.
-- Dashboard operativo.
+- Detalle de ticket, respuestas, resolucion/cierre y fusion.
 
 **Entregable:** agente puede crear, asignar, responder internamente y cerrar tickets manuales.
 

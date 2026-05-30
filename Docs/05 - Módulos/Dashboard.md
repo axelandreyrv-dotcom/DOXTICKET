@@ -53,7 +53,14 @@ Ayudar a saber que atender ahora mismo. Debe ser completo, bonito, calmado y acc
 - Listas accionables.
 - Sin graficos pesados en primera version usable.
 - Graficos pequenos pueden agregarse despues.
-- La base inicial muestra resumen del dia, acceso a tickets e inbox vacio hasta implementar el nucleo de tickets.
+- La base actual muestra resumen con datos reales del tenant, acceso a tickets y una lista inbox de tickets activos recientes.
+
+## Estado implementado actual
+- `/app/dashboard` muestra metricas `Nuevos`, `Activos`, `Asignados` y `Resueltos`.
+- `Activos` excluye `new`, `resolved`, `closed`, `merged` y `trashed`; representa trabajo ya abierto/en curso/en espera/reabierto.
+- `Asignados` cuenta tickets activos asignados a la membresia activa.
+- La lista inbox trae hasta seis tickets activos recientes de la empresa seleccionada.
+- Todas las consultas dependen del tenant resuelto en sesion.
 
 ## Estilo
 - Minimalista.

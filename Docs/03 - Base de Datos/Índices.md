@@ -75,6 +75,12 @@ Listar indices recomendados para PostgreSQL.
 - `INDEX (ticket_message_id)`
 - `INDEX (checksum_sha256)`
 
+## Estado implementado actual
+- Implementados indices de `categories`, `tickets`, `ticket_messages`, `ticket_events` y `attachments` necesarios para lista activa, dashboard y auditoria inicial.
+- La lista de tickets usa `company_id`, `status` y `last_activity_at`.
+- Las metricas por agente usan `company_id`, `assigned_to_membership_id` y `status`.
+- La busqueda full-text queda pendiente para una fase posterior.
+
 ## `templates`
 - `UNIQUE (company_id, name, locale)`
 - `INDEX (company_id, locale)`

@@ -191,6 +191,12 @@ Estados: `new|open|in_progress|waiting_customer|waiting_internal|resolved|closed
 - `blocked_reason` TEXT NULL
 - `created_at`, `deleted_at`
 
+## Estado implementado actual
+- Implementadas en migraciones: `system_settings`, `companies`, `users` extendido, `memberships`, `categories`, `tickets`, `ticket_messages`, `ticket_events` y `attachments`.
+- La base de tickets usa scope de tenant por `company_id` en los modelos principales de empresa.
+- La creacion manual de tickets no acepta `company_id` confiable desde input del usuario; el valor se deriva de la membresia activa en sesion.
+- `mail_account_id` existe como campo nullable en `tickets`, pero la tabla `mail_accounts` se implementara en la fase de correo estable.
+
 ---
 
 ## `templates`

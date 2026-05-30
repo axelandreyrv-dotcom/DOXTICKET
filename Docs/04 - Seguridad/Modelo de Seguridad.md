@@ -46,6 +46,8 @@ Definir principios y mecanismos transversales de seguridad para DoxTicket self-h
 - Sanitizacion HTML.
 - Security headers cuando aplique.
 
+Estado implementado actual: `InboundMailProcessor` limita deduplicacion/threading por `company_id`, redacta headers sensibles y bloquea loops basicos antes de crear tickets.
+
 ### Datos
 - Passwords con bcrypt/argon2id.
 - Credenciales SMTP/OAuth cifradas.

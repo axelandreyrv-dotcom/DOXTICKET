@@ -59,8 +59,15 @@ tests/
 - Correo con `[DT-123]` se asocia al ticket correcto.
 - Correo ambiguo no crea duplicado sin regla confiable.
 - Imagen externa queda bloqueada.
+- `Message-Id` duplicado no crea otro ticket ni mensaje.
+- Headers de threading solo relacionan mensajes dentro de la misma empresa.
+- Auto-respuestas por `Auto-Submitted` o `Precedence` se ignoran como loop.
 - Adjunto peligroso crea evento interno.
 - Telemetria no envia datos si no se activo.
+
+## Estado implementado actual
+- `tests/Feature/Mail/MailAccountSettingsTest.php` cubre configuracion tenant-safe de cuenta IMAP/SMTP y secreto cifrado.
+- `tests/Feature/Mail/InboundMailProcessorTest.php` cubre creacion por correo, sanitizacion, imagenes externas, deduplicacion, threading y loops.
 
 ## CI minimo
 - Composer install.

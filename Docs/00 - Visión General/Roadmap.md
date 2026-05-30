@@ -54,11 +54,11 @@ Trazar las fases planificadas de DoxTicket como proyecto open source self-hosted
 - Ingesta IMAP.
 - Envio SMTP.
 - Confirmacion automatica de recibido.
-- Threading por headers + `[DT-123]`.
-- Sanitizacion HTML.
-- Bloqueo de imagenes externas con opcion de abrir.
-- Prevencion de loops.
-- Tests extensivos contra duplicados.
+- Threading por headers + `[DT-123]`. **Base implementada en procesador normalizado.**
+- Sanitizacion HTML. **Base implementada en procesador normalizado.**
+- Bloqueo de imagenes externas con opcion de abrir. **Base de bloqueo implementada; opcion de abrir pendiente.**
+- Prevencion de loops. **Base implementada por headers/remitente.**
+- Tests extensivos contra duplicados. **Base implementada por `Message-Id`.**
 
 **Entregable:** correo entrante y saliente estable en instalaciones reales.
 

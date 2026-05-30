@@ -29,6 +29,8 @@ Describir como DoxTicket maneja trabajo en segundo plano.
 - Prioriza evitar duplicados.
 - Crea o actualiza tickets.
 
+Estado implementado actual: la logica de negocio posterior al parseo vive en `App\Services\Mail\InboundMailProcessor`; el job IMAP debe normalizar el mensaje y delegar ahi.
+
 ### ProcessAttachmentsJob (`mail`)
 - Valida MIME real y tamano.
 - Bloquea ejecutables/scripts.
@@ -74,6 +76,8 @@ Describir como DoxTicket maneja trabajo en segundo plano.
 - SMTP: clave por mensaje.
 - Backups: identificador de ejecucion.
 - Updates: version destino.
+
+Estado implementado actual: el procesador deduplica por `Message-Id` dentro de `company_id`. La deduplicacion por UID de IMAP queda para el adaptador/job.
 
 ## Observabilidad
 - Logs con `company_id`, `ticket_id`, `mail_account_id`, `job_name`.

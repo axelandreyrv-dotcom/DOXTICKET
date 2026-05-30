@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\App;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Tickets\StoreTicketMessageRequest;
 use App\Http\Requests\Tickets\StoreTicketRequest;
+use App\Http\Requests\Tickets\UpdateTicketStatusRequest;
 use App\Models\Category;
 use App\Models\Membership;
 use App\Models\Ticket;
@@ -85,5 +87,155 @@ class TicketController extends Controller
         });
 
         return redirect('/app/tickets')->with('status', 'ticket-created-'.$ticket->public_key);
+    }
+
+    public function show(string $ticket): View
+    {
+        $ticketModel = $this->findTenantTicket($ticket);
+        $this->markAsOpened($ticketModel);
+
+        $ticketModel->load([
+            'assignedToMembership.user',
+            'category',
+            'messages.authorUser',
+            'events.actorUser',
+        ]);
+
+        return view('app.tickets.show', [
+            'ticket' => $ticketModel,
+            'statusOptions' => $this->statusOptions(),
+        ]);
+    }
+
+    public function storeMessage(StoreTicketMessageRequest $request, string $ticket): RedirectResponse
+    {
+        $ticketModel = $this->findTenantTicket($ticket);
+        $membership = app(TenantContext::class)->membership();
+        $data = $request->validated();
+
+        DB::transaction(function () use ($ticketModel, $membership, $data): void {
+            TicketMessage::query()->create([
+                'ticket_id' => $ticketModel->id,
+                'author_user_id' => $membership?->user_id,
+                'author_membership_id' => $membership?->id,
+                'visibility' => 'internal',
+                'direction' => 'internal',
+                'body_text' => $data['body_text'],
+            ]);
+
+            $ticketModel->forceFill(['last_activity_at' => now()])->save();
+
+            TicketEvent::query()->create([
+                'ticket_id' => $ticketModel->id,
+                'actor_user_id' => $membership?->user_id,
+                'actor_membership_id' => $membership?->id,
+                'type' => 'ticket.note_added',
+                'payload' => ['visibility' => 'internal'],
+            ]);
+        });
+
+        return redirect()->route('app.tickets.show', $ticketModel->public_key)->with('status', 'note-added');
+    }
+
+    public function updateStatus(UpdateTicketStatusRequest $request, string $ticket): RedirectResponse
+    {
+        $ticketModel = $this->findTenantTicket($ticket);
+        $membership = app(TenantContext::class)->membership();
+        $status = $request->validated('status');
+        $previousStatus = $ticketModel->status;
+
+        if ($status === 'closed' && $previousStatus !== 'resolved') {
+            return redirect()
+                ->route('app.tickets.show', $ticketModel->public_key)
+                ->withErrors(['status' => 'Para cerrar un ticket primero debe estar resuelto.']);
+        }
+
+        DB::transaction(function () use ($ticketModel, $membership, $status, $previousStatus): void {
+            $changes = [
+                'status' => $status,
+                'last_activity_at' => now(),
+            ];
+
+            if ($status === 'resolved' && $ticketModel->resolved_at === null) {
+                $changes['resolved_at'] = now();
+            }
+
+            if ($status === 'closed' && $ticketModel->closed_at === null) {
+                $changes['closed_at'] = now();
+            }
+
+            if ($status === 'reopened') {
+                $changes['closed_at'] = null;
+            }
+
+            $ticketModel->forceFill($changes)->save();
+
+            TicketEvent::query()->create([
+                'ticket_id' => $ticketModel->id,
+                'actor_user_id' => $membership?->user_id,
+                'actor_membership_id' => $membership?->id,
+                'type' => 'ticket.status_changed',
+                'payload' => [
+                    'from' => $previousStatus,
+                    'to' => $status,
+                ],
+            ]);
+        });
+
+        return redirect()->route('app.tickets.show', $ticketModel->public_key)->with('status', 'status-updated');
+    }
+
+    private function findTenantTicket(string $ticket): Ticket
+    {
+        return Ticket::query()
+            ->where(function ($query) use ($ticket): void {
+                $query->where('public_key', $ticket);
+
+                if (ctype_digit($ticket)) {
+                    $query->orWhere('id', (int) $ticket);
+                }
+            })
+            ->firstOrFail();
+    }
+
+    private function markAsOpened(Ticket $ticket): void
+    {
+        if ($ticket->status !== 'new' || $ticket->first_opened_at !== null) {
+            return;
+        }
+
+        $membership = app(TenantContext::class)->membership();
+
+        DB::transaction(function () use ($ticket, $membership): void {
+            $ticket->forceFill([
+                'status' => 'open',
+                'first_opened_at' => now(),
+                'last_activity_at' => now(),
+            ])->save();
+
+            TicketEvent::query()->create([
+                'ticket_id' => $ticket->id,
+                'actor_user_id' => $membership?->user_id,
+                'actor_membership_id' => $membership?->id,
+                'type' => 'ticket.opened',
+                'payload' => ['from' => 'new', 'to' => 'open'],
+            ]);
+        });
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    private function statusOptions(): array
+    {
+        return [
+            'open' => 'Abierto',
+            'in_progress' => 'En Progreso',
+            'waiting_customer' => 'Espera Cliente',
+            'waiting_internal' => 'Espera Interna',
+            'resolved' => 'Resuelto',
+            'closed' => 'Cerrado',
+            'reopened' => 'Reabierto',
+        ];
     }
 }

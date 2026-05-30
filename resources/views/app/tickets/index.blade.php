@@ -43,7 +43,7 @@
 
             <div class="divide-y divide-[var(--color-border-default)]">
                 @forelse ($tickets as $ticket)
-                    <article class="grid grid-cols-[5rem_minmax(0,1fr)_4rem] gap-3 px-4 py-3 text-sm transition hover:bg-[var(--color-bg-surface-alt)] sm:grid-cols-[8rem_1fr_10rem_8rem_9rem] sm:items-center">
+                    <a href="{{ route('app.tickets.show', $ticket->public_key) }}" class="grid grid-cols-[5rem_minmax(0,1fr)_4rem] gap-3 px-4 py-3 text-sm transition hover:bg-[var(--color-bg-surface-alt)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--color-focus)] sm:grid-cols-[8rem_1fr_10rem_8rem_9rem] sm:items-center">
                         <span class="font-mono text-xs font-semibold text-[var(--color-info)]">{{ $ticket->public_key }}</span>
                         <div class="min-w-0">
                             <h2 class="truncate font-medium">{{ $ticket->subject }}</h2>
@@ -52,7 +52,7 @@
                         <span class="hidden text-xs text-[var(--color-text-secondary)] sm:block">{{ $ticket->priority }}</span>
                         <span class="text-xs text-[var(--color-text-secondary)]">{{ str_replace('_', ' ', $ticket->status) }}</span>
                         <span class="hidden truncate text-xs text-[var(--color-text-muted)] sm:block">{{ $ticket->assignedToMembership?->user?->name ?? 'Sin asignar' }}</span>
-                    </article>
+                    </a>
                 @empty
                     <div class="p-8 text-center text-sm text-[var(--color-text-secondary)]">
                         No hay tickets activos en esta empresa.

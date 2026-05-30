@@ -51,4 +51,14 @@ class TicketMessage extends Model
     {
         return $this->belongsTo(Ticket::class);
     }
+
+    public function authorUser(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'author_user_id');
+    }
+
+    public function authorMembership(): BelongsTo
+    {
+        return $this->belongsTo(Membership::class, 'author_membership_id');
+    }
 }

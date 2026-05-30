@@ -31,6 +31,9 @@ Route::middleware('auth')->group(function (): void {
         Route::get('/app/tickets', [TicketController::class, 'index'])->name('app.tickets.index');
         Route::get('/app/tickets/create', [TicketController::class, 'create'])->name('app.tickets.create');
         Route::post('/app/tickets', [TicketController::class, 'store'])->name('app.tickets.store');
+        Route::get('/app/tickets/{ticket}', [TicketController::class, 'show'])->name('app.tickets.show');
+        Route::post('/app/tickets/{ticket}/messages', [TicketController::class, 'storeMessage'])->name('app.tickets.messages.store');
+        Route::patch('/app/tickets/{ticket}/status', [TicketController::class, 'updateStatus'])->name('app.tickets.status.update');
         Route::get('/app/settings', [SettingsController::class, 'index'])->name('app.settings');
         Route::post('/app/settings/mail', [SettingsController::class, 'storeMail'])->name('app.settings.mail.store');
     });

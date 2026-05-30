@@ -15,10 +15,7 @@
                     <p class="mt-1 text-sm text-[var(--color-text-muted)]">Helpdesk IT self-hosted</p>
                 </div>
                 <nav class="flex items-center gap-2" aria-label="Accesos principales">
-                    <a class="rounded-md border border-[var(--color-border-default)] px-3 py-2 text-sm font-medium text-[var(--color-text-secondary)] transition hover:border-[var(--color-action-primary)] hover:text-[var(--color-action-primary)]" href="{{ url('/setup') }}">
-                        Setup
-                    </a>
-                    <a class="rounded-md bg-[var(--color-action-primary)] px-3 py-2 text-sm font-medium text-white transition hover:bg-[var(--color-action-primary-hover)]" href="{{ url('/login') }}">
+                    <a class="rounded-md bg-[var(--color-action-primary)] px-3 py-2 text-sm font-medium text-white transition hover:bg-[var(--color-action-primary-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-focus)]" href="{{ url('/login') }}">
                         Login
                     </a>
                 </nav>
@@ -39,7 +36,7 @@
                     <h2 class="text-sm font-semibold text-[var(--color-text-primary)]">Estado de la instalacion</h2>
                     <dl class="mt-5 space-y-4 text-sm">
                         <div class="flex items-center justify-between gap-4">
-                            <dt class="text-[var(--color-text-muted)]">Setup</dt>
+                            <dt class="text-[var(--color-text-muted)]">Instalador</dt>
                             <dd class="font-medium text-[var(--color-warning)]">Pendiente</dd>
                         </div>
                         <div class="flex items-center justify-between gap-4">

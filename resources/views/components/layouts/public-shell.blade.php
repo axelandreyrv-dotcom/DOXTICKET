@@ -13,14 +13,6 @@
                 <a href="{{ url('/') }}" class="text-sm font-semibold tracking-normal text-[var(--color-text-primary)]">
                     DoxTicket
                 </a>
-                <nav class="flex items-center gap-2 text-sm">
-                    <a href="{{ url('/setup') }}" class="rounded-md px-3 py-2 text-[var(--color-text-secondary)] transition hover:bg-[var(--color-bg-surface-alt)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-focus)]">
-                        Setup
-                    </a>
-                    <a href="{{ url('/login') }}" class="rounded-md bg-[var(--color-action-primary)] px-3 py-2 font-medium text-white transition hover:bg-[var(--color-action-primary-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-focus)]">
-                        Entrar
-                    </a>
-                </nav>
             </header>
 
             <main id="main-content" class="flex flex-1 flex-col">

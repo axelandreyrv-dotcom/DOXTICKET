@@ -16,6 +16,9 @@ Definir estrategia de pruebas.
 - Tenant isolation.
 - Policies.
 - Tickets.
+- Detalle de tickets y bloqueo cross-tenant.
+- Notas internas sin aceptar `company_id` del cliente.
+- Cambios de estado, incluyendo cierre solo despues de resuelto.
 - Fusion.
 - Correo entrante y threading.
 - Evitar duplicados.
@@ -54,6 +57,9 @@ tests/
 - Desactivar una membership solo quita acceso a esa empresa.
 - Busqueda global solo busca en empresa activa.
 - Notificaciones se separan por empresa.
+- Un ticket de otra empresa no puede abrirse desde la empresa activa.
+- Agregar nota interna no puede mover datos a otra empresa aunque el cliente envie `company_id`.
+- Un ticket no puede cerrarse sin pasar primero por `resolved`.
 - `/setup` no funciona despues de completado.
 - `APP_DEBUG=true` bloquea modo produccion seguro.
 - Correo con `[DT-123]` se asocia al ticket correcto.
@@ -68,6 +74,8 @@ tests/
 - Telemetria no envia datos si no se activo.
 
 ## Estado implementado actual
+- `tests/Feature/PublicNavigationTest.php` cubre navegacion publica sin Setup visible ni acciones duplicadas en login.
+- `tests/Feature/Tickets/TicketDetailTest.php` cubre detalle tenant-safe, notas internas y cambios de estado.
 - `tests/Feature/Mail/MailAccountSettingsTest.php` cubre configuracion tenant-safe de cuenta IMAP/SMTP y secreto cifrado.
 - `tests/Feature/Mail/InboundMailProcessorTest.php` cubre creacion por correo, sanitizacion, imagenes externas, deduplicacion, threading y loops.
 - `tests/Feature/Mail/IngestMailboxJobTest.php` cubre el job de ingesta, avance de UID, errores sanitizados y cuentas inactivas.

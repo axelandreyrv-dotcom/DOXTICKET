@@ -103,4 +103,9 @@ class Ticket extends Model
     {
         return $this->hasMany(TicketMessage::class);
     }
+
+    public function events(): HasMany
+    {
+        return $this->hasMany(TicketEvent::class);
+    }
 }

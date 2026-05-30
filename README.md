@@ -45,6 +45,9 @@ Construir un helpdesk IT open source, multiempresa, seguro y facil de autoalojar
 | `/app/dashboard` | Dashboard del tenant |
 | `/app/tickets` | Gestion de tickets |
 | `/app/tickets/create` | Creacion manual de ticket |
+| `/app/tickets/{ticket}` | Detalle de ticket por id interno o clave visible `DT-123` |
+| `/app/tickets/{ticket}/messages` | Agregar nota interna al ticket |
+| `/app/tickets/{ticket}/status` | Cambiar estado del ticket |
 | `/app/settings` | Configuracion del tenant |
 | `/app/settings/mail` | Guardado de cuenta IMAP/SMTP del tenant |
 | `/admin` | Panel superadmin de la instalacion |
@@ -64,6 +67,7 @@ Construir un helpdesk IT open source, multiempresa, seguro y facil de autoalojar
 - Marcador visible en asunto: `[DT-123]`.
 - Dashboard operativo para saber que atender ahora.
 - Tickets manuales como flujo secundario.
+- Detalle de ticket con hilo, metadatos, eventos, notas internas y cambio de estado.
 - Fusion de tickets.
 - Adjuntos en almacenamiento privado.
 - Modo claro como experiencia principal.

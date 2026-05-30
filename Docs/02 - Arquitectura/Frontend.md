@@ -24,7 +24,8 @@ Describir la capa de presentacion de DoxTicket self-hosted.
 
 ### Login
 - Simple, claro, sin marketing pesado.
-- Acceso a `/setup` solo si no se completo.
+- Sin acciones duplicadas en el encabezado; el formulario contiene la accion principal.
+- El acceso visual a `/setup` no se muestra en el encabezado publico.
 - `Powered by DoxTicket`.
 
 ### App cliente (`/app/*`)
@@ -58,7 +59,7 @@ Estado implementado actual: `/app/settings` contiene la configuracion base de co
 - Breadcrumbs en pantallas internas, por ejemplo `Tickets / DT-123`.
 - En mobile: menu superior compacto.
 
-La navegacion actual incluye Dashboard, Tickets, Empresa y Configuracion. Base de conocimiento se agregara cuando exista el modulo.
+La navegacion publica actual muestra solo `Login` en `/`; las pantallas de login/setup no muestran botones duplicados en el encabezado. La navegacion autenticada incluye Dashboard, Tickets, Empresa y Configuracion. Base de conocimiento se agregara cuando exista el modulo.
 
 ### Web oficial futura
 `doxticket.com` sera hub del proyecto:
@@ -99,8 +100,9 @@ No prometer Cloud en v1.
 
 ## Tickets
 - Lista tipo inbox con filtros.
+- Filas enlazables hacia pagina completa de detalle.
 - Accion rapida: asignarse.
-- Detalle en pagina completa con hilo + panel lateral en desktop.
+- Detalle en pagina completa con hilo + panel lateral en desktop. La base implementada muestra mensajes, eventos, metadatos, nota interna y cambio de estado.
 - Marcador visible `DT-123`.
 
 ## Accesibilidad

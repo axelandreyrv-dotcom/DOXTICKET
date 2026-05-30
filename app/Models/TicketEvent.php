@@ -26,4 +26,14 @@ class TicketEvent extends Model
     {
         return $this->belongsTo(Ticket::class);
     }
+
+    public function actorUser(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'actor_user_id');
+    }
+
+    public function actorMembership(): BelongsTo
+    {
+        return $this->belongsTo(Membership::class, 'actor_membership_id');
+    }
 }

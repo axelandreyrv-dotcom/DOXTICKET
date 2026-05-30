@@ -42,9 +42,11 @@ Trazar las fases planificadas de DoxTicket como proyecto open source self-hosted
 - Lista de tickets activos con filtro por estado y paginacion. **Base implementada.**
 - Dashboard operativo con metricas reales del tenant. **Base implementada.**
 - Estados, prioridades, asignacion manual y categorias. **Base parcial implementada.**
-- Notas internas. **Base implementada como primer mensaje interno en creacion manual.**
+- Notas internas. **Base implementada como primer mensaje interno en creacion manual y desde detalle.**
+- Detalle de ticket con hilo, eventos, metadatos y cambio de estado. **Base implementada.**
+- Resolucion/cierre manual. **Base implementada con regla: cerrar solo despues de resuelto.**
 - Adjuntos privados.
-- Detalle de ticket, respuestas, resolucion/cierre y fusion.
+- Respuestas por correo saliente y fusion.
 
 **Entregable:** agente puede crear, asignar, responder internamente y cerrar tickets manuales.
 

@@ -50,6 +50,7 @@ Permite que departamentos de TI instalen su propio sistema de tickets, conecten 
 | `/app/tickets` | Gestion de tickets |
 | `/app/tickets/create` | Creacion manual de ticket |
 | `/app/tickets/{ticket}` | Detalle de ticket dentro de la empresa activa por id interno o clave visible `DT-123` |
+| `/app/tickets/{ticket}/assign-self` | Asignacion manual del ticket a la membresia activa |
 | `/app/tickets/{ticket}/messages` | Alta de nota interna del ticket |
 | `/app/tickets/{ticket}/status` | Cambio validado de estado del ticket |
 | `/app/settings` | Configuracion del tenant |
@@ -108,6 +109,7 @@ Estas decisiones estan tomadas. No proponer alternativas sin justificacion docum
 - El dashboard y la lista principal se orientan a saber que atender ahora.
 - La lista de tickets enlaza a una pagina de detalle completa dentro de `/app/tickets/{ticket}`.
 - Abrir un ticket `new` por primera vez lo marca como `open` y registra auditoria interna.
+- Los agentes pueden asignarse tickets manualmente; el servidor usa la membresia activa y nunca confia en `assigned_to_membership_id` enviado por el cliente para esa accion.
 - Las notas internas se agregan desde el detalle y se guardan como `ticket_messages` con `visibility=internal`.
 - El cierre manual solo se permite despues de `resolved`.
 - Fusión de tickets: SÍ.

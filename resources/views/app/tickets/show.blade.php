@@ -46,6 +46,12 @@
             </div>
         @endif
 
+        @if (session('status') === 'ticket-assigned')
+            <div class="mt-4 rounded-md border border-[var(--color-success-border)] bg-[var(--color-success-bg)] px-4 py-3 text-sm text-[var(--color-success)]">
+                Ticket asignado.
+            </div>
+        @endif
+
         @error('status')
             <div class="mt-4 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-[var(--color-danger)]">
                 {{ $message }}
@@ -109,6 +115,14 @@
                             <dd class="text-right text-[var(--color-text-secondary)]">{{ $ticket->created_at?->format('Y-m-d H:i') }}</dd>
                         </div>
                     </dl>
+                    @if ($ticket->assigned_to_membership_id !== $activeMembership?->id)
+                        <form method="POST" action="{{ route('app.tickets.assign-self', $ticket->public_key) }}" class="mt-4">
+                            @csrf
+                            <button type="submit" class="w-full rounded-md border border-[var(--color-border-default)] bg-[var(--color-bg-surface)] px-3 py-2 text-sm font-semibold text-[var(--color-text-secondary)] transition hover:border-[var(--color-action-primary)] hover:text-[var(--color-action-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-focus)] active:scale-[0.99]">
+                                Asignarme
+                            </button>
+                        </form>
+                    @endif
                 </section>
 
                 <section class="rounded-lg border border-[var(--color-border-default)] bg-[var(--color-bg-surface)] p-4">

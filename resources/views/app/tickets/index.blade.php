@@ -33,7 +33,7 @@
         </form>
 
         <section class="mt-5 overflow-hidden rounded-lg border border-[var(--color-border-default)] bg-[var(--color-bg-surface)]">
-            <div class="grid grid-cols-[5rem_minmax(0,1fr)_4rem] gap-3 border-b border-[var(--color-border-default)] px-4 py-3 text-xs font-semibold text-[var(--color-text-muted)] sm:grid-cols-[8rem_1fr_10rem_8rem_9rem]">
+            <div class="grid grid-cols-[5rem_minmax(0,1fr)_4rem] gap-3 border-b border-[var(--color-border-default)] px-4 py-3 text-xs font-semibold text-[var(--color-text-muted)] sm:grid-cols-[8rem_1fr_10rem_8rem_10rem]">
                 <span>Clave</span>
                 <span>Asunto</span>
                 <span class="hidden sm:block">Prioridad</span>
@@ -43,16 +43,43 @@
 
             <div class="divide-y divide-[var(--color-border-default)]">
                 @forelse ($tickets as $ticket)
-                    <a href="{{ route('app.tickets.show', $ticket->public_key) }}" class="grid grid-cols-[5rem_minmax(0,1fr)_4rem] gap-3 px-4 py-3 text-sm transition hover:bg-[var(--color-bg-surface-alt)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--color-focus)] sm:grid-cols-[8rem_1fr_10rem_8rem_9rem] sm:items-center">
-                        <span class="font-mono text-xs font-semibold text-[var(--color-info)]">{{ $ticket->public_key }}</span>
+                    <article class="grid grid-cols-[5rem_minmax(0,1fr)_4rem] gap-3 px-4 py-3 text-sm transition hover:bg-[var(--color-bg-surface-alt)] sm:grid-cols-[8rem_1fr_10rem_8rem_10rem] sm:items-center">
+                        <a href="{{ route('app.tickets.show', $ticket->public_key) }}" class="font-mono text-xs font-semibold text-[var(--color-info)] transition hover:text-[var(--color-action-primary-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-focus)]">{{ $ticket->public_key }}</a>
                         <div class="min-w-0">
-                            <h2 class="truncate font-medium">{{ $ticket->subject }}</h2>
+                            <a href="{{ route('app.tickets.show', $ticket->public_key) }}" class="block truncate font-medium transition hover:text-[var(--color-action-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-focus)]">{{ $ticket->subject }}</a>
                             <p class="mt-0.5 truncate text-xs text-[var(--color-text-muted)]">{{ $ticket->requester_email ?: 'Sin solicitante' }}</p>
+                            <div class="mt-2 sm:hidden">
+                                @if ($ticket->assigned_to_membership_id === $activeMembership?->id)
+                                    <span class="text-xs font-medium text-[var(--color-success)]">Asignado a ti</span>
+                                @elseif ($ticket->assigned_to_membership_id === null)
+                                    <form method="POST" action="{{ route('app.tickets.assign-self', $ticket->public_key) }}">
+                                        @csrf
+                                        <button type="submit" class="rounded-md border border-[var(--color-border-default)] bg-[var(--color-bg-surface)] px-2 py-1 text-xs font-medium text-[var(--color-text-secondary)] transition hover:border-[var(--color-action-primary)] hover:text-[var(--color-action-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-focus)]">
+                                            Asignarme
+                                        </button>
+                                    </form>
+                                @else
+                                    <span class="block truncate text-xs text-[var(--color-text-muted)]">{{ $ticket->assignedToMembership?->user?->name ?? 'Sin asignar' }}</span>
+                                @endif
+                            </div>
                         </div>
                         <span class="hidden text-xs text-[var(--color-text-secondary)] sm:block">{{ $ticket->priority }}</span>
                         <span class="text-xs text-[var(--color-text-secondary)]">{{ str_replace('_', ' ', $ticket->status) }}</span>
-                        <span class="hidden truncate text-xs text-[var(--color-text-muted)] sm:block">{{ $ticket->assignedToMembership?->user?->name ?? 'Sin asignar' }}</span>
-                    </a>
+                        <div class="hidden min-w-0 sm:block">
+                            @if ($ticket->assigned_to_membership_id === $activeMembership?->id)
+                                <span class="block truncate text-xs font-medium text-[var(--color-success)]">Asignado a ti</span>
+                            @elseif ($ticket->assigned_to_membership_id === null)
+                                <form method="POST" action="{{ route('app.tickets.assign-self', $ticket->public_key) }}">
+                                    @csrf
+                                    <button type="submit" class="rounded-md border border-[var(--color-border-default)] bg-[var(--color-bg-surface)] px-2 py-1 text-xs font-medium text-[var(--color-text-secondary)] transition hover:border-[var(--color-action-primary)] hover:text-[var(--color-action-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-focus)]">
+                                        Asignarme
+                                    </button>
+                                </form>
+                            @else
+                                <span class="block truncate text-xs text-[var(--color-text-muted)]">{{ $ticket->assignedToMembership?->user?->name ?? 'Sin asignar' }}</span>
+                            @endif
+                        </div>
+                    </article>
                 @empty
                     <div class="p-8 text-center text-sm text-[var(--color-text-secondary)]">
                         No hay tickets activos en esta empresa.

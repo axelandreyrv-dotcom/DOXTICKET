@@ -101,8 +101,8 @@ No prometer Cloud en v1.
 ## Tickets
 - Lista tipo inbox con filtros.
 - Filas enlazables hacia pagina completa de detalle.
-- Accion rapida: asignarse.
-- Detalle en pagina completa con hilo + panel lateral en desktop. La base implementada muestra mensajes, eventos, metadatos, nota interna y cambio de estado.
+- Accion rapida: asignarse desde la lista cuando el ticket no tiene agente.
+- Detalle en pagina completa con hilo + panel lateral en desktop. La base implementada muestra mensajes, eventos, metadatos, asignacion propia, nota interna y cambio de estado.
 - Marcador visible `DT-123`.
 
 ## Accesibilidad

@@ -31,6 +31,7 @@ class TicketController extends Controller
         return view('app.tickets.index', [
             'tickets' => $tickets,
             'status' => $request->string('status')->toString(),
+            'activeMembership' => app(TenantContext::class)->membership(),
         ]);
     }
 
@@ -104,7 +105,35 @@ class TicketController extends Controller
         return view('app.tickets.show', [
             'ticket' => $ticketModel,
             'statusOptions' => $this->statusOptions(),
+            'activeMembership' => app(TenantContext::class)->membership(),
         ]);
+    }
+
+    public function assignSelf(string $ticket): RedirectResponse
+    {
+        $ticketModel = $this->findTenantTicket($ticket);
+        $membership = app(TenantContext::class)->membership();
+        $previousMembershipId = $ticketModel->assigned_to_membership_id;
+
+        DB::transaction(function () use ($ticketModel, $membership, $previousMembershipId): void {
+            $ticketModel->forceFill([
+                'assigned_to_membership_id' => $membership?->id,
+                'last_activity_at' => now(),
+            ])->save();
+
+            TicketEvent::query()->create([
+                'ticket_id' => $ticketModel->id,
+                'actor_user_id' => $membership?->user_id,
+                'actor_membership_id' => $membership?->id,
+                'type' => 'ticket.assigned_self',
+                'payload' => [
+                    'from_membership_id' => $previousMembershipId,
+                    'to_membership_id' => $membership?->id,
+                ],
+            ]);
+        });
+
+        return redirect()->route('app.tickets.show', $ticketModel->public_key)->with('status', 'ticket-assigned');
     }
 
     public function storeMessage(StoreTicketMessageRequest $request, string $ticket): RedirectResponse

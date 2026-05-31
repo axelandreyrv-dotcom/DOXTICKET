@@ -17,6 +17,7 @@ Definir estrategia de pruebas.
 - Policies.
 - Tickets.
 - Detalle de tickets y bloqueo cross-tenant.
+- Asignacion manual tenant-safe a la membresia activa.
 - Notas internas sin aceptar `company_id` del cliente.
 - Cambios de estado, incluyendo cierre solo despues de resuelto.
 - Fusion.
@@ -58,6 +59,8 @@ tests/
 - Busqueda global solo busca en empresa activa.
 - Notificaciones se separan por empresa.
 - Un ticket de otra empresa no puede abrirse desde la empresa activa.
+- Un agente puede asignarse un ticket y no puede forzar `assigned_to_membership_id` desde el cliente.
+- Un agente no puede asignarse tickets de otra empresa.
 - Agregar nota interna no puede mover datos a otra empresa aunque el cliente envie `company_id`.
 - Un ticket no puede cerrarse sin pasar primero por `resolved`.
 - `/setup` no funciona despues de completado.
@@ -76,6 +79,7 @@ tests/
 ## Estado implementado actual
 - `tests/Feature/PublicNavigationTest.php` cubre navegacion publica sin Setup visible ni acciones duplicadas en login.
 - `tests/Feature/Tickets/TicketDetailTest.php` cubre detalle tenant-safe, notas internas y cambios de estado.
+- `tests/Feature/Tickets/TicketAssignmentTest.php` cubre asignacion propia, toma de ticket asignado a otro agente de la misma empresa, bloqueo cross-tenant y presencia de la accion en UI.
 - `tests/Feature/Mail/MailAccountSettingsTest.php` cubre configuracion tenant-safe de cuenta IMAP/SMTP y secreto cifrado.
 - `tests/Feature/Mail/InboundMailProcessorTest.php` cubre creacion por correo, sanitizacion, imagenes externas, deduplicacion, threading y loops.
 - `tests/Feature/Mail/IngestMailboxJobTest.php` cubre el job de ingesta, avance de UID, errores sanitizados y cuentas inactivas.

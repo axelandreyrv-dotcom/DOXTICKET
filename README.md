@@ -46,6 +46,7 @@ Construir un helpdesk IT open source, multiempresa, seguro y facil de autoalojar
 | `/app/tickets` | Gestion de tickets |
 | `/app/tickets/create` | Creacion manual de ticket |
 | `/app/tickets/{ticket}` | Detalle de ticket por id interno o clave visible `DT-123` |
+| `/app/tickets/{ticket}/assign-self` | Asignarse un ticket desde la empresa activa |
 | `/app/tickets/{ticket}/messages` | Agregar nota interna al ticket |
 | `/app/tickets/{ticket}/status` | Cambiar estado del ticket |
 | `/app/settings` | Configuracion del tenant |
@@ -68,6 +69,7 @@ Construir un helpdesk IT open source, multiempresa, seguro y facil de autoalojar
 - Dashboard operativo para saber que atender ahora.
 - Tickets manuales como flujo secundario.
 - Detalle de ticket con hilo, metadatos, eventos, notas internas y cambio de estado.
+- Asignacion manual a la membresia activa desde lista y detalle.
 - Fusion de tickets.
 - Adjuntos en almacenamiento privado.
 - Modo claro como experiencia principal.

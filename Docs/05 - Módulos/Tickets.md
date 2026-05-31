@@ -54,6 +54,9 @@ Describir el nucleo de tickets.
 - Admin/supervisor pueden asignar a otros.
 - La asignacion se guarda contra `assigned_to_membership_id`, no solo contra usuario global.
 - Esto evita ambiguedad cuando una persona pertenece a varias empresas.
+- Ruta implementada para asignarse: `POST /app/tickets/{ticket}/assign-self`.
+- Esta accion usa la membresia activa de la sesion y no acepta `assigned_to_membership_id` confiable desde el cliente.
+- La asignacion genera evento interno `ticket.assigned_self`.
 
 ## Creacion manual
 - Secundaria frente al correo.
@@ -72,6 +75,7 @@ Describir el nucleo de tickets.
 - Las notas no aceptan `company_id` confiable desde el cliente; la empresa sale de la sesion activa.
 - Los cambios de estado se hacen con `PATCH /app/tickets/{ticket}/status`.
 - `closed` solo se acepta si el ticket esta en `resolved`.
+- El detalle muestra `Asignarme` si el ticket no esta asignado a la membresia activa.
 
 ## Fusion
 - Pueden fusionar agentes, supervisores y admins.
@@ -100,15 +104,17 @@ Debe mostrar:
 
 ## Estado implementado actual
 - `/app/tickets` muestra la lista de tickets activos de la empresa seleccionada, con filtro por estado y paginacion.
+- `/app/tickets` muestra accion rapida `Asignarme` para tickets sin agente.
 - `/app/tickets/create` permite crear tickets manuales con solicitante, correo, asunto, prioridad, categoria y agente.
 - `/app/tickets/{ticket}` permite abrir el ticket en pagina completa, ver hilo/eventos/metadatos, agregar nota interna y cambiar estado.
 - La clave visible se genera como `DT-<numero>` por empresa.
 - La primera version de creacion manual registra evento interno `ticket.created_manual`.
 - La primera apertura de un ticket `new` registra `ticket.opened`.
+- La asignacion manual a la membresia activa registra `ticket.assigned_self`.
 - Las notas internas registran `ticket.note_added`.
 - Los cambios de estado registran `ticket.status_changed`.
 - El aislamiento se aplica con scope de tenant y tests de regresion para evitar filtrar datos de otra empresa.
-- Pendiente: asignarse desde accion rapida, respuestas por correo saliente, adjuntos, fusion y pulido avanzado del hilo.
+- Pendiente: asignar a otros agentes desde detalle, respuestas por correo saliente, adjuntos, fusion y pulido avanzado del hilo.
 
 ## Relacion con otros documentos
 - `Correo.md`

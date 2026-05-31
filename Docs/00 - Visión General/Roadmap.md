@@ -41,6 +41,7 @@ Trazar las fases planificadas de DoxTicket como proyecto open source self-hosted
 - Creacion manual de tickets. **Base implementada.**
 - Lista de tickets activos con filtro por estado y paginacion. **Base implementada.**
 - Dashboard operativo con metricas reales del tenant. **Base implementada.**
+- Panel de actividad con historial operativo de tickets. **Base implementada.**
 - Estados, prioridades, asignacion manual y categorias. **Base implementada para asignarse y parcial para asignar a otros.**
 - Notas internas. **Base implementada como primer mensaje interno en creacion manual y desde detalle.**
 - Detalle de ticket con hilo, eventos, metadatos y cambio de estado. **Base implementada.**

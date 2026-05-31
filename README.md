@@ -43,6 +43,7 @@ Construir un helpdesk IT open source, multiempresa, seguro y facil de autoalojar
 | `/logout` | Cierre de sesion |
 | `/app/companies` | Selector de empresa activa |
 | `/app/dashboard` | Dashboard del tenant |
+| `/app/activity` | Historial operativo de la empresa activa |
 | `/app/tickets` | Gestion de tickets |
 | `/app/tickets/create` | Creacion manual de ticket |
 | `/app/tickets/{ticket}` | Detalle de ticket por id interno o clave visible `DT-123` |
@@ -67,6 +68,7 @@ Construir un helpdesk IT open source, multiempresa, seguro y facil de autoalojar
 - Confirmacion automatica de recibido.
 - Marcador visible en asunto: `[DT-123]`.
 - Dashboard operativo para saber que atender ahora.
+- Panel de actividad para revisar que paso en tickets de la empresa activa.
 - Tickets manuales como flujo secundario.
 - Detalle de ticket con hilo, metadatos, eventos, notas internas y cambio de estado.
 - Asignacion manual a la membresia activa desde lista y detalle.

@@ -15,6 +15,7 @@ Definir estrategia de pruebas.
 - Auth.
 - Tenant isolation.
 - Policies.
+- Actividad tenant-safe.
 - Tickets.
 - Detalle de tickets y bloqueo cross-tenant.
 - Asignacion manual tenant-safe a la membresia activa.
@@ -58,6 +59,7 @@ tests/
 - Desactivar una membership solo quita acceso a esa empresa.
 - Busqueda global solo busca en empresa activa.
 - Notificaciones se separan por empresa.
+- La actividad muestra solo eventos de la empresa activa.
 - Un ticket de otra empresa no puede abrirse desde la empresa activa.
 - Un agente puede asignarse un ticket y no puede forzar `assigned_to_membership_id` desde el cliente.
 - Un agente no puede asignarse tickets de otra empresa.
@@ -78,6 +80,7 @@ tests/
 
 ## Estado implementado actual
 - `tests/Feature/PublicNavigationTest.php` cubre navegacion publica sin Setup visible ni acciones duplicadas en login.
+- `tests/Feature/Activity/ActivityPanelTest.php` cubre listado de actividad, aislamiento por tenant, filtros y enlace en navegacion.
 - `tests/Feature/Tickets/TicketDetailTest.php` cubre detalle tenant-safe, notas internas y cambios de estado.
 - `tests/Feature/Tickets/TicketAssignmentTest.php` cubre asignacion propia, toma de ticket asignado a otro agente de la misma empresa, bloqueo cross-tenant y presencia de la accion en UI.
 - `tests/Feature/Mail/MailAccountSettingsTest.php` cubre configuracion tenant-safe de cuenta IMAP/SMTP y secreto cifrado.

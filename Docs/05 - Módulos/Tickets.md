@@ -113,6 +113,7 @@ Debe mostrar:
 - La asignacion manual a la membresia activa registra `ticket.assigned_self`.
 - Las notas internas registran `ticket.note_added`.
 - Los cambios de estado registran `ticket.status_changed`.
+- Los eventos de tickets alimentan el panel `/app/activity`.
 - El aislamiento se aplica con scope de tenant y tests de regresion para evitar filtrar datos de otra empresa.
 - Pendiente: asignar a otros agentes desde detalle, respuestas por correo saliente, adjuntos, fusion y pulido avanzado del hilo.
 

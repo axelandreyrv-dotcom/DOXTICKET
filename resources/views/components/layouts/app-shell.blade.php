@@ -24,6 +24,9 @@
                     <a href="{{ url('/app/tickets') }}" class="rounded-md px-3 py-2 text-[var(--color-text-secondary)] transition hover:bg-[var(--color-bg-surface-alt)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-focus)]">
                         Tickets
                     </a>
+                    <a href="{{ route('app.activity.index') }}" class="rounded-md px-3 py-2 text-[var(--color-text-secondary)] transition hover:bg-[var(--color-bg-surface-alt)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-focus)]">
+                        Actividad
+                    </a>
                     <a href="{{ url('/app/companies') }}" class="rounded-md px-3 py-2 text-[var(--color-text-secondary)] transition hover:bg-[var(--color-bg-surface-alt)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-focus)]">
                         Empresa
                     </a>

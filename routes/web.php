@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\App\ActivityController;
 use App\Http\Controllers\App\DashboardController;
 use App\Http\Controllers\App\SettingsController;
 use App\Http\Controllers\App\TicketController;
@@ -28,6 +29,7 @@ Route::middleware('auth')->group(function (): void {
 
     Route::middleware('tenant')->group(function (): void {
         Route::get('/app/dashboard', DashboardController::class)->name('app.dashboard');
+        Route::get('/app/activity', ActivityController::class)->name('app.activity.index');
         Route::get('/app/tickets', [TicketController::class, 'index'])->name('app.tickets.index');
         Route::get('/app/tickets/create', [TicketController::class, 'create'])->name('app.tickets.create');
         Route::post('/app/tickets', [TicketController::class, 'store'])->name('app.tickets.store');

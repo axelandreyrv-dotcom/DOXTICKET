@@ -47,6 +47,7 @@ Permite que departamentos de TI instalen su propio sistema de tickets, conecten 
 | `/logout` | Cierre de sesion autenticado |
 | `/app/companies` | Selector de empresa activa |
 | `/app/dashboard` | Panel principal del tenant |
+| `/app/activity` | Panel de actividad de la empresa activa |
 | `/app/tickets` | Gestion de tickets |
 | `/app/tickets/create` | Creacion manual de ticket |
 | `/app/tickets/{ticket}` | Detalle de ticket dentro de la empresa activa por id interno o clave visible `DT-123` |
@@ -107,6 +108,7 @@ Estas decisiones estan tomadas. No proponer alternativas sin justificacion docum
 ### Tickets
 - Los tickets pueden crearse por correo o manualmente.
 - El dashboard y la lista principal se orientan a saber que atender ahora.
+- El panel `/app/activity` muestra el historial operativo de eventos de tickets de la empresa activa.
 - La lista de tickets enlaza a una pagina de detalle completa dentro de `/app/tickets/{ticket}`.
 - Abrir un ticket `new` por primera vez lo marca como `open` y registra auditoria interna.
 - Los agentes pueden asignarse tickets manualmente; el servidor usa la membresia activa y nunca confia en `assigned_to_membership_id` enviado por el cliente para esa accion.

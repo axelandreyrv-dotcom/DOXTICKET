@@ -1,11 +1,12 @@
 <?php
 
+use App\Http\Middleware\EnsureSuperAdmin;
+use App\Http\Middleware\EnsureTenantContext;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Middleware\EnsureTenantContext;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -19,6 +20,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
+            'superadmin' => EnsureSuperAdmin::class,
             'tenant' => EnsureTenantContext::class,
         ]);
     })

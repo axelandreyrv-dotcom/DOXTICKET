@@ -24,7 +24,7 @@ class CompanySelectionTest extends TestCase
             'membership_id' => $membership->id,
         ]);
 
-        $response->assertRedirect('/app/dashboard');
+        $response->assertRedirect('/app/tickets');
         $response->assertSessionHas('active_membership_id', $membership->id);
     }
 
@@ -41,7 +41,7 @@ class CompanySelectionTest extends TestCase
             ->assertForbidden();
     }
 
-    public function test_app_dashboard_requires_active_membership_context(): void
+    public function test_app_dashboard_legacy_route_requires_active_membership_context(): void
     {
         $user = User::factory()->create();
         Membership::factory()->for($user)->for(Company::factory())->create(['status' => 'active']);
@@ -52,7 +52,7 @@ class CompanySelectionTest extends TestCase
             ->assertRedirect('/app/companies');
     }
 
-    public function test_app_dashboard_displays_the_active_company_name(): void
+    public function test_app_dashboard_legacy_route_redirects_to_tickets(): void
     {
         $user = User::factory()->create();
         $company = Company::factory()->create(['name' => 'Dox IT QA']);
@@ -60,7 +60,6 @@ class CompanySelectionTest extends TestCase
 
         $this->actingAs($user)
             ->get('/app/dashboard')
-            ->assertOk()
-            ->assertSee('Dox IT QA');
+            ->assertRedirect('/app/tickets');
     }
 }

@@ -25,7 +25,7 @@ Definir como se almacenan, despliegan y rotan secretos.
 
 Todos cifrados con Laravel encryption.
 
-Estado implementado actual: `mail_accounts.password_encrypted` usa cast cifrado de Eloquent; el formulario de settings nunca renderiza la contrasena guardada.
+Estado implementado actual: `mail_accounts.password_encrypted`, `oauth_access_token` y `oauth_refresh_token` usan casts cifrados de Eloquent; el formulario de settings nunca renderiza la contrasena guardada. El flujo OAuth usa `state` aleatorio en sesion para evitar mezclar proveedor/empresa durante callbacks, consume ese `state` una sola vez y sanitiza errores antes de guardarlos en `last_error`.
 
 ## Docker
 - `.env` local del usuario.
@@ -52,6 +52,7 @@ No loguear campos:
 ## Repositorio
 - `.gitignore` incluye `.env`, `.env.*`, storage y caches.
 - CI debe tener scanner de secretos.
+- Las URLs publicas de donacion pueden vivir en `.env` por configuracion de instalacion, pero no son secretos; la app solo renderiza enlaces `http`/`https` validos.
 
 ## Rotacion
 - SMTP global: cambiar `.env`, limpiar cache, probar health.

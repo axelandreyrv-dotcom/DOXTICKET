@@ -46,12 +46,12 @@ Definir roles de DoxTicket self-hosted.
 | Fusionar tickets | Si | Si | Si |
 | Eliminar ticket | Si | Si | No |
 
-## Dashboard
+## Workspace de Tickets
 
 | Accion | Admin | Supervisor | Agente |
 |---|---|---|---|
-| Ver dashboard personal | Si | Si | Si |
-| Ver dashboard global | Si | Si | Parcial |
+| Ver inbox de tickets de la empresa | Si | Si | Si |
+| Filtrar trabajo pendiente | Si | Si | Si |
 | Ver metricas por agente | Si | Si | No |
 
 ## Superadmin
@@ -59,6 +59,7 @@ Definir roles de DoxTicket self-hosted.
 | Accion | Superadmin |
 |---|---|
 | Gestionar empresas | Si |
+| Eliminar suavemente empresas | Si |
 | Ver health | Si |
 | Configurar backups | Si |
 | Ver updates/version | Si |

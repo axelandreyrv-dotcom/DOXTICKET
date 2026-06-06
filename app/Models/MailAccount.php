@@ -25,7 +25,10 @@ use Illuminate\Support\Str;
     'password_encrypted',
     'oauth_access_token',
     'oauth_refresh_token',
+    'oauth_provider_user_id',
     'oauth_expires_at',
+    'oauth_scopes',
+    'oauth_connected_at',
     'folder_in',
     'auto_reply_enabled',
     'is_active',
@@ -45,6 +48,8 @@ class MailAccount extends Model
             'oauth_access_token' => 'encrypted',
             'oauth_refresh_token' => 'encrypted',
             'oauth_expires_at' => 'datetime',
+            'oauth_scopes' => 'array',
+            'oauth_connected_at' => 'datetime',
             'auto_reply_enabled' => 'boolean',
             'is_active' => 'boolean',
             'last_sync_at' => 'datetime',
@@ -63,5 +68,10 @@ class MailAccount extends Model
     public function company(): BelongsTo
     {
         return $this->belongsTo(Company::class);
+    }
+
+    public function usesOAuth(): bool
+    {
+        return in_array($this->provider, ['gmail', 'microsoft365'], true);
     }
 }

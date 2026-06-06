@@ -7,7 +7,8 @@ use Carbon\CarbonInterface;
 readonly class InboundMailMessage
 {
     /**
-     * @param array<string, string> $headers
+     * @param  array<string, string>  $headers
+     * @param  list<InboundMailAttachment>  $attachments
      */
     public function __construct(
         public ?string $messageId,
@@ -20,6 +21,7 @@ readonly class InboundMailMessage
         public ?string $inReplyTo = null,
         public ?string $references = null,
         public ?CarbonInterface $deliveredAt = null,
+        public array $attachments = [],
     ) {}
 
     public function normalizedSubject(): string

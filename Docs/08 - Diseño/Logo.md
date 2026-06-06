@@ -2,11 +2,13 @@
 
 ## Archivo fuente
 - `Brand/DoxTicketSVG.svg`
+- Copia publica de runtime: `public/brand/doxticket.svg`.
 
 ## Uso
 - Header de la app.
 - Pantalla de login/setup.
 - Admin.
+- Favicon SVG de la instalacion.
 - Web oficial futura.
 
 ## Powered by
@@ -23,4 +25,5 @@ en el footer o zona equivalente.
 - No ocultar atribucion del proyecto.
 
 ## Favicon
-Derivado del SVG maestro.
+- Se declara con `<link rel="icon" type="image/svg+xml" href="/brand/doxticket.svg">`.
+- Debe derivarse del SVG maestro y mantenerse sincronizado con `Brand/DoxTicketSVG.svg`.

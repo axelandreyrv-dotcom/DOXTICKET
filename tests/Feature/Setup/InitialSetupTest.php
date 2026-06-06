@@ -51,4 +51,26 @@ class InitialSetupTest extends TestCase
         $this->get('/setup')->assertRedirect('/login');
         $this->post('/setup', [])->assertForbidden();
     }
+
+    public function test_setup_validation_errors_are_accessible_and_in_spanish(): void
+    {
+        $response = $this->followingRedirects()
+            ->from('/setup')
+            ->post('/setup', [
+                'locale' => '',
+                'company_name' => '',
+                'admin_name' => '',
+                'admin_email' => '',
+                'admin_password' => '',
+            ]);
+
+        $response->assertOk()
+            ->assertSee('id="company_name"', false)
+            ->assertSee('aria-invalid="true"', false)
+            ->assertSee('aria-describedby="company_name-error"', false)
+            ->assertSee('id="company_name-error"', false)
+            ->assertSee('role="alert"', false)
+            ->assertSee('aria-live="polite"', false)
+            ->assertSee('El campo empresa es obligatorio.');
+    }
 }

@@ -25,7 +25,7 @@ Definir principios y mecanismos transversales de seguridad para DoxTicket self-h
 | Robo de adjuntos | Storage privado + rutas autorizadas |
 | Duplicados o loops de correo | Headers + `[DT-123]` + locks + deteccion de auto-respuestas |
 | Secretos filtrados | `.env` fuera de Git + scanners + filtros de logs |
-| Telemetria sensible | Opt-in explicito + payload anonimo limitado |
+| Telemetria sensible | Opt-in explicito + control superadmin + payload anonimo limitado |
 | Update peligroso | Backup previo + versionado + rollback condicionado |
 
 ## Capas de seguridad
@@ -48,6 +48,14 @@ Definir principios y mecanismos transversales de seguridad para DoxTicket self-h
 
 Estado implementado actual: `InboundMailProcessor` limita deduplicacion/threading por `company_id`, redacta headers sensibles y bloquea loops basicos antes de crear tickets.
 
+### Telemetria
+- Apagada por defecto.
+- Consentimiento inicial desde `/setup`.
+- Cambio posterior solo por superadmin desde `/admin/telemetry`.
+- No debe enviar nombres, correos, contenido de tickets, asuntos, cuerpos, adjuntos ni secretos.
+
+Estado implementado actual: solo se guarda el consentimiento local en `system_settings.telemetry.enabled`; no hay envio remoto de reportes en este corte.
+
 ### Datos
 - Passwords con bcrypt/argon2id.
 - Credenciales SMTP/OAuth cifradas.
@@ -68,6 +76,14 @@ Registrar:
 - Fusion/borrado de tickets.
 - Acciones superadmin.
 - Cambios de backup/update/telemetria.
+
+Estado implementado actual:
+- Existe tabla/modelo `audit_logs` para registrar eventos con `company_id`, actor, membership, sujeto, accion, metadatos, IP y user agent.
+- La aceptacion de invitaciones por restablecimiento de contrasena registra `membership.accepted`.
+- `App\Services\Admin\AuditLogger` registra acciones superadmin criticas: empresas, incluyendo eliminacion suave, usuarios, memberships, settings publicos, telemetria, backups, rollback y chequeos manuales de updates.
+- Los metadatos de auditoria se redactan al guardarse si sus claves parecen contener contrasenas, tokens, secretos, cookies, autorizacion o credenciales.
+- `/admin/audit` permite a superadmins revisar el historial global y redacta metadatos sensibles antes de renderizarlos.
+- `/admin/audit/export` entrega CSV en streaming, respeta filtros, limita la exportacion v1 a 5000 filas, registra `admin.audit.exported` y usa metadatos sanitizados sin guardar artefactos persistentes en disco.
 
 ## Reporte de vulnerabilidades
 Reportar en privado a:

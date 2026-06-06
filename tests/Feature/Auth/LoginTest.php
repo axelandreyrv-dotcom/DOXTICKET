@@ -29,7 +29,7 @@ class LoginTest extends TestCase
             'password' => 'secure-password',
         ]);
 
-        $response->assertRedirect('/app/dashboard');
+        $response->assertRedirect('/app/tickets');
         $response->assertSessionHas('active_membership_id', $membership->id);
         $this->assertAuthenticatedAs($user);
     }
@@ -41,6 +41,31 @@ class LoginTest extends TestCase
         ]);
         Membership::factory()->for($user)->for(Company::factory())->create();
         Membership::factory()->for($user)->for(Company::factory())->create();
+
+        $response = $this->post('/login', [
+            'email' => $user->email,
+            'password' => 'secure-password',
+        ]);
+
+        $response->assertRedirect('/app/companies');
+        $response->assertSessionMissing('active_membership_id');
+        $this->assertAuthenticatedAs($user);
+    }
+
+    public function test_login_ignores_deleted_company_memberships_when_other_companies_remain(): void
+    {
+        $user = User::factory()->create([
+            'password' => Hash::make('secure-password'),
+        ]);
+        $deletedCompany = Company::factory()->create(['status' => 'active']);
+        $activeCompanyOne = Company::factory()->create(['status' => 'active']);
+        $activeCompanyTwo = Company::factory()->create(['status' => 'active']);
+
+        Membership::factory()->for($user)->for($deletedCompany)->create(['status' => 'active']);
+        Membership::factory()->for($user)->for($activeCompanyOne)->create(['status' => 'active']);
+        Membership::factory()->for($user)->for($activeCompanyTwo)->create(['status' => 'active']);
+
+        $deletedCompany->delete();
 
         $response = $this->post('/login', [
             'email' => $user->email,
@@ -66,5 +91,38 @@ class LoginTest extends TestCase
         $response->assertRedirect('/login');
         $response->assertSessionHasErrors('email');
         $this->assertGuest();
+    }
+
+    public function test_invalid_login_message_is_shown_in_spanish(): void
+    {
+        $response = $this->from('/login')->post('/login', [
+            'email' => 'qa@example.test',
+            'password' => 'wrong-password',
+        ]);
+
+        $response->assertRedirect('/login');
+
+        $this->followRedirects($response)
+            ->assertSee('Las credenciales no coinciden con nuestros registros.')
+            ->assertDontSee('These credentials do not match our records.');
+    }
+
+    public function test_login_validation_errors_are_accessible_and_in_spanish(): void
+    {
+        $response = $this->followingRedirects()
+            ->from('/login')
+            ->post('/login', [
+                'email' => '',
+                'password' => '',
+            ]);
+
+        $response->assertOk()
+            ->assertSee('id="email"', false)
+            ->assertSee('aria-invalid="true"', false)
+            ->assertSee('aria-describedby="email-error"', false)
+            ->assertSee('id="email-error"', false)
+            ->assertSee('role="alert"', false)
+            ->assertSee('aria-live="polite"', false)
+            ->assertSee('El campo correo es obligatorio.');
     }
 }

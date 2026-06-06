@@ -20,7 +20,21 @@ Definir las tablas principales de DoxTicket v1 open source self-hosted.
 - `is_secret` BOOLEAN NOT NULL DEFAULT false
 - `created_at`, `updated_at`
 
-Uso: setup completado, idioma por defecto, telemetria, version, update checks, backups.
+Uso: setup completado, idioma por defecto, telemetria, version, settings publicos de instalacion, update checks, donaciones y backups.
+
+Claves publicas no secretas actuales:
+- `installation.public_url`
+- `updates.github_repository`
+- `updates.latest`
+- `donations.paypal_url`
+- `donations.github_sponsors_url`
+- `donations.buy_me_a_coffee_url`
+- `backups.recent_success_hours`
+- `backups.retention_days`
+- `backups.schedule_enabled`
+- `backups.schedule_hour`
+- `backups.last_scheduled_run_date`
+- `telemetry.enabled`
 
 ---
 
@@ -87,7 +101,10 @@ Uso: setup completado, idioma por defecto, telemetria, version, update checks, b
 - `password_encrypted` TEXT NULL
 - `oauth_access_token` TEXT NULL
 - `oauth_refresh_token` TEXT NULL
+- `oauth_provider_user_id` VARCHAR(255) NULL
 - `oauth_expires_at` TIMESTAMPTZ NULL
+- `oauth_scopes` JSONB NULL
+- `oauth_connected_at` TIMESTAMPTZ NULL
 - `folder_in` VARCHAR(120) DEFAULT `INBOX`
 - `is_active` BOOLEAN NOT NULL DEFAULT true
 - `last_uid` VARCHAR(120) NULL
@@ -126,7 +143,8 @@ Estado implementado actual: una cuenta de soporte por empresa se refuerza con `U
 - `public_key` VARCHAR(40) NOT NULL — ejemplo `DT-123`
 - `status` VARCHAR(32) NOT NULL DEFAULT `new`
 - `priority` VARCHAR(16) NOT NULL DEFAULT `medium`
-- `source` VARCHAR(16) NOT NULL — `email|manual|api`
+- `ticket_type` VARCHAR(24) NOT NULL DEFAULT `request` — `question|incident|problem|request`
+- `source` VARCHAR(16) NOT NULL — `email|manual|system`
 - `external_thread_id` VARCHAR(255) NULL
 - `first_opened_at` TIMESTAMPTZ NULL
 - `first_response_at` TIMESTAMPTZ NULL
@@ -142,7 +160,7 @@ Estado implementado actual: una cuenta de soporte por empresa se refuerza con `U
 - UNIQUE `(company_id, public_number)`
 - UNIQUE `(company_id, public_key)`
 
-Estados: `new|open|in_progress|waiting_customer|waiting_internal|resolved|closed|reopened|merged|trashed`.
+Estados visibles v1: `new|open|pending|resolved|closed`. Estados internos futuros como `merged|trashed` pueden existir para fusion y papelera, pero no son seleccionables en el panel de propiedades.
 
 ---
 
@@ -159,6 +177,7 @@ Estados: `new|open|in_progress|waiting_customer|waiting_internal|resolved|closed
 - `body_html` TEXT NULL
 - `body_text` TEXT NULL
 - `external_images_blocked` BOOLEAN NOT NULL DEFAULT false
+- `external_image_urls` JSONB NULL
 - `message_id_header` VARCHAR(255) NULL
 - `in_reply_to_header` VARCHAR(255) NULL
 - `references_header` TEXT NULL
@@ -195,9 +214,14 @@ Estados: `new|open|in_progress|waiting_customer|waiting_internal|resolved|closed
 
 ## Estado implementado actual
 - Implementadas en migraciones: `system_settings`, `companies`, `users` extendido, `memberships`, `mail_accounts`, `categories`, `tickets`, `ticket_messages`, `ticket_events` y `attachments`.
+- Implementada en migraciones: `kb_articles` para base de conocimiento interna por empresa.
 - La base de tickets usa scope de tenant por `company_id` en los modelos principales de empresa.
 - La creacion manual de tickets no acepta `company_id` confiable desde input del usuario; el valor se deriva de la membresia activa en sesion.
 - `mail_accounts` guarda credenciales por empresa cifradas y no expone secretos en vistas.
+- `mail_accounts` conserva metadatos OAuth para Gmail/Microsoft 365: tokens cifrados, scopes, usuario proveedor, expiracion y fecha de conexion.
+- `tickets.ticket_type` clasifica el ticket por pregunta, incidente, problema o solicitud sin alterar el origen real guardado en `source`.
+- `ticket_messages.external_image_urls` conserva las URLs externas bloqueadas para apertura manual desde el detalle del ticket, sin cargarlas automaticamente.
+- `kb_articles` guarda Markdown original y HTML cacheado sanitizado; agentes solo consultan publicados y admin/supervisor pueden crear.
 
 ---
 
@@ -252,9 +276,11 @@ Estados: `new|open|in_progress|waiting_customer|waiting_internal|resolved|closed
 - `subject_type` VARCHAR(120) NULL
 - `subject_id` BIGINT NULL
 - `meta` JSONB NULL
-- `ip` INET NULL
+- `ip` VARCHAR(45) NULL
 - `user_agent` VARCHAR(255) NULL
 - `created_at`
+
+Estado implementado actual: tabla implementada en migraciones. La aceptacion de invitaciones por reset de contrasena registra `membership.accepted` con `company_id`, `actor_user_id`, `actor_membership_id`, subject membership y `meta.accepted_via=password_reset`.
 
 ---
 
@@ -272,7 +298,7 @@ Estados: `new|open|in_progress|waiting_customer|waiting_internal|resolved|closed
 
 ## `backup_runs`
 - `id`, `uuid`
-- `status` VARCHAR(32) NOT NULL — `queued|running|succeeded|failed`
+- `status` VARCHAR(32) NOT NULL — `queued|running|succeeded|failed|pruned`
 - `destination` VARCHAR(64) NOT NULL — `local|s3|custom`
 - `started_at` TIMESTAMPTZ NULL
 - `finished_at` TIMESTAMPTZ NULL
@@ -280,6 +306,8 @@ Estados: `new|open|in_progress|waiting_customer|waiting_internal|resolved|closed
 - `error` TEXT NULL
 - `meta` JSONB NULL
 - `created_at`, `updated_at`
+
+Estado implementado actual: tabla implementada en migraciones. `/admin` usa el ultimo registro `succeeded` para mostrar estado de backup y habilitar rollback cuando `meta.rollback_available=true`. El pruning de retencion local marca registros antiguos como `pruned`, elimina rutas privadas del `meta` y fuerza `meta.rollback_available=false`.
 
 ---
 

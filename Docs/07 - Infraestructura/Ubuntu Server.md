@@ -15,6 +15,7 @@ Documentar instalacion manual en Ubuntu como alternativa a Docker.
 
 ## Servicios
 - PHP-FPM 8.3+.
+- Extension PHP IMAP (`php-imap`) para correo entrante generico.
 - Composer.
 - Node.js 20+ para build.
 - Nginx.
@@ -29,6 +30,11 @@ Documentar instalacion manual en Ubuntu como alternativa a Docker.
 - Fail2ban.
 - PostgreSQL/Redis solo localhost.
 - `.env` permisos 600.
+
+## Correo IMAP
+- Habilitar `php-imap` en la version PHP usada por FPM y workers.
+- Reiniciar PHP-FPM y workers despues de habilitar la extension.
+- Verificar con `php -m` que `imap` aparece en CLI, porque los workers de cola usan PHP CLI.
 
 ## LAN/intranet
 Puede operar con IP local. HTTPS es recomendado si hay dominio publico.

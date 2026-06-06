@@ -2,10 +2,12 @@
 
 namespace Tests\Feature\Mail;
 
+use App\Contracts\Mail\MailAccountTester;
 use App\Models\Company;
 use App\Models\MailAccount;
 use App\Models\Membership;
 use App\Models\User;
+use App\Support\Mail\MailAccountTestResult;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
@@ -90,6 +92,139 @@ class MailAccountSettingsTest extends TestCase
         $this->assertSame('original-secret', $accounts->first()->password_encrypted);
     }
 
+    public function test_first_mail_account_requires_password_with_spanish_message(): void
+    {
+        [$user, $company] = $this->tenantFixture();
+        $membershipId = $user->memberships()->whereBelongsTo($company)->value('id');
+
+        $this->actingAs($user)
+            ->withSession(['active_membership_id' => $membershipId])
+            ->from('/app/settings')
+            ->post('/app/settings/mail', [
+                'provider' => 'imap_smtp',
+                'from_email' => 'soporte@example.test',
+                'host_imap' => 'imap.example.test',
+                'port_imap' => 993,
+                'security_imap' => 'ssl',
+                'host_smtp' => 'smtp.example.test',
+                'port_smtp' => 587,
+                'security_smtp' => 'tls',
+                'folder_in' => 'INBOX',
+            ])
+            ->assertRedirect('/app/settings')
+            ->assertSessionHasErrors([
+                'password' => 'La contraseña es obligatoria para la primera configuración.',
+            ]);
+    }
+
+    public function test_mail_settings_validation_errors_are_accessible_and_in_spanish(): void
+    {
+        [$user, $company] = $this->tenantFixture();
+        $membershipId = $user->memberships()->whereBelongsTo($company)->value('id');
+
+        $response = $this->followingRedirects()
+            ->actingAs($user)
+            ->withSession(['active_membership_id' => $membershipId])
+            ->from('/app/settings')
+            ->post('/app/settings/mail', [
+                'provider' => 'imap_smtp',
+                'from_email' => '',
+                'host_imap' => '',
+                'port_imap' => '',
+                'security_imap' => 'ssl',
+                'host_smtp' => '',
+                'port_smtp' => '',
+                'security_smtp' => 'tls',
+                'folder_in' => '',
+            ]);
+
+        $response->assertOk()
+            ->assertSee('id="from_email"', false)
+            ->assertSee('aria-invalid="true"', false)
+            ->assertSee('aria-describedby="from_email-error"', false)
+            ->assertSee('id="from_email-error"', false)
+            ->assertSee('role="alert"', false)
+            ->assertSee('aria-live="polite"', false)
+            ->assertSee('El campo correo de soporte es obligatorio.');
+    }
+
+    public function test_mail_settings_form_uses_explicit_browser_metadata_for_technical_fields(): void
+    {
+        [$user, $company] = $this->tenantFixture();
+        $membershipId = $user->memberships()->whereBelongsTo($company)->value('id');
+
+        $this->actingAs($user)
+            ->withSession(['active_membership_id' => $membershipId])
+            ->get('/app/settings')
+            ->assertOk()
+            ->assertSee('id="from_name" name="from_name" autocomplete="off"', false)
+            ->assertSee('id="from_email" type="email" name="from_email" inputmode="email" autocomplete="off" spellcheck="false"', false)
+            ->assertSee('id="host_imap" name="host_imap" inputmode="url" autocomplete="off" spellcheck="false"', false)
+            ->assertSee('id="port_imap" type="number" name="port_imap" inputmode="numeric"', false)
+            ->assertSee('id="host_smtp" name="host_smtp" inputmode="url" autocomplete="off" spellcheck="false"', false)
+            ->assertSee('id="port_smtp" type="number" name="port_smtp" inputmode="numeric"', false)
+            ->assertSee('id="username" name="username" autocomplete="off" spellcheck="false"', false)
+            ->assertSee('id="password" type="password" name="password" autocomplete="new-password"', false)
+            ->assertSee('id="folder_in" name="folder_in" autocomplete="off" spellcheck="false"', false);
+    }
+
+    public function test_mail_account_connection_test_clears_error_for_active_company_account(): void
+    {
+        [$user, $company] = $this->tenantFixture();
+        $membershipId = $user->memberships()->whereBelongsTo($company)->value('id');
+        $account = MailAccount::factory()->for($company)->create([
+            'last_error' => 'Error anterior',
+        ]);
+
+        $this->app->instance(MailAccountTester::class, new FakeMailAccountTester(
+            MailAccountTestResult::ok(),
+        ));
+
+        $this->actingAs($user)
+            ->withSession(['active_membership_id' => $membershipId])
+            ->post(route('app.settings.mail.test'))
+            ->assertRedirect('/app/settings')
+            ->assertSessionHas('status', 'mail-test-ok');
+
+        $this->assertNull($account->refresh()->last_error);
+    }
+
+    public function test_mail_account_connection_test_records_sanitized_error_for_active_company_account(): void
+    {
+        [$user, $company] = $this->tenantFixture();
+        $membershipId = $user->memberships()->whereBelongsTo($company)->value('id');
+        $account = MailAccount::factory()->for($company)->create();
+
+        $this->app->instance(MailAccountTester::class, new FakeMailAccountTester(
+            MailAccountTestResult::failed('Authentication failed for secret password=abc123'),
+        ));
+
+        $this->actingAs($user)
+            ->withSession(['active_membership_id' => $membershipId])
+            ->post(route('app.settings.mail.test'))
+            ->assertRedirect('/app/settings')
+            ->assertSessionHasErrors(['mail_test']);
+
+        $this->assertSame('Authentication failed for secret password=[redacted]', $account->refresh()->last_error);
+    }
+
+    public function test_mail_account_connection_test_does_not_use_other_company_account(): void
+    {
+        [$user, $activeCompany, $otherCompany] = $this->tenantFixture();
+        $membershipId = $user->memberships()->whereBelongsTo($activeCompany)->value('id');
+        MailAccount::factory()->for($otherCompany)->create();
+
+        $this->app->instance(MailAccountTester::class, new FakeMailAccountTester(
+            MailAccountTestResult::ok(),
+        ));
+
+        $this->actingAs($user)
+            ->withSession(['active_membership_id' => $membershipId])
+            ->post(route('app.settings.mail.test'))
+            ->assertRedirect('/app/settings')
+            ->assertSessionHasErrors(['mail_account']);
+    }
+
     /**
      * @return array{User, Company, Company}
      */
@@ -103,5 +238,15 @@ class MailAccountSettingsTest extends TestCase
         Membership::factory()->for(User::factory())->for($otherCompany)->create(['role' => 'admin', 'status' => 'active']);
 
         return [$user, $activeCompany, $otherCompany];
+    }
+}
+
+class FakeMailAccountTester implements MailAccountTester
+{
+    public function __construct(private readonly MailAccountTestResult $result) {}
+
+    public function test(MailAccount $account): MailAccountTestResult
+    {
+        return $this->result;
     }
 }

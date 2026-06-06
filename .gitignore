@@ -18,6 +18,8 @@ auth.json
 /database/*.sqlite
 /database/*.sqlite-*
 /storage/*.key
+/storage/app/*.sqlite
+/storage/app/private/
 /storage/app/public/
 /storage/debugbar/
 /storage/framework/cache/data/

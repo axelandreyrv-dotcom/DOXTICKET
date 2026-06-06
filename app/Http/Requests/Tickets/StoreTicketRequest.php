@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Tickets;
 
+use App\Models\Ticket;
 use App\Support\Tenant\TenantContext;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -22,7 +23,8 @@ class StoreTicketRequest extends FormRequest
             'body_text' => ['required', 'string', 'max:20000'],
             'requester_email' => ['nullable', 'email:rfc', 'max:180'],
             'requester_name' => ['nullable', 'string', 'max:180'],
-            'priority' => ['required', 'in:low,medium,high,urgent,critical'],
+            'priority' => ['required', Rule::in(array_keys(Ticket::PRIORITY_LABELS))],
+            'ticket_type' => ['required', Rule::in(array_keys(Ticket::TYPE_LABELS))],
             'category_id' => [
                 'nullable',
                 'integer',

@@ -52,36 +52,39 @@ Listar las funcionalidades que DoxTicket debe ofrecer en v1, agrupadas por domin
 - **RF-6.3** Listar todos los tickets activos con filtros.
 - **RF-6.4** Accion rapida en lista: asignarse.
 - **RF-6.5** Ver detalle con hilo, adjuntos, eventos y metadatos.
-- **RF-6.6** Cambiar estado, prioridad, categoria y responsable.
-- **RF-6.7** Responder al usuario externo por correo.
+- **RF-6.6** Cambiar estado, prioridad, tipo y responsable desde el panel lateral del detalle.
+- **RF-6.7** Responder al usuario externo por correo desde el detalle, usando la cuenta activa de la empresa.
 - **RF-6.8** Anadir notas internas.
 - **RF-6.9** Adjuntar archivos con validacion MIME/tamano.
 - **RF-6.10** Fusionar tickets dentro de la misma empresa.
-- **RF-6.11** Reabrir automaticamente cuando el cliente responde a ticket resuelto/cerrado.
+- **RF-6.11** Volver automaticamente a `open` cuando el cliente responde a ticket resuelto/cerrado.
 - **RF-6.12** Cerrar tickets solo despues de `resolved`.
 
 ## RF-7. Correo
 - **RF-7.1** SMTP global del sistema.
 - **RF-7.2** Una cuenta de soporte por empresa.
 - **RF-7.3** IMAP/SMTP generico.
-- **RF-7.4** Gmail y Microsoft 365 desde v1 segun roadmap.
+- **RF-7.4** Gmail y Microsoft 365 desde v1 segun roadmap, usando OAuth con tokens cifrados y `state` tenant-safe.
 - **RF-7.5** Confirmacion automatica de recibido.
 - **RF-7.6** Marcador visible `[DT-123]` en asunto.
 - **RF-7.7** Threading por headers + marcador visible.
+- **RF-7.7.1** Guardar cada respuesta saliente como mensaje publico outbound y evento auditable.
 - **RF-7.8** Sanitizar HTML entrante.
 - **RF-7.9** Bloquear imagenes externas por privacidad con opcion de abrir.
 - **RF-7.10** Detectar auto-respuestas, no-reply y loops.
 - **RF-7.11** Priorizar evitar duplicados.
 
-## RF-8. Dashboard
-- **RF-8.1** Mostrar resumen del dia.
-- **RF-8.2** Mostrar tickets nuevos y activos.
-- **RF-8.3** Mostrar abiertos, en progreso, urgentes, criticos, sin asignar y vencidos por SLA.
-- **RF-8.4** Dashboard de agente personal por defecto.
-- **RF-8.5** Admin/supervisor pueden ver metricas globales y por agente.
-- **RF-8.6** Mostrar alertas operativas y de sistema cuando aplique.
-- **RF-8.7** Si correo no esta configurado, mostrar onboarding.
-- **RF-8.8** Al cambiar la empresa activa, dashboard, tickets, KB y notificaciones cambian de contexto.
+## RF-8. Workspace de Tickets
+- **RF-8.1** `/app/tickets` es la pantalla principal tras login o seleccion de empresa.
+- **RF-8.2** Mostrar tickets activos de la empresa activa con busqueda y filtros.
+- **RF-8.3** Permitir filtrar por estado, agente, prioridad, tipo, fuente y SLA vencido.
+- **RF-8.3.1** Permitir filtrar tickets vencidos por SLA desde la lista principal.
+- **RF-8.3.2** Registrar un evento interno cuando un ticket activo incumple SLA.
+- **RF-8.4** La navegacion autenticada no muestra una seccion Dashboard.
+- **RF-8.5** `/app/dashboard` redirige a `/app/tickets` como ruta heredada.
+- **RF-8.6** Mostrar alertas operativas y de sistema cuando aplique en el lugar correspondiente.
+- **RF-8.7** Si correo no esta configurado, mostrar onboarding en configuracion o en el flujo operativo que corresponda.
+- **RF-8.8** Al cambiar la empresa activa, tickets, KB, actividad y notificaciones cambian de contexto.
 
 ## RF-9. Admin del sistema
 - **RF-9.1** `/admin` muestra salud de PostgreSQL, Redis, storage, colas, correo y backups.
@@ -91,6 +94,7 @@ Listar las funcionalidades que DoxTicket debe ofrecer en v1, agrupadas por domin
 - **RF-9.5** `/admin` muestra boton de rollback.
 - **RF-9.6** `/admin` muestra logs y auditoria.
 - **RF-9.7** Superadmin puede ver todas las empresas desde `/admin` sin usar el selector normal de empresa.
+- **RF-9.7.1** `/admin/companies` lista empresas con estado, conteos operativos y correo activo sin depender de la empresa activa.
 
 ## RF-10. Base de conocimiento
 - **RF-10.1** Admin y supervisor pueden crear, editar, publicar, archivar y borrar articulos internos.
@@ -102,6 +106,7 @@ Listar las funcionalidades que DoxTicket debe ofrecer en v1, agrupadas por domin
 - **RF-11.1** Espanol por defecto.
 - **RF-11.2** Ingles disponible.
 - **RF-11.3** Toda cadena visible pasa por archivos de traduccion.
+- **RF-11.4** Los mensajes de validacion visibles usan el idioma activo y deben iniciar en espanol.
 
 ## Requisitos opcionales v1
 - **RF-OP-1** Datos demo opcionales.

@@ -21,6 +21,7 @@ use Illuminate\Support\Str;
     'body_html',
     'body_text',
     'external_images_blocked',
+    'external_image_urls',
     'message_id_header',
     'in_reply_to_header',
     'references_header',
@@ -35,6 +36,7 @@ class TicketMessage extends Model
     {
         return [
             'external_images_blocked' => 'boolean',
+            'external_image_urls' => 'array',
             'headers_raw' => 'array',
             'delivered_at' => 'datetime',
         ];

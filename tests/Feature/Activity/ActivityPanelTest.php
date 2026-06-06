@@ -34,7 +34,7 @@ class ActivityPanelTest extends TestCase
             ->assertOk()
             ->assertSee('Actividad')
             ->assertSeeText('QA Admin')
-            ->assertSeeText('actualizo el estado de')
+            ->assertSeeText('actualizó el estado de')
             ->assertSee('VPN oficina principal')
             ->assertSee($ticket->public_key)
             ->assertSee(route('app.tickets.show', $ticket->public_key), false);
@@ -89,7 +89,7 @@ class ActivityPanelTest extends TestCase
             ->get(route('app.activity.index', ['type' => 'assignment']))
             ->assertOk()
             ->assertSee('Laptop sin red')
-            ->assertSee('se asigno')
+            ->assertSee('se asignó')
             ->assertDontSee('Alta de monitor');
     }
 
@@ -99,7 +99,7 @@ class ActivityPanelTest extends TestCase
 
         $this->actingAs($user)
             ->withSession(['active_membership_id' => $membership->id])
-            ->get(route('app.dashboard'))
+            ->get(route('app.tickets.index'))
             ->assertOk()
             ->assertSee(route('app.activity.index'), false)
             ->assertSee('Actividad');

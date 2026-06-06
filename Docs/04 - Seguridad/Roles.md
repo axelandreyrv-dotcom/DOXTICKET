@@ -19,6 +19,9 @@ Definir roles tecnicos y permisos.
 
 ### Superadmin
 - Gestionar empresas.
+- Ver usuarios globales y memberships.
+- Activar/desactivar usuarios globales sin poder desactivar su propia cuenta.
+- Cambiar roles y estado de memberships existentes sin dejar una empresa sin admin activo.
 - Ver health.
 - Configurar backups.
 - Ver version/update.
@@ -31,7 +34,7 @@ Definir roles tecnicos y permisos.
 - Invitar usuarios.
 - Configurar correo.
 - Gestionar categorias, plantillas, firma y SLA.
-- Ver dashboard global.
+- Ver el workspace de Tickets de la empresa.
 
 ### Supervisor
 - Gestionar tickets.

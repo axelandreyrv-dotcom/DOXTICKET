@@ -35,6 +35,8 @@ Describir los flujos end-to-end mas importantes de DoxTicket como aplicacion ope
 4. Si falla, muestra error accionable y queda visible en `/admin/health`.
 5. Si funciona, la cuenta queda activa para ingest y envio.
 
+Estado implementado actual: Settings permite guardar una cuenta IMAP/SMTP y ejecutar prueba manual de conexion desde `/app/settings/mail/test`; los errores se guardan sanitizados en la cuenta activa. La base OAuth permite iniciar autorizacion para Gmail/Microsoft 365 desde `/app/settings/mail/oauth/{provider}/redirect`, con `state` ligado a proveedor y empresa activa. El callback `/app/settings/mail/oauth/{provider}/callback` consume `state`, intercambia `code` por tokens y los guarda cifrados en la cuenta OAuth activa.
+
 ## Flujo 5 — Ticket por correo
 1. Usuario externo envia correo a la cuenta de soporte.
 2. Job de DoxTicket lee la bandeja.
@@ -44,24 +46,30 @@ Describir los flujos end-to-end mas importantes de DoxTicket como aplicacion ope
 6. Si no hay match confiable, crea ticket nuevo con estado `Nuevo`.
 7. Envia confirmacion automatica de recibido.
 8. Adjuntos se procesan en storage privado.
-9. Agente lo ve en dashboard/lista.
+9. Agente lo ve en el workspace de Tickets.
+
+Estado implementado actual: la confirmacion automatica se envia con asunto `[DT-123] Recibimos tu solicitud` cuando la opcion de la cuenta esta activa. Si el SMTP del tenant falla, la ingesta no se revierte y queda evento interno `mail.auto_reply_failed`.
 
 ## Flujo 6 — Gestion diaria de tickets
-1. Agente entra al dashboard.
-2. Ve resumen del dia y tickets que requieren atencion.
-3. Entra a todos los tickets activos.
+1. Agente entra a Tickets.
+2. Ve la lista activa y filtros para saber que requiere atencion.
+3. Revisa todos los tickets activos.
 4. Puede asignarse rapidamente desde la lista.
-5. Abre el detalle para cambiar estado, prioridad, categoria o responder.
+5. Abre el detalle para cambiar estado, prioridad, tipo, agente o responder.
 
 ## Flujo 7 — Respuesta al cliente
-1. Agente redacta respuesta.
+1. Agente abre `/app/tickets/{ticket}` y usa el bloque Responder.
 2. La respuesta sale como agente desde la cuenta de soporte de la empresa.
-3. Se mantiene marcador `[DT-123]` y headers de threading.
-4. El estado no cambia automaticamente a "En espera del cliente"; el agente decide.
+3. Si no hay cuenta de correo activa o correo de solicitante, el sistema bloquea el envio y muestra error.
+4. Se mantiene marcador `[DT-123]` en el asunto.
+5. La respuesta queda guardada en el hilo como mensaje publico outbound.
+6. El estado no cambia automaticamente a "En espera del cliente"; el agente decide.
+
+Estado implementado actual: cuentas `imap_smtp` envian por SMTP; cuentas `gmail` y `microsoft365` envian por API OAuth. Si el proveedor falla, el error se sanitiza, queda en la cuenta y no se guarda mensaje outbound.
 
 ## Flujo 8 — Respuesta del cliente
 1. Si el cliente responde a un ticket activo, el ticket queda `Abierto`.
-2. Si responde a un ticket `Resuelto` o `Cerrado`, pasa a `Reabierto`.
+2. Si responde a un ticket `Resuelto` o `Cerrado`, vuelve a `Abierto`.
 3. Si responde a un ticket fusionado, el mensaje va al ticket principal.
 
 ## Flujo 9 — Ticket manual
@@ -74,22 +82,37 @@ Describir los flujos end-to-end mas importantes de DoxTicket como aplicacion ope
 1. Agente, supervisor o admin selecciona fusionar.
 2. Busca ticket destino dentro de la misma empresa.
 3. Elige principal/secundario.
-4. Confirma rapidamente.
+4. Confirma la accion en el modal accesible del shell.
 5. El secundario queda `Fusionado`.
 6. Mensajes futuros del secundario se agregan al principal.
 7. Se registra auditoria.
 
+Estado implementado actual: el detalle de ticket permite indicar el ticket principal por clave visible `DT-123`; antes de enviar muestra confirmacion mediante el modal accesible global; el backend valida empresa activa, evita fusion contra si mismo y registra eventos en ambos tickets.
+
 ## Flujo 11 — Backups
-1. Superadmin entra a `/admin/backups`.
-2. Configura destino, frecuencia y retencion.
-3. DoxTicket muestra estado del ultimo backup.
-4. Antes de actualizar, el sistema exige backup reciente.
+1. Superadmin entra a `/admin`.
+2. Ejecuta backup manual local desde el bloque Backups.
+3. DoxTicket registra la ejecucion en `backup_runs` y guarda el artefacto en storage privado.
+4. DoxTicket muestra estado del ultimo backup exitoso.
+5. Desde `/admin/settings`, opcionalmente activa backup automatico local diario y define la hora local de ejecucion.
+6. Antes de actualizar, el sistema exige backup reciente.
+
+Estado implementado actual: `/admin/backups` permite generar backup local manual protegido para superadmins. `/admin/settings` permite configurar ventana segura, retencion local y backup automatico diario apagado por defecto. La retencion local se aplica diariamente y marca backups antiguos como `pruned`. Configuracion de destinos externos y restauracion automatizada quedan pendientes.
 
 ## Flujo 12 — Nueva version y rollback
 1. `/admin` muestra version instalada.
 2. DoxTicket consulta GitHub por release estable nueva.
 3. Si hay update, muestra aviso y changelog.
-4. Rollback esta visible, pero solo funciona si existe version anterior/backup valido.
+4. Rollback esta visible, pero solo se habilita si existe version anterior/backup valido.
+5. `/admin/rollback` ejecuta un preflight protegido para superadmins y dirige al procedimiento manual; v1 no restaura automaticamente.
+
+## Flujo 13 — Telemetria opcional
+1. Superadmin revisa el bloque Telemetria en `/admin`.
+2. DoxTicket muestra si esta activa o apagada.
+3. DoxTicket informa que no se envian nombres, correos, asuntos, cuerpos, adjuntos ni secretos.
+4. Superadmin puede activar o desactivar el consentimiento local.
+
+Estado implementado actual: `/setup` guarda el consentimiento inicial y `/admin/telemetry` permite cambiarlo despues. No existe envio remoto de reportes en este corte.
 
 ## Relacion con otros documentos
 - `Requisitos Funcionales.md`

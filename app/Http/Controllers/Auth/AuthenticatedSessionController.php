@@ -44,7 +44,7 @@ class AuthenticatedSessionController extends Controller
             $membership->forceFill(['last_selected_at' => now()])->save();
             $user->forceFill(['last_active_company_id' => $membership->company_id])->save();
 
-            return redirect()->intended('/app/dashboard');
+            return redirect()->intended('/app/tickets');
         }
 
         if ($memberships->count() > 1) {

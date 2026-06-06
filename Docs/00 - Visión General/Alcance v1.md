@@ -28,7 +28,7 @@ Definir con precision que entra en la primera version usable de DoxTicket y que 
 - Funcionamiento en LAN/intranet con IP local o dominio.
 
 ### App del cliente (`/app/*`)
-- Dashboard operativo.
+- Tickets como workspace principal de trabajo.
 - Lista de todos los tickets activos con filtros.
 - Detalle de ticket con hilo, adjuntos, eventos y metadatos.
 - Respuesta a ticket por correo.
@@ -42,7 +42,8 @@ Definir con precision que entra en la primera version usable de DoxTicket y que 
 ### Tickets
 - Creacion por correo como canal principal.
 - Creacion manual como canal secundario.
-- Estados: Nuevo, Abierto, En progreso, En espera del cliente, En espera interna, Resuelto, Cerrado, Reabierto, Fusionado.
+- Estados visibles: Nuevo, Abierto, Pendiente, Resuelto y Cerrado.
+- Tipo: Pregunta, Incidente, Problema o Solicitud.
 - Prioridad decidida por el agente.
 - Asignacion manual.
 - Accion rapida desde lista: asignarse.

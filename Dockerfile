@@ -30,7 +30,9 @@ WORKDIR /var/www/html
 
 RUN apk add --no-cache \
         bash \
+        c-client \
         icu-libs \
+        imap \
         libpq \
         libzip \
         oniguruma \
@@ -38,7 +40,9 @@ RUN apk add --no-cache \
     && apk add --no-cache --virtual .build-deps \
         $PHPIZE_DEPS \
         icu-dev \
+        imap-dev \
         libzip-dev \
+        openssl-dev \
         postgresql-dev \
     && docker-php-ext-install \
         bcmath \
@@ -47,6 +51,8 @@ RUN apk add --no-cache \
         pcntl \
         pdo_pgsql \
         zip \
+    && printf "no\nyes\n" | pecl install imap \
+    && docker-php-ext-enable imap \
     && pecl install redis \
     && docker-php-ext-enable redis \
     && apk del .build-deps
@@ -68,4 +74,3 @@ USER www-data
 EXPOSE 9000
 
 CMD ["php-fpm"]
-

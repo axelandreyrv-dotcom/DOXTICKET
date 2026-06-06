@@ -41,6 +41,7 @@ class TicketTenantTest extends TestCase
                 'requester_email' => 'solicitante@example.test',
                 'requester_name' => 'Solicitante Mesa',
                 'priority' => 'high',
+                'ticket_type' => 'request',
             ])
             ->assertRedirect();
 
@@ -49,6 +50,7 @@ class TicketTenantTest extends TestCase
         $this->assertSame($activeCompany->id, $ticket->company_id);
         $this->assertSame('DT-1', $ticket->public_key);
         $this->assertSame('manual', $ticket->source);
+        $this->assertSame('request', $ticket->ticket_type);
         $this->assertDatabaseHas('ticket_messages', [
             'company_id' => $activeCompany->id,
             'ticket_id' => $ticket->id,
@@ -56,6 +58,20 @@ class TicketTenantTest extends TestCase
             'direction' => 'internal',
             'visibility' => 'internal',
         ]);
+    }
+
+    public function test_manual_ticket_form_uses_explicit_autocomplete_and_spellcheck_metadata(): void
+    {
+        [$user, $activeCompany] = $this->tenantFixture();
+
+        $this->actingAs($user)
+            ->withSession(['active_membership_id' => $user->memberships()->whereBelongsTo($activeCompany)->value('id')])
+            ->get(route('app.tickets.create'))
+            ->assertOk()
+            ->assertSee('name="requester_name" autocomplete="off"', false)
+            ->assertSee('type="email" name="requester_email" inputmode="email" autocomplete="off" spellcheck="false"', false)
+            ->assertSee('name="subject" autocomplete="off"', false)
+            ->assertSee('name="body_text" rows="7" required autocomplete="off"', false);
     }
 
     /**

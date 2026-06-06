@@ -31,7 +31,7 @@ Definir login, recuperacion, sesiones, verificacion y 2FA.
 - Auditoria.
 - Si el usuario tiene varias memberships activas, debe elegir empresa antes de entrar a `/app`.
 - La sesion guarda `active_membership_id`.
-- La busqueda, dashboard y notificaciones se limitan a la empresa activa.
+- La busqueda, tickets, actividad y notificaciones se limitan a la empresa activa.
 
 ### Estado implementado
 - Login POST valida correo/contrasena en servidor.
@@ -53,6 +53,17 @@ Definir login, recuperacion, sesiones, verificacion y 2FA.
 - TTL maximo 60 minutos.
 - Respuesta generica para evitar enumeracion.
 - Invalida sesiones tras cambiar contrasena.
+
+Estado implementado actual:
+- `/password/forgot` muestra formulario publico de solicitud y `POST /password/forgot` envia enlace de reset si el correo existe.
+- La respuesta de solicitud es siempre generica para no revelar si el usuario existe.
+- El correo de reset usa `App\Notifications\Auth\ResetPasswordNotification`, asunto en espanol y enlace firmado por token del broker Laravel.
+- `/password/reset/{token}` muestra el formulario publico para definir/restablecer contrasena con email precargado cuando viene desde invitacion.
+- `POST /password/reset` valida token, email y confirmacion de contrasena en servidor, guarda hash nuevo y elimina el token mediante el broker de Laravel.
+- Al completar reset valido, las memberships `invited` del usuario pasan a `active` sin aceptar `company_id` del cliente.
+- La aceptacion de invitacion guarda `accepted_at` y registra `membership.accepted` en `audit_logs`.
+- Las invitaciones de usuarios nuevos generan token de reset y no revelan la contrasena aleatoria inicial.
+- El formulario usa errores inline accesibles y `autocomplete="new-password"` en campos de contrasena.
 
 ## Sesiones
 - Redis recomendado.

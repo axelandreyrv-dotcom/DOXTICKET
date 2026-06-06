@@ -22,6 +22,8 @@ Incorrecto: Doxticket, doxticket, Dox Ticket.
 ## Branding obligatorio
 - `Powered by DoxTicket` debe mantenerse en el footer de cada instalacion.
 - Logo principal: `Brand/DoxTicketSVG.svg`.
+- Las vistas usan `public/brand/doxticket.svg` como logo visible y favicon SVG.
+- Cuando el nombre DoxTicket aparece junto al simbolo, el `<img>` del logo se trata como decorativo con `alt=""` para evitar lectura duplicada.
 
 ## Color
 Modo claro es la experiencia principal de v1. La paleta debe ser profesional, calmada y utilitaria:

@@ -28,6 +28,6 @@ trait BelongsToCompany
 
     public static function withoutTenant(): Builder
     {
-        return (new static())->newQueryWithoutScope('tenant');
+        return (new static)->newQueryWithoutScope('tenant');
     }
 }

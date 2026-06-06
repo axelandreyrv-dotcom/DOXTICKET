@@ -38,4 +38,9 @@ class Attachment extends Model
     {
         return $this->belongsTo(Ticket::class);
     }
+
+    public function ticketMessage(): BelongsTo
+    {
+        return $this->belongsTo(TicketMessage::class);
+    }
 }

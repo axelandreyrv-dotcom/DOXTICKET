@@ -1,9 +1,9 @@
-<x-layouts.app-shell :title="'Actividad | '.config('app.name', 'DoxTicket')" subtitle="Panel de informacion">
+<x-layouts.app-shell :title="'Actividad | '.config('app.name', 'DoxTicket')" subtitle="Panel de información">
     <section class="py-6">
         <div class="flex flex-wrap items-end justify-between gap-4">
             <div>
                 <p class="text-xs font-semibold uppercase text-[var(--color-text-muted)]">Actividad</p>
-                <h1 class="mt-2 text-2xl font-semibold">Panel de informacion</h1>
+                <h1 class="mt-2 text-2xl font-semibold">Panel de información</h1>
                 <p class="mt-1 max-w-2xl text-sm text-[var(--color-text-secondary)]">
                     Historial operativo de tickets dentro de la empresa seleccionada.
                 </p>
@@ -44,8 +44,8 @@
                 </article>
             @empty
                 <div class="px-4 py-12 text-center">
-                    <h2 class="text-sm font-semibold">Sin actividad todavia</h2>
-                    <p class="mt-2 text-sm text-[var(--color-text-secondary)]">Cuando el equipo cree, asigne o actualice tickets, aparecera aqui.</p>
+                    <h2 class="text-sm font-semibold">Sin actividad todavía</h2>
+                    <p class="mt-2 text-sm text-[var(--color-text-secondary)]">Cuando el equipo cree, asigne o actualice tickets, aparecerá aquí.</p>
                 </div>
             @endforelse
         </section>

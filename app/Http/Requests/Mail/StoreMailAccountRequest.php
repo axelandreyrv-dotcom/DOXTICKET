@@ -41,7 +41,7 @@ class StoreMailAccountRequest extends FormRequest
                 }
 
                 if (blank($this->input('password'))) {
-                    $validator->errors()->add('password', 'La contrasena es obligatoria para la primera configuracion.');
+                    $validator->errors()->add('password', 'La contraseña es obligatoria para la primera configuración.');
                 }
             },
         ];

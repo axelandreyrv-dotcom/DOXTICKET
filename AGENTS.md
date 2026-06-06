@@ -16,6 +16,7 @@ Permite que departamentos de TI instalen su propio sistema de tickets, conecten 
 - **Sitio oficial futuro:** `doxticket.com` como hub de proyecto, documentacion, releases y donaciones.
 - **Correo de seguridad:** `axelandreyrv@outlook.com`
 - **Branding:** `Brand/DoxTicketSVG.svg`
+- **Logo publico / favicon:** `public/brand/doxticket.svg`
 - **Documentacion:** `Docs/`
 
 ---
@@ -30,6 +31,7 @@ Permite que departamentos de TI instalen su propio sistema de tickets, conecten 
 | Frontend | Blade + Livewire + Tailwind CSS 4.1+ |
 | Panel admin | Filament 5.x |
 | Correo entrante/saliente | IMAP / SMTP, Gmail, Microsoft 365 |
+| Extension PHP requerida | IMAP para correo entrante generico |
 | Instalacion principal | Docker Compose |
 | Instalacion alternativa | Ubuntu Server manual |
 | Web server | Nginx o Caddy en Docker; Nginx + PHP-FPM en manual |
@@ -41,22 +43,58 @@ Permite que departamentos de TI instalen su propio sistema de tickets, conecten 
 
 | Ruta | Descripcion |
 |---|---|
-| `/` | Entrada publica de la instalacion |
+| `/` | Entrada publica de la instalacion con estado de setup segun `system_settings.setup.completed`; si la tabla aun no existe, muestra instalador pendiente sin fallar |
 | `/setup` | Instalador inicial; debe bloquearse tras finalizar |
 | `/login` | Login centralizado |
+| `/password/forgot` | Solicitud publica de enlace de restablecimiento con respuesta generica |
+| `/password/reset/{token}` | Formulario publico para definir/restablecer contrasena con token |
+| `/password/reset` | Actualizacion publica de contrasena via POST con token valido |
 | `/logout` | Cierre de sesion autenticado |
 | `/app/companies` | Selector de empresa activa |
-| `/app/dashboard` | Panel principal del tenant |
+| `/app/dashboard` | Ruta heredada; redirige a `/app/tickets` |
 | `/app/activity` | Panel de actividad de la empresa activa |
-| `/app/tickets` | Gestion de tickets |
+| `/app/kb` | Base de conocimiento interna de la empresa activa |
+| `/app/kb/create` | Creacion de articulo interno por admin o supervisor |
+| `/app/kb/{article}/edit` | Edicion de articulo interno por admin o supervisor |
+| `/app/kb/{article}` | Lectura de articulo interno por slug |
+| `/app/kb/{article}/archive` | Archivado de articulo interno por admin o supervisor |
+| `/app/kb/{article}` | Borrado soft delete de articulo interno por admin o supervisor via DELETE |
+| `/app/tickets` | Workspace principal de trabajo y gestion de tickets |
 | `/app/tickets/create` | Creacion manual de ticket |
 | `/app/tickets/{ticket}` | Detalle de ticket dentro de la empresa activa por id interno o clave visible `DT-123` |
 | `/app/tickets/{ticket}/assign-self` | Asignacion manual del ticket a la membresia activa |
 | `/app/tickets/{ticket}/messages` | Alta de nota interna del ticket |
+| `/app/tickets/{ticket}/replies` | Envio de respuesta publica por correo desde la cuenta activa del tenant, con adjuntos seguros opcionales |
+| `/app/tickets/{ticket}/attachments` | Subida de adjunto privado al ticket dentro de la empresa activa |
+| `/app/tickets/{ticket}/merge` | Fusion del ticket actual dentro de otro ticket de la misma empresa |
 | `/app/tickets/{ticket}/status` | Cambio validado de estado del ticket |
+| `/app/tickets/{ticket}/properties` | Cambio validado de estado, prioridad, tipo y agente |
+| `/app/attachments/{uuid}/download` | Descarga protegida de adjunto privado por UUID dentro del tenant |
 | `/app/settings` | Configuracion del tenant |
 | `/app/settings/mail` | Guardado de cuenta IMAP/SMTP del tenant |
+| `/app/settings/mail/test` | Prueba manual IMAP/SMTP de la cuenta activa del tenant |
+| `/app/settings/mail/oauth/{provider}/redirect` | Inicio protegido del flujo OAuth para Gmail o Microsoft 365 desde la empresa activa |
+| `/app/settings/mail/oauth/{provider}/callback` | Callback OAuth protegido por `state`; intercambia `code` por tokens y los guarda cifrados en la cuenta activa |
 | `/admin` | Panel superadmin de la instalacion |
+| `/admin/audit` | Listado protegido de auditoria global para superadmins con filtros y metadatos sensibles redactados |
+| `/admin/audit/export` | Exportacion CSV protegida de auditoria global para superadmins respetando filtros |
+| `/admin/companies` | Listado protegido de empresas para superadmins con resumen operativo cross-tenant |
+| `/admin/companies/create` | Creacion protegida de empresa para superadmins |
+| `/admin/companies/{company}/edit` | Edicion protegida de empresa para superadmins |
+| `/admin/companies/{company}` | Actualizacion protegida de datos base de empresa via PUT |
+| `/admin/companies/{company}` | Eliminacion suave protegida de empresa via DELETE para superadmins |
+| `/admin/companies/{company}/status` | Cambio protegido de estado de empresa via POST |
+| `/admin/users` | Listado protegido de usuarios globales y membresias para superadmins |
+| `/admin/users/invite` | Formulario protegido para registrar invitacion de usuario a empresa |
+| `/admin/users/invite` | Registro protegido de invitacion, membership y envio de correo via POST |
+| `/admin/users/{user}/status` | Activacion/desactivacion protegida de usuario global via POST |
+| `/admin/memberships/{membership}` | Actualizacion protegida de rol y estado de membership via PUT |
+| `/admin/settings` | Configuracion protegida de instalacion para superadmins sin exponer secretos; permite guardar valores publicos no sensibles, politica basica de backups y backup automatico local via POST |
+| `/admin/health` | Resumen protegido de salud de la instalacion para superadmins |
+| `/admin/backups` | Ejecucion manual protegida de backup local para superadmins |
+| `/admin/rollback` | Preflight protegido de rollback manual para superadmins, condicionado a backup valido |
+| `/admin/telemetry` | Activacion/desactivacion protegida de telemetria opcional para superadmins |
+| `/admin/updates/check` | Chequeo manual protegido de nueva version estable para superadmins |
 
 ---
 
@@ -70,6 +108,7 @@ Estas decisiones estan tomadas. No proponer alternativas sin justificacion docum
 - Los usuarios deben instalar versiones publicadas mediante Releases e imagenes Docker versionadas, no commits aleatorios.
 - El proyecto no promete DoxTicket Cloud en v1.
 - Las donaciones son discretas: PayPal, GitHub Sponsors y Buy Me a Coffee.
+- Los enlaces de donacion se configuran por `.env` con `DOXTICKET_DONATION_*` o desde `/admin/settings` como valores publicos no sensibles; solo se muestran si son URLs `http`/`https` validas.
 - Toda instalacion debe mantener **Powered by DoxTicket** en el footer.
 
 ### Licencia
@@ -93,29 +132,66 @@ Estas decisiones estan tomadas. No proponer alternativas sin justificacion docum
 - Docker Compose es el camino principal.
 - Tambien debe existir documentacion de instalacion manual en Ubuntu.
 - `/setup` pide idioma primero, valida entorno, crea superadmin y una empresa inicial.
+- Espanol es el idioma por defecto; los mensajes de validacion visibles deben usar el idioma activo y nombres de campos entendibles.
 - `/setup` debe bloquearse automaticamente despues de terminar.
 - DoxTicket debe funcionar en LAN/intranet con dominio o IP local.
+- Las invitaciones de usuarios nuevos deben incluir un enlace con token para definir contrasena sin revelar credenciales.
+- La solicitud publica de restablecimiento de contrasena debe responder de forma generica para no revelar si un correo existe.
+- Los correos de restablecimiento de contrasena deben usar notificacion propia de DoxTicket en espanol, no la plantilla default del framework.
 
 ### Correo
 - La estabilidad del correo entrante es la prioridad v1.
 - Una cuenta de soporte por empresa en v1.
 - Existe SMTP global del sistema para invitaciones, reset, alertas y correos internos.
+- El reset de contrasena usa SMTP global y notificacion `ResetPasswordNotification` con asunto en espanol y enlace al token.
 - Se soporta IMAP/SMTP generico y se planifican Gmail/Microsoft 365 desde v1.
-- Los tickets por correo reciben confirmacion automatica.
+- Gmail/Microsoft 365 usan base OAuth con tokens cifrados; no mezclar tokens OAuth con contrasenas IMAP/SMTP.
+- El inicio OAuth debe usar `state` aleatorio ligado a proveedor y empresa activa; callbacks no deben aceptar `company_id` confiable del cliente.
+- El callback OAuth debe consumir `state` una sola vez, intercambiar `code` mediante cliente mockeable y guardar errores sanitizados en `last_error`.
+- La renovacion OAuth debe ejecutarse en cola `mail`, refrescar solo cuentas OAuth activas, preservar el refresh token existente si el proveedor no entrega uno nuevo y no borrar tokens vigentes ante errores.
+- Las respuestas salientes de cuentas Gmail/Microsoft 365 deben enviarse por API OAuth, no por SMTP, y los errores de API deben sanitizarse antes de mostrarse o guardarse.
+- La ingesta de cuentas Gmail/Microsoft 365 debe usar API OAuth, normalizar hacia `InboundMailMessage` y reutilizar el mismo procesador tenant-safe de correo entrante.
+- Los tickets por correo reciben confirmacion automatica si `auto_reply_enabled` esta activo; un fallo SMTP no debe revertir la ingesta y debe registrar evento interno.
 - Las respuestas salen como agente y mantienen marcador visible `[DT-123]`.
+- Las respuestas desde el detalle del ticket requieren una cuenta de correo activa de la empresa y correo de solicitante.
+- Las respuestas desde el detalle pueden incluir adjuntos seguros; se envian con el correo, se guardan en storage privado asociados al mensaje outbound y se bloquean ejecutables/scripts o archivos sobre el limite configurado antes de enviar.
+- La configuracion de correo permite probar IMAP/SMTP desde Settings; errores visibles deben sanitizar secretos.
+- Los adjuntos entrantes por correo usan storage privado y bloquean ejecutables/scripts o archivos sobre el limite configurado sin romper la ingesta.
+- Las imagenes externas de correos se bloquean por privacidad; sus URLs pueden conservarse como metadato para apertura manual, pero no deben renderizarse inline automaticamente.
 - Se prioriza evitar duplicados sobre procesar casos ambiguos sin revision.
 
 ### Tickets
 - Los tickets pueden crearse por correo o manualmente.
-- El dashboard y la lista principal se orientan a saber que atender ahora.
+- `/app/tickets` es el workspace principal para saber que atender ahora; `/app/dashboard` no es una seccion visible y solo redirige por compatibilidad.
+- El shell autenticado muestra solo Tickets y Actividad como navegacion operativa; Empresa, Configuracion y Admin no aparecen como accesos del usuario.
 - El panel `/app/activity` muestra el historial operativo de eventos de tickets de la empresa activa.
 - La lista de tickets enlaza a una pagina de detalle completa dentro de `/app/tickets/{ticket}`.
+- La lista de tickets permite busqueda simple por clave visible, asunto o correo del solicitante dentro de la empresa activa.
 - Abrir un ticket `new` por primera vez lo marca como `open` y registra auditoria interna.
 - Los agentes pueden asignarse tickets manualmente; el servidor usa la membresia activa y nunca confia en `assigned_to_membership_id` enviado por el cliente para esa accion.
+- El detalle del ticket usa un panel lateral de propiedades para editar estado, prioridad, tipo y agente dentro de la empresa activa.
+- El detalle del ticket permite responder al solicitante por correo y guarda la respuesta como mensaje publico outbound.
+- Los tickets activos calculan `sla_due_at` automaticamente desde defaults por prioridad y la lista permite filtrar vencidos con `sla=overdue`.
+- La lista principal muestra y filtra vencidos por SLA solo de la empresa activa.
+- `ScheduleSlaCheckJob` registra una sola vez el evento interno `ticket.sla_breached` para tickets activos vencidos.
+- Estados visibles v1: `new`, `open`, `pending`, `resolved`, `closed`. `new` es automatico; el cierre manual solo se permite despues de `resolved`.
+- Prioridades visibles v1: `low`, `medium`, `high`, `urgent`.
+- Tipos visibles v1: `question`, `incident`, `problem`, `request`.
 - Las notas internas se agregan desde el detalle y se guardan como `ticket_messages` con `visibility=internal`.
-- El cierre manual solo se permite despues de `resolved`.
-- Fusión de tickets: SÍ.
+- Los adjuntos se guardan fuera de `public/` en disco `private`, se descargan por ruta autenticada y se filtran por la empresa activa.
+- Los adjuntos entrantes por correo se asocian al mensaje recibido y siguen las mismas reglas de bloqueo.
+- Los adjuntos salientes de respuestas se asocian al mensaje outbound y siguen las mismas reglas de bloqueo.
+- El tamano maximo de adjuntos se configura con `DOXTICKET_ATTACHMENT_MAX_BYTES`.
+- Fusión de tickets: SÍ. El ticket secundario queda `merged`, apunta a `merged_into_ticket_id` y respuestas futuras al secundario se agregan al principal.
 - **Subtickets / ticket padre-hijo / división de tickets: NO** sin decision explicita futura.
+
+### Base de conocimiento
+- La base de conocimiento es interna por empresa y no publica articulos a usuarios finales en v1.
+- Los articulos se guardan en `kb_articles` con `company_id`, slug unico por empresa, Markdown original y HTML cacheado sanitizado.
+- Agentes solo leen articulos publicados de la empresa activa.
+- Admin y supervisor pueden crear, editar, publicar, archivar y borrar articulos desde `/app/kb`.
+- La busqueda v1 es simple por titulo y contenido Markdown dentro de la empresa activa.
+- El render Markdown debe bloquear HTML inseguro; no renderizar scripts enviados por usuarios.
 
 ### Billing
 - Billing integrado, planes pagados, trial y suscripciones quedan fuera de v1.
@@ -123,6 +199,35 @@ Estas decisiones estan tomadas. No proponer alternativas sin justificacion docum
 
 ### Actualizaciones
 - `/admin` muestra version instalada y aviso de nueva version estable consultando GitHub sin enviar datos sensibles.
+- `/admin` y `/admin/health` requieren usuario autenticado, activo y `is_superadmin=true`.
+- `/admin/companies` muestra empresas, estado, conteos de miembros/tickets y correo activo sin depender de la empresa activa del usuario.
+- `/admin/companies` permite a superadmins crear empresas, editar datos base, cambiar estado entre `active`, `disabled` y `archived`, y eliminar suavemente empresas sin depender de la empresa activa.
+- Eliminar una empresa desde `/admin/companies` usa soft delete, limpia `last_active_company_id` de usuarios afectados, olvida la membresia activa de la sesion del actor si corresponde y conserva datos para auditoria.
+- `/admin/users` muestra usuarios globales, superadmins y membresias por empresa sin depender de la empresa activa; permite activar/desactivar usuarios globales sin permitir que un superadmin desactive su propia cuenta.
+- `/admin/users/invite` permite registrar invitaciones: reutiliza usuario global existente o crea uno nuevo, crea membership `invited`, evita duplicados por empresa y envia correo de invitacion por SMTP global sin revelar contrasenas.
+- Si la invitacion crea un usuario nuevo, el correo incluye enlace `/password/reset/{token}` con token Laravel para definir contrasena; usuarios existentes reciben enlace normal a `/login`.
+- Al definir/restablecer contrasena con token valido, las memberships `invited` del usuario se activan sin aceptar `company_id` desde el cliente.
+- La aceptacion de invitacion debe guardar `accepted_at` y audit log `membership.accepted`.
+- Si el envio de correo de invitacion falla, la invitacion queda registrada y el panel muestra un aviso generico sin exponer secretos SMTP.
+- `/admin/memberships/{membership}` permite a superadmins cambiar rol `admin`, `supervisor` o `agent` y estado `active` o `disabled`, bloqueando dejar una empresa sin admin activo.
+- `/admin/audit` permite a superadmins revisar eventos de `audit_logs` con empresa, actor, sujeto, accion y metadatos redactados para no exponer contrasenas, tokens ni secretos.
+- `/admin/audit` permite busqueda libre por accion, empresa, actor o sujeto, y filtros por accion, empresa, actor y rango de fechas sin depender de la empresa activa del usuario.
+- `/admin/audit/export` permite exportar CSV con los mismos filtros de auditoria y metadatos sanitizados, sin guardar artefactos en disco, y registra `admin.audit.exported`.
+- La exportacion CSV de auditoria queda limitada a 5000 filas por solicitud en v1.
+- Las acciones superadmin de crear/editar/cambiar estado/eliminar empresas, invitar usuarios, activar/desactivar usuarios, actualizar memberships, actualizar settings publicos, cambiar telemetria, ejecutar backups, solicitar rollback y revisar updates deben registrar audit logs.
+- Los metadatos de audit logs deben sanitizarse antes de guardarse y antes de mostrarse si sus claves parecen contener contrasenas, tokens, secretos, cookies, autorizacion o credenciales.
+- `/admin/settings` muestra URL publica, version, repositorio de releases, telemetria, donaciones, politica basica de backups, backup automatico local y SMTP global sin exponer credenciales; los superadmins pueden guardar URL publica, repositorio de releases, enlaces de donacion, ventana de backup reciente, dias de retencion local, activacion del backup automatico y hora diaria como settings publicos no secretos.
+- `/admin/health` muestra health base de `APP_KEY`, `APP_DEBUG`, setup bloqueado, PostgreSQL, cache/Redis, colas, scheduler, workers, storage, SMTP global, cuentas de correo y backups; los mensajes visibles no deben exponer secretos y la ventana de backup reciente se toma de `system_settings.backups.recent_success_hours`.
+- Scheduler y workers se observan con heartbeats en cache; ausencia o antiguedad mayor a 10 minutos debe marcar warning.
+- El chequeo de version usa GitHub Releases del repositorio efectivo: `system_settings.updates.github_repository` si fue guardado desde `/admin/settings`, o `DOXTICKET_GITHUB_REPOSITORY` como fallback; se ejecuta en cola/scheduler y guarda el resultado en `system_settings.updates.latest`.
+- `/admin/updates/check` permite a superadmins ejecutar el mismo chequeo manualmente sin enviar datos sensibles.
+- El panel admin debe mostrar solo version instalada, version estable disponible, enlace publico de release y errores sanitizados.
+- `/admin` muestra el ultimo backup exitoso desde `backup_runs` y mantiene visible el boton rollback; la accion queda condicionada a `meta.rollback_available=true`.
+- `/admin` muestra historial reciente de backups sin exponer rutas privadas de artefactos.
+- `/admin/backups` permite a superadmins ejecutar un backup local manual; el artefacto queda en el disco privado y el resultado se registra en `backup_runs`.
+- El backup automatico local queda apagado por defecto; si se activa desde `/admin/settings`, `RunScheduledBackupJob` se evalua cada hora desde scheduler y ejecuta como maximo un backup `scheduled` por dia a la hora configurada.
+- `RunBackupRetentionPruneJob` se ejecuta diariamente y aplica `system_settings.backups.retention_days` sobre backups locales exitosos; elimina artefactos privados antiguos y marca el registro `backup_runs.status=pruned` sin habilitar rollback.
+- `/admin/rollback` permite a superadmins ejecutar un preflight protegido de rollback manual; en v1 no restaura automaticamente, solo confirma que existe backup valido y dirige a la guia manual.
 - En v1 basta aviso de nueva version y guia/manual de actualizacion.
 - El rollback debe tener boton visible en `/admin`, aunque solo funcione si existe una version anterior/backup valido.
 - Antes de actualizar se debe verificar backup reciente.
@@ -130,6 +235,7 @@ Estas decisiones estan tomadas. No proponer alternativas sin justificacion docum
 ### Telemetria
 - Opcional y apagada por defecto.
 - Solo se activa explicitamente en `/setup`.
+- Tambien puede activarse/desactivarse desde `/admin` por superadmin.
 - No enviar nombres, correos, contenido de tickets, asuntos, cuerpos, adjuntos ni secretos.
 
 ---
@@ -181,6 +287,8 @@ Estas decisiones estan tomadas. No proponer alternativas sin justificacion docum
 - Usar skills `gstack` cuando apliquen al trabajo: planificacion, especificacion, arquitectura, QA, revision, diseno, DX, investigacion, shipping o despliegue.
 - Para planes grandes usar las rutas gstack correspondientes, por ejemplo `gstack-autoplan`, `gstack-spec`, `gstack-plan-eng-review`, `gstack-plan-design-review`, `gstack-plan-devex-review` y `gstack-review` segun corresponda.
 - Para UI/frontend usar siempre skills de diseno antes de implementar: `minimalist-ui`, `web-design-guidelines`, `impeccable`, `emil-design-eng` y/o skills `gstack-design-*` cuando apliquen.
+- En UI autenticada, los mensajes flash deben mostrarse una sola vez y anunciarse con `role="status"` y `aria-live="polite"`.
+- Los errores inline de formularios deben usar `role="alert"` y estar asociados al input con `aria-invalid` y `aria-describedby`.
 - Las skills de React/Vercel solo aplican como referencia de rendimiento si el stack real sigue siendo Blade + Livewire.
 - El codigo debe mantenerse limpio, documentado, estructurado y preparado para escalar; no introducir abstracciones sin necesidad real.
 - No instalar dependencias de Composer o NPM sin justificacion documentada.

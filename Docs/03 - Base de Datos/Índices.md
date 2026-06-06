@@ -49,13 +49,14 @@ Estado implementado actual: se usa `UNIQUE (company_id)` para reforzar una sola 
 - `INDEX (company_id, status, last_activity_at DESC)`
 - `INDEX (company_id, assigned_to_membership_id, status)`
 - `INDEX (company_id, priority, status)`
+- `INDEX (company_id, ticket_type, status)`
 - `INDEX (company_id, category_id)`
 - `INDEX (company_id, requester_email)`
 - `INDEX (company_id, sla_due_at)`
 - `INDEX (company_id, merged_into_ticket_id)`
 - `INDEX (company_id, deleted_at)`
 - `INDEX (external_thread_id)`
-- Busqueda simple usa `public_key`, `requester_email` y `subject` con indices normales cuando aplique.
+- Busqueda simple implementada en `/app/tickets` usa `public_key`, `requester_email` y `subject` dentro del tenant activo; full-text queda para una fase posterior.
 - Full-text opcional: `tsvector`/GIN sobre `subject` si la busqueda simple no alcanza.
 
 ## `ticket_messages`
@@ -78,10 +79,11 @@ Estado implementado actual: se usa `UNIQUE (company_id)` para reforzar una sola 
 - `INDEX (checksum_sha256)`
 
 ## Estado implementado actual
-- Implementados indices de `categories`, `tickets`, `ticket_messages`, `ticket_events` y `attachments` necesarios para lista activa, dashboard y auditoria inicial.
+- Implementados indices de `categories`, `tickets`, `ticket_messages`, `ticket_events` y `attachments` necesarios para lista activa, filtros y auditoria inicial.
 - Implementados indices de `mail_accounts` para configuracion tenant-safe de una cuenta por empresa.
 - La lista de tickets usa `company_id`, `status` y `last_activity_at`.
 - Las metricas por agente usan `company_id`, `assigned_to_membership_id` y `status`.
+- Los filtros de tipo usan `company_id`, `ticket_type` y `status`.
 - La busqueda full-text queda pendiente para una fase posterior.
 
 ## `templates`
@@ -111,6 +113,8 @@ Estado implementado actual: se usa `UNIQUE (company_id)` para reforzar una sola 
 ## `backup_runs`
 - `INDEX (status, created_at)`
 - `INDEX (destination, created_at)`
+
+Estado implementado actual: indices `status, created_at` y `destination, created_at` implementados para resolver ultimo backup y filtros operativos.
 
 ## `update_checks`
 - `INDEX (checked_at)`

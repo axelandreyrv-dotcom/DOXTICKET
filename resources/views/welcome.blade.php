@@ -4,6 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>{{ config('app.name', 'DoxTicket') }}</title>
+        <link rel="icon" type="image/svg+xml" href="{{ asset('brand/doxticket.svg') }}">
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="min-h-screen bg-[var(--color-bg-page)] text-[var(--color-text-primary)] antialiased">
@@ -11,7 +12,10 @@
         <main id="main-content" class="mx-auto flex min-h-screen w-full max-w-5xl flex-col px-6 py-8">
             <header class="flex items-center justify-between border-b border-[var(--color-border-default)] pb-5">
                 <div>
-                    <p class="text-lg font-semibold tracking-normal">DoxTicket</p>
+                    <div class="flex min-w-0 items-center gap-2">
+                        <img src="{{ asset('brand/doxticket.svg') }}" alt="" width="32" height="32" class="size-8 shrink-0" aria-hidden="true">
+                        <p class="text-lg font-semibold tracking-normal">DoxTicket</p>
+                    </div>
                     <p class="mt-1 text-sm text-[var(--color-text-muted)]">Helpdesk IT self-hosted</p>
                 </div>
                 <nav class="flex items-center gap-2" aria-label="Accesos principales">
@@ -37,7 +41,13 @@
                     <dl class="mt-5 space-y-4 text-sm">
                         <div class="flex items-center justify-between gap-4">
                             <dt class="text-[var(--color-text-muted)]">Instalador</dt>
-                            <dd class="font-medium text-[var(--color-warning)]">Pendiente</dd>
+                            <dd @class([
+                                'font-medium',
+                                'text-[var(--color-success)]' => $setupCompleted,
+                                'text-[var(--color-warning)]' => ! $setupCompleted,
+                            ])>
+                                {{ $setupCompleted ? 'Completado' : 'Pendiente' }}
+                            </dd>
                         </div>
                         <div class="flex items-center justify-between gap-4">
                             <dt class="text-[var(--color-text-muted)]">Base de datos</dt>

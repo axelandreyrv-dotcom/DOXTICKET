@@ -20,6 +20,7 @@ class TicketFactory extends Factory
             'subject' => fake()->sentence(4),
             'status' => 'new',
             'priority' => 'medium',
+            'ticket_type' => 'request',
             'source' => 'manual',
             'last_activity_at' => now(),
         ];

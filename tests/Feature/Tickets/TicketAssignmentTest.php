@@ -65,7 +65,7 @@ class TicketAssignmentTest extends TestCase
             ->assertNotFound();
     }
 
-    public function test_ticket_list_and_detail_show_assign_self_action_for_unassigned_ticket(): void
+    public function test_ticket_list_shows_assign_self_and_detail_shows_agent_property_for_unassigned_ticket(): void
     {
         [$user, $activeMembership] = $this->tenantFixture();
         $ticket = Ticket::factory()->for($activeMembership->company)->create([
@@ -83,8 +83,9 @@ class TicketAssignmentTest extends TestCase
             ->withSession(['active_membership_id' => $activeMembership->id])
             ->get(route('app.tickets.show', $ticket->public_key))
             ->assertOk()
-            ->assertSee(route('app.tickets.assign-self', $ticket->public_key), false)
-            ->assertSee('Asignarme');
+            ->assertSee(route('app.tickets.properties.update', $ticket->public_key), false)
+            ->assertSee('Agente')
+            ->assertSee('Sin asignar');
     }
 
     /**

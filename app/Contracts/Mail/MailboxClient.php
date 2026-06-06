@@ -3,11 +3,12 @@
 namespace App\Contracts\Mail;
 
 use App\Models\MailAccount;
+use App\Support\Mail\FetchedMailMessage;
 
 interface MailboxClient
 {
     /**
-     * @return iterable<\App\Support\Mail\FetchedMailMessage>
+     * @return iterable<FetchedMailMessage>
      */
     public function fetchNewMessages(MailAccount $account): iterable;
 }

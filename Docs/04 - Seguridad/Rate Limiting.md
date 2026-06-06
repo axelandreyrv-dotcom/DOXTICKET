@@ -15,8 +15,11 @@ Definir limites para mitigar abuso, brute force, spam y loops.
 - 20 intentos por IP cada 5 minutos.
 
 ### `/password/forgot`
-- 3 solicitudes por IP+email cada hora.
-- Respuesta generica.
+- `POST /password/forgot` envia enlace de restablecimiento solo si el correo existe, pero siempre responde con mensaje generico.
+- Rate limit base aplicado con `throttle:login` en v1.
+
+### `/password/reset`
+- `POST /password/reset` usa rate limit base de formularios sensibles.
 
 ### `/setup`
 - Solo accesible mientras no esta completado.

@@ -6,7 +6,7 @@ Describir que es DoxTicket, para quien existe, que problema resuelve y cual es l
 ## Que es DoxTicket
 DoxTicket es un **helpdesk IT open source self-hosted** para departamentos de TI que quieren controlar sus datos, correo e infraestructura.
 
-Cada instalacion puede manejar una o varias empresas internas mediante aislamiento por `company_id`. Los usuarios son identidades globales y acceden a empresas mediante `memberships`, por lo que una persona puede pertenecer a varias empresas con roles distintos. El canal principal es el correo: los mensajes entrantes se convierten en tickets, se asignan a agentes, se responden desde la app y quedan medidos en un dashboard operativo.
+Cada instalacion puede manejar una o varias empresas internas mediante aislamiento por `company_id`. Los usuarios son identidades globales y acceden a empresas mediante `memberships`, por lo que una persona puede pertenecer a varias empresas con roles distintos. El canal principal es el correo: los mensajes entrantes se convierten en tickets, se asignan a agentes, se responden desde la app y se atienden desde un inbox operativo en Tickets.
 
 ## Marca
 - Nombre comercial: **DoxTicket**
@@ -19,7 +19,7 @@ Cada instalacion puede manejar una o varias empresas internas mediante aislamien
 ## Problema que resuelve
 Muchos departamentos de TI administran soporte desde bandejas compartidas de correo. Esto provoca tickets perdidos, falta de responsable, poca trazabilidad, dificultad para medir tiempos y dependencia de herramientas externas cerradas.
 
-DoxTicket mantiene el correo como canal principal, pero le agrega estados, responsables, prioridades, historial, adjuntos, auditoria, dashboard y control self-hosted.
+DoxTicket mantiene el correo como canal principal, pero le agrega estados, responsables, prioridades, historial, adjuntos, auditoria, workspace de Tickets y control self-hosted.
 
 ## Publico objetivo
 - Departamentos de TI que quieren autoalojar su helpdesk.
@@ -46,7 +46,7 @@ DoxTicket mantiene el correo como canal principal, pero le agrega estados, respo
 - Panel superadmin en `/admin`.
 - Idiomas: espanol por defecto e ingles disponible.
 - Correo: cuenta global SMTP del sistema + una cuenta de soporte por empresa.
-- Tickets por correo, tickets manuales, dashboard, SLA, KB interna, adjuntos, fusion de tickets.
+- Tickets por correo, tickets manuales, workspace de Tickets, SLA, KB interna, adjuntos, fusion de tickets.
 - Donaciones discretas: PayPal, GitHub Sponsors y Buy Me a Coffee.
 
 ## Fuera de v1

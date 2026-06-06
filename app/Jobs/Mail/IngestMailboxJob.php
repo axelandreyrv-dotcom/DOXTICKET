@@ -46,7 +46,7 @@ class IngestMailboxJob implements ShouldQueue
                 }
 
                 $processor->process($account, $fetched->message);
-                $account->forceFill(['last_uid' => $fetched->uid])->save();
+                $account->forceFill(['last_uid' => $this->latestUid($account->last_uid, $fetched->uid)])->save();
             }
 
             $account->forceFill([
@@ -59,6 +59,15 @@ class IngestMailboxJob implements ShouldQueue
                 'last_sync_at' => now(),
             ])->save();
         }
+    }
+
+    private function latestUid(?string $currentUid, string $fetchedUid): string
+    {
+        if (ctype_digit((string) $currentUid) && ctype_digit($fetchedUid)) {
+            return (string) max((int) $currentUid, (int) $fetchedUid);
+        }
+
+        return $fetchedUid;
     }
 
     private function safeErrorMessage(Throwable $exception, MailAccount $account): string

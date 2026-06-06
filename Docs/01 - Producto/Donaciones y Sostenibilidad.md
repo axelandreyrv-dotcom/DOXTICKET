@@ -24,6 +24,11 @@ Canales permitidos:
 - GitHub Sponsors.
 - Buy Me a Coffee.
 
+Estado implementado actual:
+- `/admin` puede mostrar una seccion secundaria `Apoyar DoxTicket`.
+- Cada canal es opcional y se configura por `.env` o por superadmin desde `/admin/settings` como valor publico no secreto.
+- Si un enlace no esta configurado o no es `http`/`https`, no se muestra.
+
 ## Regla de UX
 Las donaciones nunca deben bloquear funcionalidad, mostrar avisos agresivos ni parecer requisito para usar el producto.
 

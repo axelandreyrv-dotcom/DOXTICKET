@@ -12,11 +12,11 @@ class ActivityController extends Controller
 {
     private const FILTERS = [
         'all' => [],
-        'created' => ['ticket.created_manual', 'ticket.created_from_mail'],
+        'created' => ['ticket.created_manual', 'ticket.created_from_mail', 'mail.ticket_created'],
         'status' => ['ticket.status_changed', 'ticket.opened'],
-        'assignment' => ['ticket.assigned_self'],
+        'assignment' => ['ticket.assigned_self', 'ticket.assigned'],
         'notes' => ['ticket.note_added'],
-        'mail' => ['ticket.created_from_mail', 'ticket.mail_message_added'],
+        'mail' => ['ticket.created_from_mail', 'ticket.mail_message_added', 'mail.ticket_created', 'mail.reply_received', 'mail.auto_reply_failed'],
     ];
 
     public function __invoke(Request $request): View
@@ -49,9 +49,9 @@ class ActivityController extends Controller
     {
         return [
             'all' => 'Todo',
-            'created' => 'Creacion',
+            'created' => 'Creación',
             'status' => 'Estados',
-            'assignment' => 'Asignacion',
+            'assignment' => 'Asignación',
             'notes' => 'Notas',
             'mail' => 'Correo',
         ];
@@ -73,21 +73,27 @@ class ActivityController extends Controller
             'ticket_subject' => $ticket?->subject ?? 'Ticket no disponible',
             'ticket_url' => $ticket ? route('app.tickets.show', $ticket->public_key) : null,
             'created_at' => $event->created_at,
-            'type' => $event->type,
+            'type' => $event->label(),
         ];
     }
 
     private function actionText(TicketEvent $event): string
     {
         return match ($event->type) {
-            'ticket.created_manual' => 'creo un nuevo ticket',
-            'ticket.created_from_mail' => 'creo un ticket desde correo',
+            'ticket.created_manual' => 'creó un nuevo ticket',
+            'ticket.created_from_mail' => 'creó un ticket desde correo',
             'ticket.opened' => 'abrio',
-            'ticket.status_changed' => 'actualizo el estado de',
-            'ticket.assigned_self' => 'se asigno',
-            'ticket.note_added' => 'agrego una nota interna en',
-            'ticket.mail_message_added' => 'registro un correo en',
-            default => 'registro actividad en',
+            'ticket.status_changed' => 'actualizó el estado de',
+            'ticket.assigned_self' => 'se asignó',
+            'ticket.assigned' => 'actualizó el agente de',
+            'ticket.priority_changed' => 'actualizó la prioridad de',
+            'ticket.type_changed' => 'actualizó el tipo de',
+            'ticket.note_added' => 'agregó una nota interna en',
+            'ticket.mail_message_added' => 'registró un correo en',
+            'mail.ticket_created' => 'creó un ticket desde correo',
+            'mail.reply_received' => 'registró una respuesta en',
+            'mail.auto_reply_failed' => 'no pudo enviar confirmación automática de',
+            default => 'registró actividad en',
         };
     }
 }

@@ -25,6 +25,7 @@ use Illuminate\Support\Str;
     'public_key',
     'status',
     'priority',
+    'ticket_type',
     'source',
     'external_thread_id',
     'first_opened_at',
@@ -43,7 +44,50 @@ class Ticket extends Model
     /** @use HasFactory<TicketFactory> */
     use BelongsToCompany, HasFactory, SoftDeletes;
 
-    public const ACTIVE_STATUSES = ['new', 'open', 'in_progress', 'waiting_customer', 'waiting_internal', 'reopened'];
+    public const ACTIVE_STATUSES = ['new', 'open', 'pending'];
+
+    public const STATUS_LABELS = [
+        'new' => 'Nuevo',
+        'open' => 'Abierto',
+        'pending' => 'Pendiente',
+        'resolved' => 'Resuelto',
+        'closed' => 'Cerrado',
+        'merged' => 'Fusionado',
+    ];
+
+    public const EDITABLE_STATUS_LABELS = [
+        'open' => 'Abierto',
+        'pending' => 'Pendiente',
+        'resolved' => 'Resuelto',
+        'closed' => 'Cerrado',
+    ];
+
+    public const PRIORITY_LABELS = [
+        'low' => 'Baja',
+        'medium' => 'Media',
+        'high' => 'Alta',
+        'urgent' => 'Urgente',
+    ];
+
+    public const TYPE_LABELS = [
+        'question' => 'Pregunta',
+        'incident' => 'Incidente',
+        'problem' => 'Problema',
+        'request' => 'Solicitud',
+    ];
+
+    public const SOURCE_LABELS = [
+        'email' => 'Correo',
+        'manual' => 'Manual',
+        'system' => 'Sistema',
+    ];
+
+    public const SLA_RESOLUTION_MINUTES = [
+        'low' => 10080,
+        'medium' => 4320,
+        'high' => 1440,
+        'urgent' => 480,
+    ];
 
     protected function casts(): array
     {
@@ -66,8 +110,13 @@ class Ticket extends Model
             $ticket->subject = trim((string) ($ticket->subject ?: 'Sin Asunto')) ?: 'Sin Asunto';
             $ticket->status ??= 'new';
             $ticket->priority ??= 'medium';
+            $ticket->ticket_type ??= 'request';
             $ticket->source ??= 'manual';
             $ticket->last_activity_at ??= now();
+
+            if ($ticket->sla_due_at === null && in_array($ticket->status, self::ACTIVE_STATUSES, true)) {
+                $ticket->sla_due_at = now()->addMinutes(self::SLA_RESOLUTION_MINUTES[$ticket->priority] ?? self::SLA_RESOLUTION_MINUTES['medium']);
+            }
 
             if ($ticket->public_number === null) {
                 $ticket->public_number = ((int) self::withoutTenant()
@@ -104,8 +153,23 @@ class Ticket extends Model
         return $this->hasMany(TicketMessage::class);
     }
 
+    public function attachments(): HasMany
+    {
+        return $this->hasMany(Attachment::class);
+    }
+
     public function events(): HasMany
     {
         return $this->hasMany(TicketEvent::class);
+    }
+
+    public function mergedIntoTicket(): BelongsTo
+    {
+        return $this->belongsTo(Ticket::class, 'merged_into_ticket_id');
+    }
+
+    public function mergedTickets(): HasMany
+    {
+        return $this->hasMany(Ticket::class, 'merged_into_ticket_id');
     }
 }

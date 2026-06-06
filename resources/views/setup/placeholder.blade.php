@@ -4,13 +4,13 @@
             <p class="text-xs font-semibold uppercase tracking-[0.14em] text-[var(--color-text-muted)]">Instalacion inicial</p>
             <h1 class="mt-4 text-3xl font-semibold tracking-normal text-[var(--color-text-primary)] sm:text-4xl">Preparar DoxTicket</h1>
             <p class="mt-4 max-w-prose text-sm leading-6 text-[var(--color-text-secondary)]">
-                Crea la primera empresa y el superadmin de esta instalacion.
+                Crea la primera empresa y el superadmin de esta instalación.
             </p>
 
             <div class="mt-8 grid gap-3 text-sm">
                 <div class="rounded-lg border border-[var(--color-border-default)] bg-[var(--color-bg-surface)] p-4">
                     <p class="font-medium">Idioma por defecto</p>
-                    <p class="mt-1 text-[var(--color-text-secondary)]">Espanol primero, ingles disponible.</p>
+                    <p class="mt-1 text-[var(--color-text-secondary)]">Español primero, inglés disponible.</p>
                 </div>
                 <div class="rounded-lg border border-[var(--color-border-default)] bg-[var(--color-bg-surface)] p-4">
                     <p class="font-medium">Aislamiento base</p>
@@ -23,43 +23,43 @@
             @csrf
 
             <div class="grid gap-5">
-                <label class="grid gap-2">
+                <label for="locale" class="grid gap-2">
                     <span class="text-sm font-medium">Idioma</span>
-                    <select name="locale" class="h-10 rounded-md border border-[var(--color-border-default)] bg-white px-3 text-sm outline-none transition focus-visible:border-[var(--color-action-primary)] focus-visible:ring-2 focus-visible:ring-[var(--color-focus)]">
-                        <option value="es" @selected(old('locale', 'es') === 'es')>Espanol</option>
+                    <select id="locale" name="locale" @error('locale') aria-invalid="true" aria-describedby="locale-error" @enderror class="h-10 rounded-md border border-[var(--color-border-default)] bg-white px-3 text-sm outline-none transition focus-visible:border-[var(--color-action-primary)] focus-visible:ring-2 focus-visible:ring-[var(--color-focus)]">
+                        <option value="es" @selected(old('locale', 'es') === 'es')>Español</option>
                         <option value="en" @selected(old('locale') === 'en')>English</option>
                     </select>
-                    @error('locale') <span class="text-sm text-[var(--color-danger)]">{{ $message }}</span> @enderror
+                    <x-ui.field-error field="locale" class="text-sm" />
                 </label>
 
-                <label class="grid gap-2">
+                <label for="company_name" class="grid gap-2">
                     <span class="text-sm font-medium">Empresa inicial</span>
-                    <input name="company_name" value="{{ old('company_name') }}" autocomplete="organization" class="h-10 rounded-md border border-[var(--color-border-default)] bg-white px-3 text-sm outline-none transition focus-visible:border-[var(--color-action-primary)] focus-visible:ring-2 focus-visible:ring-[var(--color-focus)]">
-                    @error('company_name') <span class="text-sm text-[var(--color-danger)]">{{ $message }}</span> @enderror
+                    <input id="company_name" name="company_name" value="{{ old('company_name') }}" autocomplete="organization" @error('company_name') aria-invalid="true" aria-describedby="company_name-error" @enderror class="h-10 rounded-md border border-[var(--color-border-default)] bg-white px-3 text-sm outline-none transition focus-visible:border-[var(--color-action-primary)] focus-visible:ring-2 focus-visible:ring-[var(--color-focus)]">
+                    <x-ui.field-error field="company_name" class="text-sm" />
                 </label>
 
                 <div class="grid gap-4 border-t border-[var(--color-border-default)] pt-5 sm:grid-cols-2">
-                    <label class="grid gap-2 sm:col-span-2">
+                    <label for="admin_name" class="grid gap-2 sm:col-span-2">
                         <span class="text-sm font-medium">Nombre del superadmin</span>
-                        <input name="admin_name" value="{{ old('admin_name') }}" autocomplete="name" class="h-10 rounded-md border border-[var(--color-border-default)] bg-white px-3 text-sm outline-none transition focus-visible:border-[var(--color-action-primary)] focus-visible:ring-2 focus-visible:ring-[var(--color-focus)]">
-                        @error('admin_name') <span class="text-sm text-[var(--color-danger)]">{{ $message }}</span> @enderror
+                        <input id="admin_name" name="admin_name" value="{{ old('admin_name') }}" autocomplete="name" @error('admin_name') aria-invalid="true" aria-describedby="admin_name-error" @enderror class="h-10 rounded-md border border-[var(--color-border-default)] bg-white px-3 text-sm outline-none transition focus-visible:border-[var(--color-action-primary)] focus-visible:ring-2 focus-visible:ring-[var(--color-focus)]">
+                        <x-ui.field-error field="admin_name" class="text-sm" />
                     </label>
 
-                    <label class="grid gap-2 sm:col-span-2">
+                    <label for="admin_email" class="grid gap-2 sm:col-span-2">
                         <span class="text-sm font-medium">Correo</span>
-                        <input name="admin_email" value="{{ old('admin_email') }}" type="email" autocomplete="email" spellcheck="false" class="h-10 rounded-md border border-[var(--color-border-default)] bg-white px-3 text-sm outline-none transition focus-visible:border-[var(--color-action-primary)] focus-visible:ring-2 focus-visible:ring-[var(--color-focus)]">
-                        @error('admin_email') <span class="text-sm text-[var(--color-danger)]">{{ $message }}</span> @enderror
+                        <input id="admin_email" name="admin_email" value="{{ old('admin_email') }}" type="email" autocomplete="email" spellcheck="false" @error('admin_email') aria-invalid="true" aria-describedby="admin_email-error" @enderror class="h-10 rounded-md border border-[var(--color-border-default)] bg-white px-3 text-sm outline-none transition focus-visible:border-[var(--color-action-primary)] focus-visible:ring-2 focus-visible:ring-[var(--color-focus)]">
+                        <x-ui.field-error field="admin_email" class="text-sm" />
                     </label>
 
-                    <label class="grid gap-2">
-                        <span class="text-sm font-medium">Contrasena</span>
-                        <input name="admin_password" type="password" autocomplete="new-password" class="h-10 rounded-md border border-[var(--color-border-default)] bg-white px-3 text-sm outline-none transition focus-visible:border-[var(--color-action-primary)] focus-visible:ring-2 focus-visible:ring-[var(--color-focus)]">
-                        @error('admin_password') <span class="text-sm text-[var(--color-danger)]">{{ $message }}</span> @enderror
+                    <label for="admin_password" class="grid gap-2">
+                        <span class="text-sm font-medium">Contraseña</span>
+                        <input id="admin_password" name="admin_password" type="password" autocomplete="new-password" @error('admin_password') aria-invalid="true" aria-describedby="admin_password-error" @enderror class="h-10 rounded-md border border-[var(--color-border-default)] bg-white px-3 text-sm outline-none transition focus-visible:border-[var(--color-action-primary)] focus-visible:ring-2 focus-visible:ring-[var(--color-focus)]">
+                        <x-ui.field-error field="admin_password" class="text-sm" />
                     </label>
 
-                    <label class="grid gap-2">
+                    <label for="admin_password_confirmation" class="grid gap-2">
                         <span class="text-sm font-medium">Confirmar</span>
-                        <input name="admin_password_confirmation" type="password" autocomplete="new-password" class="h-10 rounded-md border border-[var(--color-border-default)] bg-white px-3 text-sm outline-none transition focus-visible:border-[var(--color-action-primary)] focus-visible:ring-2 focus-visible:ring-[var(--color-focus)]">
+                        <input id="admin_password_confirmation" name="admin_password_confirmation" type="password" autocomplete="new-password" class="h-10 rounded-md border border-[var(--color-border-default)] bg-white px-3 text-sm outline-none transition focus-visible:border-[var(--color-action-primary)] focus-visible:ring-2 focus-visible:ring-[var(--color-focus)]">
                     </label>
                 </div>
 

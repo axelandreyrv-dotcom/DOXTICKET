@@ -40,6 +40,6 @@ class CompanySelectionController extends Controller
         $membership->forceFill(['last_selected_at' => now()])->save();
         $request->user()->forceFill(['last_active_company_id' => $membership->company_id])->save();
 
-        return redirect('/app/dashboard');
+        return redirect('/app/tickets');
     }
 }

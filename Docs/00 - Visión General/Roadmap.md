@@ -39,55 +39,60 @@ Trazar las fases planificadas de DoxTicket como proyecto open source self-hosted
 ## Fase 3 — Tickets nucleo
 - Modelos `tickets`, `ticket_messages`, `ticket_events`, `attachments`, `categories`. **Base implementada.**
 - Creacion manual de tickets. **Base implementada.**
-- Lista de tickets activos con filtro por estado y paginacion. **Base implementada.**
-- Dashboard operativo con metricas reales del tenant. **Base implementada.**
+- Lista de tickets activos con filtros por estado, agente, prioridad, tipo y fuente, mas paginacion. **Base implementada.**
+- Tickets como workspace principal con filtros reales del tenant. **Base implementada.**
 - Panel de actividad con historial operativo de tickets. **Base implementada.**
-- Estados, prioridades, asignacion manual y categorias. **Base implementada para asignarse y parcial para asignar a otros.**
+- Estados simples, prioridades, tipos, asignacion manual y categorias. **Base implementada con panel lateral de propiedades.**
 - Notas internas. **Base implementada como primer mensaje interno en creacion manual y desde detalle.**
-- Detalle de ticket con hilo, eventos, metadatos y cambio de estado. **Base implementada.**
+- Detalle de ticket con hilo, actividad, metadatos y propiedades editables. **Base implementada.**
 - Resolucion/cierre manual. **Base implementada con regla: cerrar solo despues de resuelto.**
-- Adjuntos privados.
-- Respuestas por correo saliente y fusion.
+- Adjuntos privados. **Base implementada desde el detalle con descarga protegida y bloqueo de tipos peligrosos.**
+- Respuestas por correo saliente. **Base implementada desde el detalle.**
+- Fusion de tickets. **Base implementada con redireccion de respuestas futuras al principal.**
 
 **Entregable:** agente puede crear, asignar, responder internamente y cerrar tickets manuales.
 
 ## Fase 4 — Correo estable
 - SMTP global del sistema.
-- Configuracion de una cuenta de soporte por empresa. **Base implementada para IMAP/SMTP generico.**
-- Ingesta IMAP. **Job, scheduler y contrato de cliente implementados; adaptador IMAP real pendiente.**
-- Envio SMTP.
-- Confirmacion automatica de recibido.
+- Configuracion de una cuenta de soporte por empresa. **Base implementada para IMAP/SMTP generico con prueba manual desde Settings.**
+- Ingesta IMAP. **Job, scheduler, normalizador y transporte IMAP nativo implementados; falta QA con buzones reales.**
+- Envio SMTP. **Base implementada desde el detalle y confirmacion automatica.**
+- Confirmacion automatica de recibido. **Base implementada al crear ticket por correo, con evento interno si falla SMTP.**
 - Threading por headers + `[DT-123]`. **Base implementada en procesador normalizado.**
 - Sanitizacion HTML. **Base implementada en procesador normalizado.**
-- Bloqueo de imagenes externas con opcion de abrir. **Base de bloqueo implementada; opcion de abrir pendiente.**
+- Adjuntos entrantes por correo. **Base implementada con storage privado y bloqueo de tipos peligrosos.**
+- Bloqueo de imagenes externas con opcion de abrir. **Base implementada con URLs bloqueadas y apertura manual desde el detalle.**
 - Prevencion de loops. **Base implementada por headers/remitente.**
 - Tests extensivos contra duplicados. **Base implementada por `Message-Id`.**
 
 **Entregable:** correo entrante y saliente estable en instalaciones reales.
 
 ## Fase 5 — Gmail y Microsoft 365
-- OAuth con Google Workspace.
-- OAuth con Microsoft 365.
-- Renovacion de tokens.
-- Adaptadores mockeables.
+- OAuth con Google Workspace. **Base de almacenamiento seguro, inicio de autorizacion y callback/token exchange implementados.**
+- OAuth con Microsoft 365. **Base de almacenamiento seguro, inicio de autorizacion y callback/token exchange implementados.**
+- Renovacion de tokens. **Base automatica implementada con job en cola `mail`.**
+- Adaptadores mockeables. **Base `OAuthTokenStore`, `OAuthTokenClient`, lectura con adjuntos y envio de respuestas por API implementada.**
 
 **Entregable:** empresas conectan Gmail/Microsoft sin credenciales IMAP/SMTP manuales.
 
 ## Fase 6 — Admin, health, backups y releases
-- Panel `/admin` completo.
-- Health checks internos.
-- Configuracion de backups desde admin.
-- Version instalada visible.
-- Aviso de nueva version estable desde GitHub.
-- Boton de rollback visible.
-- Telemetria opcional.
+- Panel `/admin` completo. **Base implementada con dashboard, health, backups, updates, rollback, telemetria, donaciones y enlace a empresas.**
+- Listado de empresas en `/admin/companies`. **Base implementada con estado, miembros, tickets, correo activo, creacion, edicion y cambio de estado.**
+- Listado de usuarios en `/admin/users`. **Base implementada con usuarios globales, superadmins, membresias, activacion/desactivacion protegida, edicion de rol/estado de membership y registro de invitaciones con envio SMTP global.**
+- Configuracion de instalacion en `/admin/settings`. **Base implementada sin exponer secretos.**
+- Health checks internos. **Base implementada.**
+- Configuracion de backups desde admin. **Base implementada con ventana de backup reciente, retencion local, pruning diario y backup automatico diario opcional apagado por defecto.**
+- Version instalada visible. **Base implementada.**
+- Aviso de nueva version estable desde GitHub. **Base implementada.**
+- Boton de rollback visible. **Base implementada con preflight manual.**
+- Telemetria opcional. **Base implementada como consentimiento local.**
 
 **Entregable:** instalacion administrable por un responsable tecnico.
 
 ## Fase 7 — SLA y base de conocimiento
-- SLA configurable para todas las instalaciones.
-- Alertas y metricas.
-- Base de conocimiento interna.
+- SLA configurable para todas las instalaciones. **Base implementada con defaults por prioridad, metrica de vencidos, filtro y evento de brecha.**
+- Alertas y metricas. **Base implementada para vencidos por SLA.**
+- Base de conocimiento interna. **Base implementada con articulos Markdown, busqueda simple, gestion basica y permisos por rol.**
 
 **Entregable:** equipos miden cumplimiento y documentan soluciones internas.
 

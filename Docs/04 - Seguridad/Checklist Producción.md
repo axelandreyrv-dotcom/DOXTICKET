@@ -52,11 +52,16 @@ Checklist para instalaciones productivas o releases estables.
 - [ ] Descarga por policy.
 
 ## Admin / Operacion
-- [ ] `/admin/health` muestra PostgreSQL, Redis, storage, colas, correo y backups.
+- [x] `/admin` y `/admin/health` requieren superadmin autenticado y activo.
+- [x] `/admin/health` muestra `APP_KEY`, `APP_DEBUG`, setup bloqueado, PostgreSQL, cache/Redis, storage, colas, scheduler, workers, SMTP global, cuentas de correo y backups sin exponer secretos.
+- [x] Aviso de version nueva se consulta mediante GitHub Releases sin datos sensibles y se muestra desde cache local.
+- [x] `/admin/health` muestra workers, scheduler y SMTP global.
 - [ ] Backups configurados o decision documentada.
-- [ ] Ultimo backup visible.
-- [ ] Aviso de version nueva funciona.
-- [ ] Rollback visible.
+- [x] Ultimo backup visible.
+- [x] Historial reciente de backups visible sin rutas privadas.
+- [x] Backup manual local protegido por superadmin.
+- [x] Aviso de version nueva funciona.
+- [x] Rollback visible.
 
 ## Docker
 - [ ] Volumenes persistentes configurados.

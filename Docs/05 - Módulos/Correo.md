@@ -13,6 +13,9 @@ Correo entrante estable. Evitar duplicados es mas importante que procesar automa
 - Gmail y Microsoft 365 desde v1 segun roadmap.
 
 Estado implementado actual:
+- El SMTP global puede configurarse desde `/admin/settings` para invitaciones, reset, alertas y correos internos del sistema.
+- Los valores SMTP globales guardados en `system_settings.mail.global.*` tienen prioridad sobre `.env`; `.env` queda como fallback de instalacion temprana o recuperacion manual.
+- La contrasena SMTP global se guarda cifrada en `system_settings.mail.global.password`, no se renderiza de vuelta en la UI y dejar el campo vacio conserva el secreto existente.
 - Los correos de restablecimiento de contrasena salen por SMTP global mediante `App\Notifications\Auth\ResetPasswordNotification`, con asunto en espanol y enlace a `/password/reset/{token}`.
 - La plantilla de reset conserva el tono sobrio de DoxTicket y no incluye contrasenas ni secretos.
 

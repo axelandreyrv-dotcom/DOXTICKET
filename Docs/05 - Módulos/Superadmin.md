@@ -96,16 +96,18 @@ Estado implementado actual:
 - Revisar parametros de instalacion.
 - Mostrar version instalada y repositorio de releases.
 - Mostrar estado de telemetria y permitir activarla/desactivarla.
-- Mostrar SMTP global sin credenciales.
+- Configurar SMTP global sin renderizar secretos guardados.
 
 Estado implementado actual:
-- `/admin/settings` muestra URL publica, version instalada, repositorio de releases, estado de telemetria, mailer y remitente global.
+- `/admin/settings` muestra URL publica, version instalada, repositorio de releases, estado de telemetria, mailer, servidor, remitente global y estado de contrasena guardada.
 - `POST /admin/settings` permite a superadmins guardar URL publica y repositorio de releases como valores publicos no secretos en `system_settings`.
 - `POST /admin/settings` tambien permite guardar politica basica de backups: horas para considerar un backup como reciente y dias de retencion local documentada.
 - `POST /admin/settings` permite activar/desactivar backup automatico local y definir la hora diaria; queda apagado por defecto.
+- `POST /admin/settings` permite guardar SMTP global (`log` o `smtp`), servidor, puerto, seguridad, usuario, remitente y nombre visible. La contrasena SMTP se guarda cifrada en `system_settings`, no se muestra de vuelta y dejarla vacia conserva el valor existente.
 - Los valores guardados desde `/admin/settings` tienen prioridad sobre `.env` para el repositorio de releases; `.env` queda como fallback.
+- Los valores SMTP globales guardados desde `/admin/settings` tienen prioridad sobre `.env`; `.env` queda como fallback para instalacion temprana o recuperacion manual.
 - La actualizacion de settings publicos registra `admin.settings.updated` con las claves modificadas, sin guardar secretos.
-- La vista no muestra tokens, contrasenas, hosts sensibles privados ni secretos `.env`.
+- La vista no muestra tokens, contrasenas ni secretos `.env`; los audit logs solo registran claves cambiadas.
 - La accion de telemetria reutiliza `POST /admin/telemetry`.
 
 ### Backups

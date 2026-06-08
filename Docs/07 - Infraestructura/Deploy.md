@@ -81,7 +81,7 @@ DOXTICKET_MICROSOFT_REDIRECT_URI="${APP_URL}/app/settings/mail/oauth/microsoft36
 
 `APP_URL` puede ser dominio o IP local.
 `DOXTICKET_HTTP_PORT` define el puerto HTTP publicado por Docker; por ejemplo `8088` expone `http://127.0.0.1:8088`.
-`MAIL_MAILER=log` sirve para QA local y escribe correos en logs; para invitaciones y resets reales debe configurarse `MAIL_MAILER=smtp` con un SMTP global valido.
+`MAIL_MAILER=log` sirve para QA local y escribe correos en logs. En produccion puede arrancarse asi durante la instalacion y luego configurar SMTP global real desde `/admin/settings`; los valores guardados en la interfaz tienen prioridad sobre `.env` y la contrasena queda cifrada en base de datos. Si se prefiere recuperacion manual o instalacion no interactiva, `MAIL_MAILER=smtp` con `MAIL_HOST`, `MAIL_PORT`, `MAIL_USERNAME`, `MAIL_PASSWORD` y `MAIL_FROM_ADDRESS` sigue funcionando como fallback.
 `DOXTICKET_ATTACHMENT_MAX_BYTES` controla el tamano maximo de adjuntos entrantes y manuales; el valor por defecto es 10 MB.
 `DOXTICKET_IMAP_VALIDATE_CERT=true` mantiene validacion TLS de IMAP. Solo en QA local, si un antivirus/proxy corporativo intercepta TLS y rompe IMAP con un certificado local no confiable, puede usarse `false` temporalmente para agregar `/novalidate-cert`; no se recomienda en produccion.
 Las variables OAuth solo son necesarias si se conectara Gmail o Microsoft 365; los secretos deben quedarse en `.env` y no en frontend, docs publicas ni repositorio.
@@ -92,7 +92,7 @@ Despues de levantar la app, `/setup`:
 - crea superadmin,
 - crea empresa inicial,
 - crea membership admin inicial,
-- permite SMTP global opcional,
+- permite continuar con SMTP global pendiente para configurarlo despues desde `/admin/settings`,
 - configura telemetria opt-in,
 - bloquea setup.
 
@@ -125,6 +125,7 @@ Si el preflight pasa, el superadmin debe seguir la guia manual de restauracion c
 - `php artisan about` dentro del contenedor `app` muestra config, rutas y vistas cacheadas tras `php artisan optimize`.
 - `/login` carga.
 - `/setup` esta bloqueado tras instalar.
+- SMTP global configurado desde `/admin/settings` si se enviaran invitaciones/resets reales.
 - `/admin/health` sin errores criticos.
 - Redis y PostgreSQL OK.
 - Worker y scheduler OK.

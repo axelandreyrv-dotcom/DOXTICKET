@@ -33,7 +33,7 @@ Definir estrategia de pruebas.
 - Rollback disponible/no disponible.
 - Auditoria admin y redaccion de secretos en metadatos.
 - Telemetria opt-in.
-- Donaciones configurables sin renderizar URLs inseguras.
+- Configuracion SMTP global desde admin sin renderizar secretos guardados.
 - Base de conocimiento tenant-safe, permisos por rol y sanitizacion Markdown.
 - Accesibilidad base del shell autenticado: navegacion etiquetada, pagina activa y portal admin fuera del shell de usuario.
 - Mensajes flash del shell autenticado anunciables con `role="status"` y sin duplicados visibles.
@@ -100,11 +100,12 @@ tests/
 - `tests/Feature/Admin/AdminUsersTest.php` cubre acceso protegido a `/admin/users`, listado de usuarios globales con membresias, ocultamiento de membresias de empresas eliminadas, labels humanos de rol, envio de enlace de contrasena por superadmin, enlace desde dashboard, activacion/desactivacion de usuario, eliminacion suave de usuarios, bloqueo de autodesactivacion/autoeliminacion superadmin, edicion/eliminacion de memberships, bloqueo para no dejar una empresa sin admin activo, registro de invitaciones nuevas/existentes con correo SMTP global, enlace de definicion de contrasena solo para usuarios nuevos, bloqueo de duplicados y confirmacion accesible.
 - `tests/Feature/Admin/AdminAuditTest.php` cubre acceso protegido a `/admin/audit`, listado de eventos globales, busqueda libre por accion/empresa/actor/sujeto, filtros por accion/empresa/actor/fecha, preservacion de valores del formulario, exportacion CSV protegida con filtros y metadatos sanitizados, auditoria de la propia exportacion, enlace desde dashboard y redaccion de metadatos sensibles.
 - `tests/Feature/Admin/AdminActionAuditTest.php` cubre audit logs generados por acciones superadmin criticas: empresas incluyendo eliminacion suave, invitaciones, estado de usuarios, memberships, telemetria, backup manual, rollback y updates.
-- `tests/Feature/Admin/AdminSettingsTest.php` cubre acceso protegido a `/admin/settings`, resumen seguro de configuracion de instalacion, guardado de settings publicos no secretos, politica de backups manual/automatico local, rechazo de URLs inseguras/repositorios invalidos/rangos invalidos, auditoria de cambios y enlace desde el dashboard admin.
+- `tests/Feature/Admin/AdminSettingsTest.php` cubre acceso protegido a `/admin/settings`, resumen seguro de configuracion de instalacion, guardado de settings publicos no secretos, politica de backups manual/automatico local, configuracion SMTP global con contrasena cifrada/no renderizada, preservacion del secreto al dejarlo vacio, rechazo de URLs inseguras/repositorios invalidos/rangos invalidos/SMTP invalido, auditoria de cambios y enlace desde el dashboard admin.
 - `tests/Feature/Admin/ScheduledBackupJobTest.php` cubre que el backup automatico local no corra si esta apagado, no corra fuera de la hora configurada, se ejecute cuando corresponde y no se repita dos veces el mismo dia.
 - `tests/Feature/Admin/BackupRetentionPrunerTest.php` cubre que el pruning de retencion elimine artefactos locales antiguos, marque registros como `pruned` y preserve backups recientes, fallidos, en ejecucion o externos.
 - `tests/Feature/Admin/BackupRetentionPruneJobTest.php` cubre que el job programado invoque el pruner de retencion local.
 - `tests/Unit/Admin/SystemHealthCheckerTest.php` cubre checks de salud de instalacion, incluyendo que la ventana configurable de backup reciente afecte el estado de backups.
+- `tests/Unit/Admin/GlobalMailConfigurationTest.php` cubre que los valores SMTP globales guardados en base de datos se apliquen a `config('mail')` y que `.env`/configuracion base se conserve si no hay settings guardados.
 - `tests/Unit/Admin/GitHubReleaseUpdateCheckerTest.php` cubre uso del repositorio efectivo guardado en `system_settings` para consultar GitHub Releases, con fallback de configuracion.
 - `tests/Feature/PublicNavigationTest.php` cubre navegacion publica sin Setup visible, estado publico del instalador basado en `setup.completed`, acciones no duplicadas en login y logo/favicons de marca en el shell publico. `tests/Feature/ExampleTest.php` mantiene la regresion basica de que `/` responde 200 aunque aun no existan tablas migradas.
 - `tests/Feature/Auth/LoginTest.php` cubre login multiempresa, exclusion de memberships de empresas eliminadas, error generico de credenciales, localizacion en espanol y errores inline accesibles en `/login`.

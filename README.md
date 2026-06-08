@@ -91,7 +91,7 @@ Las imagenes Docker ejecutan el codigo y assets generados dentro del build: `app
 | `/admin/users/{user}` | Eliminacion suave protegida de usuario global |
 | `/admin/memberships/{membership}` | Actualizacion protegida de rol y estado de membership |
 | `/admin/memberships/{membership}` | Eliminacion suave protegida de acceso a empresa |
-| `/admin/settings` | Configuracion protegida de instalacion sin exponer secretos; permite guardar URL publica, repositorio de releases, politica basica de backups y backup automatico local |
+| `/admin/settings` | Configuracion protegida de instalacion sin exponer secretos; permite guardar URL publica, repositorio de releases, politica basica de backups, backup automatico local y SMTP global cifrado |
 | `/admin/health` | Resumen protegido de salud de la instalacion |
 | `/admin/backups` | Ejecucion manual protegida de backup local |
 | `/admin/rollback` | Preflight protegido de rollback manual condicionado a backup valido |
@@ -145,7 +145,7 @@ Las imagenes Docker ejecutan el codigo y assets generados dentro del build: `app
 - Busqueda libre en `/admin/audit` por accion, empresa, actor o sujeto, con filtros por accion, empresa, actor y rango de fechas.
 - Exportacion CSV protegida desde `/admin/audit/export`, respetando busqueda/filtros, metadatos sanitizados, limite v1 de 5000 filas y evento `admin.audit.exported`.
 - Auditoria automatica de acciones superadmin criticas: empresas, usuarios, memberships, telemetria, backups, rollback y chequeos manuales de updates.
-- Configuracion `/admin/settings` para revisar y guardar URL publica, repositorio de releases, politica basica de backups y backup automatico local como valores publicos no secretos, ademas de version, telemetria y SMTP global sin mostrar credenciales.
+- Configuracion `/admin/settings` para revisar y guardar URL publica, repositorio de releases, politica basica de backups y backup automatico local como valores publicos no secretos, ademas de version, telemetria y SMTP global. La contrasena SMTP global se guarda cifrada, no se muestra en pantalla y dejarla vacia conserva el secreto existente.
 - Ruta `/admin/health` con checks de `APP_KEY`, `APP_DEBUG`, setup bloqueado, base de datos, cache, colas, scheduler, workers, storage, SMTP global, cuentas de correo y backups sin exponer secretos; la ventana de backup reciente se configura desde `/admin/settings`.
 - Chequeo diario y manual desde `/admin` de GitHub Releases usando el repositorio guardado en `/admin/settings` o `DOXTICKET_GITHUB_REPOSITORY` como fallback, guardando solo estado local sin enviar datos de tenants.
 - Historial base de backups en `backup_runs`, ultimo backup visible en `/admin`, historial reciente sin rutas privadas, ejecucion manual local desde `/admin/backups`, backup automatico local opcional desde scheduler, pruning diario de retencion local y boton rollback visible con preflight protegido en `/admin/rollback`, condicionado a backup valido.
@@ -177,7 +177,7 @@ Las imagenes Docker ejecutan el codigo y assets generados dentro del build: `app
 ## Seguridad
 
 - Nunca incluir secretos, claves de API ni contrasenas en el repositorio.
-- Usar `.env` para toda configuracion sensible.
+- Usar `.env` para secretos de plataforma y almacenamiento cifrado de base de datos para secretos configurables desde la interfaz admin, como la contraseña SMTP global.
 - En Docker, usar `.env.docker` para secretos y variables de la instalacion; solo `.env.docker.example` se versiona.
 - El instalador y el panel admin deben validar entorno, permisos, `APP_KEY`, `APP_DEBUG`, Redis, PostgreSQL, storage y colas.
 - Ver `SECURITY.md`, `AGENTS.md` y `Docs/04 - Seguridad/` para reglas completas.
@@ -203,11 +203,11 @@ La guia completa esta en `Docs/07 - Infraestructura/Ubuntu Server.md`. Resumen:
 1. Crear usuario Linux dedicado `doxticket`.
 2. Instalar Nginx, PHP-FPM 8.3+, PostgreSQL, Redis, Supervisor, Composer, Node y `php-imap`.
 3. Clonar `https://github.com/axelandreyrv-dotcom/DOXTICKET.git` en `/var/www/doxticket`.
-4. Copiar `.env.example` a `.env`, generar `APP_KEY` y completar DB/Redis/SMTP.
+4. Copiar `.env.example` a `.env`, generar `APP_KEY` y completar DB/Redis. El SMTP global puede dejarse en `MAIL_MAILER=log` durante instalacion y configurarse despues desde `/admin/settings`.
 5. Ejecutar `composer install --no-dev --optimize-autoloader`, `npm ci`, `npm run build`, migraciones y `php artisan optimize`.
 6. Configurar Nginx apuntando a `public/`.
 7. Configurar Supervisor para `queue:work redis --queue=default,mail` y `schedule:work`.
-8. Completar `/setup` y revisar `/admin/health`.
+8. Completar `/setup`, configurar SMTP global desde `/admin/settings` si se enviaran invitaciones/resets reales, y revisar `/admin/health`.
 
 Nunca subir `.env`, `.env.docker`, backups, logs, sesiones, adjuntos privados, `vendor` ni `node_modules` al repositorio.
 

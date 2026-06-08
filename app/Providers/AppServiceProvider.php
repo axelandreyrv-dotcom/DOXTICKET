@@ -6,6 +6,7 @@ use App\Contracts\Mail\ImapConnection;
 use App\Contracts\Mail\MailAccountTester;
 use App\Contracts\Mail\MailboxClient;
 use App\Contracts\Mail\OAuthTokenClient;
+use App\Services\Admin\GlobalMailConfiguration;
 use App\Services\Mail\ImapMailboxClient;
 use App\Services\Mail\NativeImapConnection;
 use App\Services\Mail\OAuthHttpTokenClient;
@@ -17,8 +18,10 @@ use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
+use Throwable;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -43,6 +46,16 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        try {
+            if (Schema::hasTable('system_settings')) {
+                $this->app->make(GlobalMailConfiguration::class)->apply();
+            }
+        } catch (Throwable $exception) {
+            logger()->warning('Unable to apply global mail settings.', [
+                'exception' => $exception::class,
+            ]);
+        }
+
         RateLimiter::for('login', function (Request $request): array {
             $emailKey = Str::lower((string) $request->input('email'));
 

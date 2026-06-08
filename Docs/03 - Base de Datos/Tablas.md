@@ -21,6 +21,7 @@ Definir las tablas principales de DoxTicket v1 open source self-hosted.
 - `created_at`, `updated_at`
 
 Uso: setup completado, idioma por defecto, telemetria, version, settings publicos de instalacion, update checks y backups.
+Cuando `is_secret=true`, `value` guarda un string cifrado con Laravel encryption dentro de JSONB; la app lo descifra mediante `SystemSetting::get`.
 
 Claves publicas no secretas actuales:
 - `installation.public_url`
@@ -32,6 +33,16 @@ Claves publicas no secretas actuales:
 - `backups.schedule_hour`
 - `backups.last_scheduled_run_date`
 - `telemetry.enabled`
+- `mail.global.mailer`
+- `mail.global.host`
+- `mail.global.port`
+- `mail.global.encryption`
+- `mail.global.username`
+- `mail.global.from_address`
+- `mail.global.from_name`
+
+Claves secretas actuales:
+- `mail.global.password`
 
 ---
 
@@ -215,6 +226,7 @@ Estados visibles v1: `new|open|pending|resolved|closed`. Estados internos futuro
 - La base de tickets usa scope de tenant por `company_id` en los modelos principales de empresa.
 - La creacion manual de tickets no acepta `company_id` confiable desde input del usuario; el valor se deriva de la membresia activa en sesion.
 - `mail_accounts` guarda credenciales por empresa cifradas y no expone secretos en vistas.
+- `system_settings` guarda la contrasena SMTP global cifrada cuando se configura desde `/admin/settings`; los valores no secretos de `mail.global.*` permiten aplicar la configuracion SMTP sin editar `.env`.
 - `mail_accounts` conserva metadatos OAuth para Gmail/Microsoft 365: tokens cifrados, scopes, usuario proveedor, expiracion y fecha de conexion.
 - `users.two_factor_secret` y `users.two_factor_recovery_codes` se guardan cifrados mediante casts de Eloquent; `two_factor_confirmed_at` indica que el secreto ya fue validado por codigo TOTP.
 - `tickets.ticket_type` clasifica el ticket por pregunta, incidente, problema o solicitud sin alterar el origen real guardado en `source`.

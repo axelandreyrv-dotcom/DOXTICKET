@@ -79,7 +79,7 @@ Trazar las fases planificadas de DoxTicket como proyecto open source self-hosted
 - Panel `/admin` completo. **Base implementada con dashboard, health, backups, updates, rollback, telemetria y enlace a empresas.**
 - Listado de empresas en `/admin/companies`. **Base implementada con estado, miembros, tickets, correo activo, creacion, edicion y cambio de estado.**
 - Listado de usuarios en `/admin/users`. **Base implementada con usuarios globales, superadmins, membresias, activacion/desactivacion protegida, edicion de rol/estado de membership y registro de invitaciones con envio SMTP global.**
-- Configuracion de instalacion en `/admin/settings`. **Base implementada sin exponer secretos.**
+- Configuracion de instalacion en `/admin/settings`. **Base implementada sin exponer secretos, incluyendo SMTP global cifrado.**
 - Health checks internos. **Base implementada.**
 - Configuracion de backups desde admin. **Base implementada con ventana de backup reciente, retencion local, pruning diario y backup automatico diario opcional apagado por defecto.**
 - Version instalada visible. **Base implementada.**

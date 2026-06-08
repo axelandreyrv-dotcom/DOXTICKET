@@ -29,7 +29,7 @@ Definir como se almacenan, despliegan y rotan secretos.
 
 Todos cifrados con Laravel encryption.
 
-Estado implementado actual: `mail_accounts.password_encrypted`, `oauth_access_token`, `oauth_refresh_token`, `users.two_factor_secret` y `users.two_factor_recovery_codes` usan casts cifrados de Eloquent; el formulario de settings nunca renderiza contrasenas guardadas. El flujo OAuth usa `state` aleatorio en sesion para evitar mezclar proveedor/empresa durante callbacks, consume ese `state` una sola vez y sanitiza errores antes de guardarlos en `last_error`.
+Estado implementado actual: `mail_accounts.password_encrypted`, `oauth_access_token`, `oauth_refresh_token`, `users.two_factor_secret` y `users.two_factor_recovery_codes` usan casts cifrados de Eloquent; `system_settings` cifra valores marcados como secretos, incluyendo `mail.global.password`. Los formularios de correo nunca renderizan contrasenas guardadas: en `/admin/settings`, dejar la contrasena SMTP global vacia conserva el valor existente. El flujo OAuth usa `state` aleatorio en sesion para evitar mezclar proveedor/empresa durante callbacks, consume ese `state` una sola vez y sanitiza errores antes de guardarlos en `last_error`.
 
 ## Docker
 - `.env` local del usuario.
@@ -58,7 +58,7 @@ No loguear campos:
 - CI debe tener scanner de secretos.
 
 ## Rotacion
-- SMTP global: cambiar `.env`, limpiar cache, probar health.
+- SMTP global: cambiar desde `/admin/settings` cuando la app este instalada; `.env` queda como fallback de recuperacion. Luego limpiar cache/reiniciar workers si se usan procesos largos y probar health.
 - Credenciales por empresa: actualizar desde settings, re-cifrar.
 - APP_KEY: solo en compromiso, requiere plan especial de re-cifrado.
 

@@ -61,7 +61,7 @@ Listar las funcionalidades que DoxTicket debe ofrecer en v1, agrupadas por domin
 - **RF-6.12** Cerrar tickets solo despues de `resolved`.
 
 ## RF-7. Correo
-- **RF-7.1** SMTP global del sistema.
+- **RF-7.1** SMTP global del sistema configurable desde `/admin/settings`, con contrasena cifrada y fallback por `.env`.
 - **RF-7.2** Una cuenta de soporte por empresa.
 - **RF-7.3** IMAP/SMTP generico.
 - **RF-7.4** Gmail y Microsoft 365 desde v1 segun roadmap, usando OAuth con tokens cifrados y `state` tenant-safe.

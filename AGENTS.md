@@ -96,7 +96,7 @@ Permite que departamentos de TI instalen su propio sistema de tickets, conecten 
 | `/admin/users/{user}` | Eliminacion suave protegida de usuario global via DELETE |
 | `/admin/memberships/{membership}` | Actualizacion protegida de rol y estado de membership via PUT |
 | `/admin/memberships/{membership}` | Eliminacion suave protegida de acceso a empresa via DELETE |
-| `/admin/settings` | Configuracion protegida de instalacion para superadmins sin exponer secretos; permite guardar valores publicos no sensibles, politica basica de backups y backup automatico local via POST |
+| `/admin/settings` | Configuracion protegida de instalacion para superadmins sin exponer secretos; permite guardar valores publicos no sensibles, politica basica de backups, backup automatico local y SMTP global cifrado via POST |
 | `/admin/health` | Resumen protegido de salud de la instalacion para superadmins |
 | `/admin/backups` | Ejecucion manual protegida de backup local para superadmins |
 | `/admin/rollback` | Preflight protegido de rollback manual para superadmins, condicionado a backup valido |
@@ -153,6 +153,8 @@ Estas decisiones estan tomadas. No proponer alternativas sin justificacion docum
 - La estabilidad del correo entrante es la prioridad v1.
 - Una cuenta de soporte por empresa en v1.
 - Existe SMTP global del sistema para invitaciones, reset, alertas y correos internos.
+- El SMTP global se puede configurar desde `/admin/settings`; la contrasena se guarda cifrada en `system_settings.mail.global.password`, nunca se renderiza de vuelta en la UI y dejar el campo vacio conserva el secreto existente.
+- Los valores SMTP globales guardados en `system_settings.mail.global.*` tienen prioridad sobre `.env`; `.env` queda como fallback de instalacion temprana o recuperacion manual.
 - El reset de contrasena usa SMTP global y notificacion `ResetPasswordNotification` con asunto en espanol y enlace al token.
 - Se soporta IMAP/SMTP generico y se planifican Gmail/Microsoft 365 desde v1.
 - Gmail/Microsoft 365 usan base OAuth con tokens cifrados; no mezclar tokens OAuth con contrasenas IMAP/SMTP.
@@ -231,7 +233,7 @@ Estas decisiones estan tomadas. No proponer alternativas sin justificacion docum
 - La exportacion CSV de auditoria queda limitada a 5000 filas por solicitud en v1.
 - Las acciones superadmin de crear/editar/cambiar estado/eliminar empresas, invitar usuarios, activar/desactivar usuarios, actualizar memberships, actualizar settings publicos, cambiar telemetria, ejecutar backups, solicitar rollback y revisar updates deben registrar audit logs.
 - Los metadatos de audit logs deben sanitizarse antes de guardarse y antes de mostrarse si sus claves parecen contener contrasenas, tokens, secretos, cookies, autorizacion o credenciales.
-- `/admin/settings` muestra URL publica, version, repositorio de releases, telemetria, politica basica de backups, backup automatico local y SMTP global sin exponer credenciales; los superadmins pueden guardar URL publica, repositorio de releases, ventana de backup reciente, dias de retencion local, activacion del backup automatico y hora diaria como settings publicos no secretos.
+- `/admin/settings` muestra URL publica, version, repositorio de releases, telemetria, politica basica de backups, backup automatico local y SMTP global sin exponer credenciales; los superadmins pueden guardar URL publica, repositorio de releases, ventana de backup reciente, dias de retencion local, activacion del backup automatico, hora diaria y SMTP global. Los secretos SMTP se guardan cifrados y los audit logs solo registran claves cambiadas.
 - `/admin/health` muestra health base de `APP_KEY`, `APP_DEBUG`, setup bloqueado, PostgreSQL, cache/Redis, colas, scheduler, workers, storage, SMTP global, cuentas de correo y backups; los mensajes visibles no deben exponer secretos y la ventana de backup reciente se toma de `system_settings.backups.recent_success_hours`.
 - Scheduler y workers se observan con heartbeats en cache; ausencia o antiguedad mayor a 10 minutos debe marcar warning.
 - El chequeo de version usa GitHub Releases del repositorio efectivo: `system_settings.updates.github_repository` si fue guardado desde `/admin/settings`, o `DOXTICKET_GITHUB_REPOSITORY` como fallback; se ejecuta en cola/scheduler y guarda el resultado en `system_settings.updates.latest`.
@@ -260,7 +262,7 @@ Estas decisiones estan tomadas. No proponer alternativas sin justificacion docum
 
 ### Secretos
 - Prohibido incluir claves reales, tokens, contrasenas o secretos en frontend, vistas, JS compilado o repositorio.
-- Toda clave debe vivir en `.env`.
+- Toda clave debe vivir en `.env` o en almacenamiento cifrado de base de datos cuando la app ofrece un formulario administrativo para rotarla.
 - En Docker, las claves de la instalacion viven en `.env.docker`; solo `.env.docker.example` puede versionarse.
 - `.env` esta en `.gitignore`. Verificar siempre antes de publicar.
 

@@ -174,7 +174,7 @@ class SystemHealthChecker
             $configured ? 'ok' : 'warning',
             $configured
                 ? 'SMTP global configurado para correos del sistema.'
-                : 'SMTP global no configurado para produccion. Revisa MAIL_MAILER, MAIL_HOST y MAIL_FROM_ADDRESS.',
+                : 'SMTP global no configurado para produccion. Configuralo en /admin/settings o revisa MAIL_MAILER, MAIL_HOST y MAIL_FROM_ADDRESS.',
         );
     }
 

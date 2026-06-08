@@ -7,6 +7,7 @@ use App\Models\SystemSetting;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
 class AdminSettingsTest extends TestCase
@@ -49,7 +50,9 @@ class AdminSettingsTest extends TestCase
             ->assertSee('doxsuite/doxticket')
             ->assertSee('Telemetría')
             ->assertSee('Activa')
-            ->assertSee('Correo global');
+            ->assertSee('Correo global')
+            ->assertSee('SMTP del sistema')
+            ->assertSee('Contraseña SMTP');
     }
 
     public function test_superadmin_can_update_public_installation_settings(): void
@@ -95,6 +98,87 @@ class AdminSettingsTest extends TestCase
         ], $auditLog->meta['changed_keys']);
     }
 
+    public function test_superadmin_can_update_global_smtp_settings_without_exposing_password(): void
+    {
+        $superadmin = User::factory()->create([
+            'is_superadmin' => true,
+            'is_active' => true,
+        ]);
+
+        $this->actingAs($superadmin)
+            ->post('/admin/settings', [
+                'public_url' => 'https://helpdesk.example.test',
+                'github_repository' => 'acme/doxticket',
+                'backup_recent_success_hours' => 48,
+                'backup_retention_days' => 30,
+                'backup_schedule_enabled' => '0',
+                'backup_schedule_hour' => 3,
+                'mail_mailer' => 'smtp',
+                'mail_host' => 'smtp.example.test',
+                'mail_port' => 587,
+                'mail_encryption' => 'tls',
+                'mail_username' => 'notifier@example.test',
+                'mail_password' => 'smtp-secret-value',
+                'mail_from_address' => 'support@example.test',
+                'mail_from_name' => 'DoxTicket',
+            ])
+            ->assertRedirect('/admin/settings');
+
+        $this->assertSame('smtp', SystemSetting::get('mail.global.mailer'));
+        $this->assertSame('smtp.example.test', SystemSetting::get('mail.global.host'));
+        $this->assertSame(587, SystemSetting::get('mail.global.port'));
+        $this->assertSame('tls', SystemSetting::get('mail.global.encryption'));
+        $this->assertSame('notifier@example.test', SystemSetting::get('mail.global.username'));
+        $this->assertSame('smtp-secret-value', SystemSetting::get('mail.global.password'));
+        $this->assertSame('support@example.test', SystemSetting::get('mail.global.from_address'));
+        $this->assertSame('DoxTicket', SystemSetting::get('mail.global.from_name'));
+
+        $rawPassword = DB::table('system_settings')->where('key', 'mail.global.password')->value('value');
+
+        $this->assertIsString($rawPassword);
+        $this->assertStringNotContainsString('smtp-secret-value', $rawPassword);
+
+        $this->actingAs($superadmin)
+            ->get('/admin/settings')
+            ->assertOk()
+            ->assertSee('smtp.example.test')
+            ->assertSee('notifier@example.test')
+            ->assertSee('support@example.test')
+            ->assertSee('Contraseña guardada')
+            ->assertDontSee('smtp-secret-value');
+    }
+
+    public function test_blank_global_smtp_password_keeps_existing_secret(): void
+    {
+        SystemSetting::put('mail.global.password', 'existing-secret', true);
+
+        $superadmin = User::factory()->create([
+            'is_superadmin' => true,
+            'is_active' => true,
+        ]);
+
+        $this->actingAs($superadmin)
+            ->post('/admin/settings', [
+                'public_url' => 'https://helpdesk.example.test',
+                'github_repository' => 'acme/doxticket',
+                'backup_recent_success_hours' => 48,
+                'backup_retention_days' => 30,
+                'backup_schedule_enabled' => '0',
+                'backup_schedule_hour' => 3,
+                'mail_mailer' => 'smtp',
+                'mail_host' => 'smtp.example.test',
+                'mail_port' => 587,
+                'mail_encryption' => 'tls',
+                'mail_username' => 'notifier@example.test',
+                'mail_password' => '',
+                'mail_from_address' => 'support@example.test',
+                'mail_from_name' => 'DoxTicket',
+            ])
+            ->assertRedirect('/admin/settings');
+
+        $this->assertSame('existing-secret', SystemSetting::get('mail.global.password'));
+    }
+
     public function test_superadmin_sees_saved_backup_policy_settings(): void
     {
         SystemSetting::put('backups.recent_success_hours', 72);
@@ -134,6 +218,11 @@ class AdminSettingsTest extends TestCase
                 'backup_retention_days' => 366,
                 'backup_schedule_enabled' => '1',
                 'backup_schedule_hour' => 24,
+                'mail_mailer' => 'sendmail',
+                'mail_host' => '',
+                'mail_port' => 70000,
+                'mail_encryption' => 'starttls',
+                'mail_from_address' => 'not-an-email',
             ])
             ->assertRedirect('/admin/settings')
             ->assertInvalid([
@@ -142,6 +231,10 @@ class AdminSettingsTest extends TestCase
                 'backup_recent_success_hours',
                 'backup_retention_days',
                 'backup_schedule_hour',
+                'mail_mailer',
+                'mail_port',
+                'mail_encryption',
+                'mail_from_address',
             ]);
 
         $this->assertNull(SystemSetting::get('installation.public_url'));
@@ -149,6 +242,7 @@ class AdminSettingsTest extends TestCase
         $this->assertNull(SystemSetting::get('backups.recent_success_hours'));
         $this->assertNull(SystemSetting::get('backups.retention_days'));
         $this->assertNull(SystemSetting::get('backups.schedule_hour'));
+        $this->assertNull(SystemSetting::get('mail.global.mailer'));
     }
 
     public function test_superadmin_sees_saved_public_settings_without_secret_values(): void

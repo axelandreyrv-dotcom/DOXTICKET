@@ -163,6 +163,159 @@
                             </div>
                         </div>
 
+                        <div class="border-t border-[var(--color-border-default)] pt-4">
+                            <p class="text-xs font-medium uppercase tracking-[0.08em] text-[var(--color-text-muted)]">Correo global</p>
+                            <h3 class="mt-2 text-base font-semibold">SMTP del sistema</h3>
+                            <p class="mt-1 text-sm leading-6 text-[var(--color-text-secondary)]">
+                                Se usa para invitaciones, enlaces de contraseña, alertas internas y correos del sistema.
+                            </p>
+
+                            <div class="mt-4 grid gap-4 md:grid-cols-2">
+                                <div>
+                                    <label for="mail_mailer" class="text-sm font-medium text-[var(--color-text-primary)]">Mailer</label>
+                                    <select
+                                        id="mail_mailer"
+                                        name="mail_mailer"
+                                        aria-invalid="{{ $errors->has('mail_mailer') ? 'true' : 'false' }}"
+                                        @if ($errors->has('mail_mailer')) aria-describedby="mail_mailer-error" @endif
+                                        class="mt-2 w-full rounded-md border border-[var(--color-border-default)] bg-[var(--color-bg-surface)] px-3 py-2 text-sm text-[var(--color-text-primary)] outline-none transition focus:border-[var(--color-action-primary)] focus:ring-2 focus:ring-[var(--color-action-primary)]/20"
+                                    >
+                                        <option value="log" @selected(old('mail_mailer', $form['mail_mailer']) === 'log')>Log</option>
+                                        <option value="smtp" @selected(old('mail_mailer', $form['mail_mailer']) === 'smtp')>SMTP</option>
+                                    </select>
+                                    @error('mail_mailer')
+                                        <p id="mail_mailer-error" role="alert" class="mt-2 text-sm text-[var(--color-danger)]">{{ $message }}</p>
+                                    @enderror
+                                </div>
+
+                                <div>
+                                    <label for="mail_from_address" class="text-sm font-medium text-[var(--color-text-primary)]">Remitente del sistema</label>
+                                    <input
+                                        id="mail_from_address"
+                                        name="mail_from_address"
+                                        type="email"
+                                        value="{{ old('mail_from_address', $form['mail_from_address']) }}"
+                                        aria-invalid="{{ $errors->has('mail_from_address') ? 'true' : 'false' }}"
+                                        @if ($errors->has('mail_from_address')) aria-describedby="mail_from_address-error" @endif
+                                        class="mt-2 w-full rounded-md border border-[var(--color-border-default)] bg-[var(--color-bg-surface)] px-3 py-2 text-sm text-[var(--color-text-primary)] outline-none transition focus:border-[var(--color-action-primary)] focus:ring-2 focus:ring-[var(--color-action-primary)]/20"
+                                        placeholder="soporte@example.com"
+                                    >
+                                    @error('mail_from_address')
+                                        <p id="mail_from_address-error" role="alert" class="mt-2 text-sm text-[var(--color-danger)]">{{ $message }}</p>
+                                    @enderror
+                                </div>
+
+                                <div>
+                                    <label for="mail_from_name" class="text-sm font-medium text-[var(--color-text-primary)]">Nombre del remitente</label>
+                                    <input
+                                        id="mail_from_name"
+                                        name="mail_from_name"
+                                        type="text"
+                                        value="{{ old('mail_from_name', $form['mail_from_name']) }}"
+                                        aria-invalid="{{ $errors->has('mail_from_name') ? 'true' : 'false' }}"
+                                        @if ($errors->has('mail_from_name')) aria-describedby="mail_from_name-error" @endif
+                                        class="mt-2 w-full rounded-md border border-[var(--color-border-default)] bg-[var(--color-bg-surface)] px-3 py-2 text-sm text-[var(--color-text-primary)] outline-none transition focus:border-[var(--color-action-primary)] focus:ring-2 focus:ring-[var(--color-action-primary)]/20"
+                                        placeholder="DoxTicket"
+                                    >
+                                    @error('mail_from_name')
+                                        <p id="mail_from_name-error" role="alert" class="mt-2 text-sm text-[var(--color-danger)]">{{ $message }}</p>
+                                    @enderror
+                                </div>
+
+                                <div>
+                                    <label for="mail_host" class="text-sm font-medium text-[var(--color-text-primary)]">Servidor SMTP</label>
+                                    <input
+                                        id="mail_host"
+                                        name="mail_host"
+                                        type="text"
+                                        value="{{ old('mail_host', $form['mail_host']) }}"
+                                        aria-invalid="{{ $errors->has('mail_host') ? 'true' : 'false' }}"
+                                        @if ($errors->has('mail_host')) aria-describedby="mail_host-error" @endif
+                                        class="mt-2 w-full rounded-md border border-[var(--color-border-default)] bg-[var(--color-bg-surface)] px-3 py-2 text-sm text-[var(--color-text-primary)] outline-none transition focus:border-[var(--color-action-primary)] focus:ring-2 focus:ring-[var(--color-action-primary)]/20"
+                                        placeholder="smtp.gmail.com"
+                                    >
+                                    @error('mail_host')
+                                        <p id="mail_host-error" role="alert" class="mt-2 text-sm text-[var(--color-danger)]">{{ $message }}</p>
+                                    @enderror
+                                </div>
+
+                                <div>
+                                    <label for="mail_port" class="text-sm font-medium text-[var(--color-text-primary)]">Puerto SMTP</label>
+                                    <input
+                                        id="mail_port"
+                                        name="mail_port"
+                                        type="number"
+                                        min="1"
+                                        max="65535"
+                                        inputmode="numeric"
+                                        value="{{ old('mail_port', $form['mail_port']) }}"
+                                        aria-invalid="{{ $errors->has('mail_port') ? 'true' : 'false' }}"
+                                        @if ($errors->has('mail_port')) aria-describedby="mail_port-error" @endif
+                                        class="mt-2 w-full rounded-md border border-[var(--color-border-default)] bg-[var(--color-bg-surface)] px-3 py-2 text-sm text-[var(--color-text-primary)] outline-none transition focus:border-[var(--color-action-primary)] focus:ring-2 focus:ring-[var(--color-action-primary)]/20"
+                                    >
+                                    @error('mail_port')
+                                        <p id="mail_port-error" role="alert" class="mt-2 text-sm text-[var(--color-danger)]">{{ $message }}</p>
+                                    @enderror
+                                </div>
+
+                                <div>
+                                    <label for="mail_encryption" class="text-sm font-medium text-[var(--color-text-primary)]">Seguridad SMTP</label>
+                                    <select
+                                        id="mail_encryption"
+                                        name="mail_encryption"
+                                        aria-invalid="{{ $errors->has('mail_encryption') ? 'true' : 'false' }}"
+                                        @if ($errors->has('mail_encryption')) aria-describedby="mail_encryption-error" @endif
+                                        class="mt-2 w-full rounded-md border border-[var(--color-border-default)] bg-[var(--color-bg-surface)] px-3 py-2 text-sm text-[var(--color-text-primary)] outline-none transition focus:border-[var(--color-action-primary)] focus:ring-2 focus:ring-[var(--color-action-primary)]/20"
+                                    >
+                                        <option value="tls" @selected(old('mail_encryption', $form['mail_encryption']) === 'tls')>TLS</option>
+                                        <option value="ssl" @selected(old('mail_encryption', $form['mail_encryption']) === 'ssl')>SSL</option>
+                                        <option value="none" @selected(old('mail_encryption', $form['mail_encryption']) === 'none')>Sin cifrado</option>
+                                    </select>
+                                    @error('mail_encryption')
+                                        <p id="mail_encryption-error" role="alert" class="mt-2 text-sm text-[var(--color-danger)]">{{ $message }}</p>
+                                    @enderror
+                                </div>
+
+                                <div>
+                                    <label for="mail_username" class="text-sm font-medium text-[var(--color-text-primary)]">Usuario SMTP</label>
+                                    <input
+                                        id="mail_username"
+                                        name="mail_username"
+                                        type="text"
+                                        value="{{ old('mail_username', $form['mail_username']) }}"
+                                        aria-invalid="{{ $errors->has('mail_username') ? 'true' : 'false' }}"
+                                        @if ($errors->has('mail_username')) aria-describedby="mail_username-error" @endif
+                                        class="mt-2 w-full rounded-md border border-[var(--color-border-default)] bg-[var(--color-bg-surface)] px-3 py-2 text-sm text-[var(--color-text-primary)] outline-none transition focus:border-[var(--color-action-primary)] focus:ring-2 focus:ring-[var(--color-action-primary)]/20"
+                                        placeholder="usuario@example.com"
+                                    >
+                                    @error('mail_username')
+                                        <p id="mail_username-error" role="alert" class="mt-2 text-sm text-[var(--color-danger)]">{{ $message }}</p>
+                                    @enderror
+                                </div>
+
+                                <div>
+                                    <label for="mail_password" class="text-sm font-medium text-[var(--color-text-primary)]">Contraseña SMTP</label>
+                                    <input
+                                        id="mail_password"
+                                        name="mail_password"
+                                        type="password"
+                                        value=""
+                                        autocomplete="new-password"
+                                        aria-invalid="{{ $errors->has('mail_password') ? 'true' : 'false' }}"
+                                        @if ($errors->has('mail_password')) aria-describedby="mail_password-error mail_password-help" @else aria-describedby="mail_password-help" @endif
+                                        class="mt-2 w-full rounded-md border border-[var(--color-border-default)] bg-[var(--color-bg-surface)] px-3 py-2 text-sm text-[var(--color-text-primary)] outline-none transition focus:border-[var(--color-action-primary)] focus:ring-2 focus:ring-[var(--color-action-primary)]/20"
+                                        placeholder="{{ $form['mail_password_configured'] ? 'Dejar vacío para conservarla' : 'Contraseña o app password' }}"
+                                    >
+                                    <p id="mail_password-help" class="mt-2 text-sm text-[var(--color-text-secondary)]">
+                                        {{ $form['mail_password_configured'] ? 'Contraseña guardada. Si deja este campo vacío, no se cambia.' : 'No hay contraseña SMTP guardada.' }}
+                                    </p>
+                                    @error('mail_password')
+                                        <p id="mail_password-error" role="alert" class="mt-2 text-sm text-[var(--color-danger)]">{{ $message }}</p>
+                                    @enderror
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="flex items-center justify-between gap-4 border-t border-[var(--color-border-default)] pt-4">
                             <p class="text-sm text-[var(--color-text-secondary)]">
                                 Versión instalada: <span class="font-mono text-[var(--color-text-primary)]">{{ $settings['version'] }}</span>
@@ -210,8 +363,16 @@
                                 <dd class="font-mono text-[var(--color-text-primary)]">{{ $settings['mail_mailer'] }}</dd>
                             </div>
                             <div class="flex flex-col gap-1">
+                                <dt class="text-[var(--color-text-muted)]">Servidor</dt>
+                                <dd class="font-mono break-all text-[var(--color-text-primary)]">{{ $settings['mail_host'] }}</dd>
+                            </div>
+                            <div class="flex flex-col gap-1">
                                 <dt class="text-[var(--color-text-muted)]">Remitente del sistema</dt>
                                 <dd class="font-mono break-all text-[var(--color-text-primary)]">{{ $settings['mail_from'] }}</dd>
+                            </div>
+                            <div class="flex flex-col gap-1">
+                                <dt class="text-[var(--color-text-muted)]">Contraseña</dt>
+                                <dd class="text-[var(--color-text-primary)]">{{ $settings['mail_password_configured'] ? 'Guardada' : 'Sin guardar' }}</dd>
                             </div>
                         </dl>
                     </article>

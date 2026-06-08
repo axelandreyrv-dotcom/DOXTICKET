@@ -109,7 +109,7 @@ QUEUE_CONNECTION=redis
 SESSION_DRIVER=redis
 CACHE_STORE=redis
 
-MAIL_MAILER=smtp
+MAIL_MAILER=log
 MAIL_SCHEME=smtp
 MAIL_HOST=
 MAIL_PORT=587
@@ -121,6 +121,8 @@ MAIL_FROM_NAME=DoxTicket
 DOXTICKET_GITHUB_REPOSITORY=axelandreyrv-dotcom/DOXTICKET
 DOXTICKET_IMAP_VALIDATE_CERT=true
 ```
+
+`MAIL_MAILER=log` permite terminar la instalacion sin enviar correos reales. Despues de completar `/setup`, el superadmin puede entrar a `/admin/settings` y configurar SMTP global desde la interfaz; esos valores tienen prioridad sobre `.env` y la contrasena queda cifrada. Si se requiere instalacion no interactiva o recuperacion manual, tambien se puede configurar SMTP directamente en `.env` cambiando `MAIL_MAILER=smtp`.
 
 No usar `DOXTICKET_IMAP_VALIDATE_CERT=false` en produccion. Esa opcion existe solo para QA local cuando un antivirus o proxy rompe la cadena TLS de IMAP.
 
@@ -263,7 +265,7 @@ Antes de actualizar, confirmar backup reciente desde `/admin` o por procedimient
 - Storage escribible y no publico.
 - Worker y scheduler activos.
 - `php -m` muestra `imap`, `pdo_pgsql` y `redis`.
-- SMTP global probado si se usaran invitaciones/reset reales.
+- SMTP global configurado desde `/admin/settings` y probado si se usaran invitaciones/reset reales.
 - Cuenta IMAP/SMTP de empresa probada desde `/app/settings`.
 - Backups funcionando.
 

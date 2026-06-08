@@ -20,15 +20,12 @@ Definir las tablas principales de DoxTicket v1 open source self-hosted.
 - `is_secret` BOOLEAN NOT NULL DEFAULT false
 - `created_at`, `updated_at`
 
-Uso: setup completado, idioma por defecto, telemetria, version, settings publicos de instalacion, update checks, donaciones y backups.
+Uso: setup completado, idioma por defecto, telemetria, version, settings publicos de instalacion, update checks y backups.
 
 Claves publicas no secretas actuales:
 - `installation.public_url`
 - `updates.github_repository`
 - `updates.latest`
-- `donations.paypal_url`
-- `donations.github_sponsors_url`
-- `donations.buy_me_a_coffee_url`
 - `backups.recent_success_hours`
 - `backups.retention_days`
 - `backups.schedule_enabled`

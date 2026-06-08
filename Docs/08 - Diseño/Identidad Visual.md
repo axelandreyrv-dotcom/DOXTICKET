@@ -77,7 +77,6 @@ La seleccion final debe priorizar legibilidad en tablas, tickets y dashboards.
 - Espanol por defecto, ingles disponible.
 
 ## Donaciones
-Los enlaces de donacion son discretos. Nunca interrumpen la operacion.
 
 ## Relacion
 - `UI UX.md`

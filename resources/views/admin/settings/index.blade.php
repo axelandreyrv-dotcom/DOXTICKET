@@ -73,59 +73,6 @@
                             @enderror
                         </div>
 
-                        <div class="grid gap-4 md:grid-cols-3">
-                            <div>
-                                <label for="donation_paypal_url" class="text-sm font-medium text-[var(--color-text-primary)]">PayPal</label>
-                                <input
-                                    id="donation_paypal_url"
-                                    name="donation_paypal_url"
-                                    type="url"
-                                    value="{{ old('donation_paypal_url', $form['donation_paypal_url']) }}"
-                                    aria-invalid="{{ $errors->has('donation_paypal_url') ? 'true' : 'false' }}"
-                                    @if ($errors->has('donation_paypal_url')) aria-describedby="donation_paypal_url-error" @endif
-                                    class="mt-2 w-full rounded-md border border-[var(--color-border-default)] bg-[var(--color-bg-surface)] px-3 py-2 text-sm text-[var(--color-text-primary)] outline-none transition focus:border-[var(--color-action-primary)] focus:ring-2 focus:ring-[var(--color-action-primary)]/20"
-                                    placeholder="https://paypal.me/doxticket"
-                                >
-                                @error('donation_paypal_url')
-                                    <p id="donation_paypal_url-error" role="alert" class="mt-2 text-sm text-[var(--color-danger)]">{{ $message }}</p>
-                                @enderror
-                            </div>
-
-                            <div>
-                                <label for="donation_github_sponsors_url" class="text-sm font-medium text-[var(--color-text-primary)]">GitHub Sponsors</label>
-                                <input
-                                    id="donation_github_sponsors_url"
-                                    name="donation_github_sponsors_url"
-                                    type="url"
-                                    value="{{ old('donation_github_sponsors_url', $form['donation_github_sponsors_url']) }}"
-                                    aria-invalid="{{ $errors->has('donation_github_sponsors_url') ? 'true' : 'false' }}"
-                                    @if ($errors->has('donation_github_sponsors_url')) aria-describedby="donation_github_sponsors_url-error" @endif
-                                    class="mt-2 w-full rounded-md border border-[var(--color-border-default)] bg-[var(--color-bg-surface)] px-3 py-2 text-sm text-[var(--color-text-primary)] outline-none transition focus:border-[var(--color-action-primary)] focus:ring-2 focus:ring-[var(--color-action-primary)]/20"
-                                    placeholder="https://github.com/sponsors/doxticket"
-                                >
-                                @error('donation_github_sponsors_url')
-                                    <p id="donation_github_sponsors_url-error" role="alert" class="mt-2 text-sm text-[var(--color-danger)]">{{ $message }}</p>
-                                @enderror
-                            </div>
-
-                            <div>
-                                <label for="donation_buy_me_a_coffee_url" class="text-sm font-medium text-[var(--color-text-primary)]">Buy Me a Coffee</label>
-                                <input
-                                    id="donation_buy_me_a_coffee_url"
-                                    name="donation_buy_me_a_coffee_url"
-                                    type="url"
-                                    value="{{ old('donation_buy_me_a_coffee_url', $form['donation_buy_me_a_coffee_url']) }}"
-                                    aria-invalid="{{ $errors->has('donation_buy_me_a_coffee_url') ? 'true' : 'false' }}"
-                                    @if ($errors->has('donation_buy_me_a_coffee_url')) aria-describedby="donation_buy_me_a_coffee_url-error" @endif
-                                    class="mt-2 w-full rounded-md border border-[var(--color-border-default)] bg-[var(--color-bg-surface)] px-3 py-2 text-sm text-[var(--color-text-primary)] outline-none transition focus:border-[var(--color-action-primary)] focus:ring-2 focus:ring-[var(--color-action-primary)]/20"
-                                    placeholder="https://buymeacoffee.com/doxticket"
-                                >
-                                @error('donation_buy_me_a_coffee_url')
-                                    <p id="donation_buy_me_a_coffee_url-error" role="alert" class="mt-2 text-sm text-[var(--color-danger)]">{{ $message }}</p>
-                                @enderror
-                            </div>
-                        </div>
-
                         <div class="border-t border-[var(--color-border-default)] pt-4">
                             <p class="text-xs font-medium uppercase tracking-[0.08em] text-[var(--color-text-muted)]">Backups</p>
                             <h3 class="mt-2 text-base font-semibold">Política de backups</h3>
@@ -242,15 +189,6 @@
                                 {{ $settings['telemetry_enabled'] ? 'Desactivar' : 'Activar' }}
                             </button>
                         </form>
-                    </article>
-
-                    <article class="rounded-lg border border-[var(--color-border-default)] bg-[var(--color-bg-surface)] p-4 sm:p-5">
-                        <p class="text-xs font-medium uppercase tracking-[0.08em] text-[var(--color-text-muted)]">Open source</p>
-                        <h2 class="mt-2 text-lg font-semibold">Donaciones</h2>
-                        <p class="mt-4 text-sm leading-6 text-[var(--color-text-secondary)]">
-                            {{ $settings['donation_links_count'] }} {{ $settings['donation_links_count'] === 1 ? 'enlace configurado' : 'enlaces configurados' }}.
-                            Solo se aceptan URLs públicas http o https.
-                        </p>
                     </article>
 
                     <article class="rounded-lg border border-[var(--color-border-default)] bg-[var(--color-bg-surface)] p-4 sm:p-5">

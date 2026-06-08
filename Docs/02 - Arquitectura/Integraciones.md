@@ -9,7 +9,6 @@ Listar integraciones externas de DoxTicket y sus consideraciones de seguridad.
 - Gmail via OAuth/API.
 - Microsoft 365 via OAuth/API.
 - GitHub Releases para aviso de nueva version.
-- Donaciones via enlaces externos.
 - Telemetria opcional anonima.
 - S3 compatible opcional/futuro para adjuntos/backups.
 
@@ -67,25 +66,13 @@ Estado implementado actual:
 - Se puede ejecutar automaticamente desde scheduler/cola o manualmente con `POST /admin/updates/check`.
 - No agrega query params ni payload con datos de la instalacion.
 
-## 6. Donaciones
-- PayPal.
-- GitHub Sponsors.
-- Buy Me a Coffee.
-
-Solo enlaces externos. No almacenar pagos ni datos financieros.
-
-Estado implementado actual:
-- `/admin` muestra enlaces configurados por `DOXTICKET_DONATION_PAYPAL_URL`, `DOXTICKET_DONATION_GITHUB_SPONSORS_URL`, `DOXTICKET_DONATION_BUY_ME_A_COFFEE_URL` o guardados por superadmin en `/admin/settings`.
-- Solo se aceptan URLs `http`/`https`; esquemas inseguros como `javascript:` no se renderizan.
-- No se envia informacion de la instalacion a esos proveedores desde DoxTicket.
-
-## 7. Telemetria opcional
+## 6. Telemetria opcional
 - Apagada por defecto.
 - Activacion explicita en `/setup`.
 - Datos permitidos: version, metodo de instalacion, sistema operativo/container, conteos aproximados y anonimos.
 - Datos prohibidos: nombres, correos, asuntos, cuerpos, adjuntos, IPs publicas, secretos.
 
-## 8. S3 compatible
+## 7. S3 compatible
 - Opcional/futuro.
 - Usar driver de Laravel.
 - Adjuntos y backups deben seguir protegidos por policies o URLs firmadas.

@@ -74,7 +74,7 @@
                         <p class="text-xs font-medium uppercase tracking-[0.08em] text-[var(--color-text-muted)]">Instalación</p>
                         <h2 class="mt-2 text-lg font-semibold">Configuración</h2>
                         <p class="mt-2 text-sm leading-6 text-[var(--color-text-secondary)]">
-                            Revisa versión, repositorio de releases, telemetría, donaciones y correo global sin exponer secretos.
+                            Revisa versión, repositorio de releases, telemetría y correo global sin exponer secretos.
                         </p>
                         <a href="{{ route('admin.settings.index') }}" class="mt-4 inline-flex rounded-md border border-[var(--color-border-default)] px-3 py-2 text-sm font-medium text-[var(--color-text-secondary)] hover:border-[var(--color-border-strong)] hover:text-[var(--color-text-primary)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-action-primary)]">
                             Abrir configuración
@@ -167,30 +167,6 @@
                     </div>
                 </article>
             </section>
-
-            @if (count($donations) > 0)
-                <section aria-labelledby="donations-heading" class="pb-8">
-                    <article class="rounded-lg border border-[var(--color-border-default)] bg-[var(--color-bg-surface)] p-4 sm:p-5">
-                        <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-                            <div>
-                                <p class="text-xs font-medium uppercase tracking-[0.08em] text-[var(--color-text-muted)]">Open source</p>
-                                <h2 id="donations-heading" class="mt-2 text-lg font-semibold">Apoyar DoxTicket</h2>
-                                <p class="mt-2 max-w-2xl text-sm leading-6 text-[var(--color-text-secondary)]">
-                                    Links opcionales para apoyar el desarrollo. No activan billing ni cambian funciones de la instalación.
-                                </p>
-                            </div>
-
-                            <div class="flex flex-wrap gap-2 sm:justify-end">
-                                @foreach ($donations as $donation)
-                                    <a href="{{ $donation['url'] }}" rel="noreferrer" class="rounded-md border border-[var(--color-border-default)] px-3 py-2 text-sm font-medium text-[var(--color-text-secondary)] hover:border-[var(--color-border-strong)] hover:text-[var(--color-text-primary)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-action-primary)]">
-                                        {{ $donation['label'] }}
-                                    </a>
-                                @endforeach
-                            </div>
-                        </div>
-                    </article>
-                </section>
-            @endif
 
             <section aria-labelledby="backups-heading" class="pb-8">
                 <article class="rounded-lg border border-[var(--color-border-default)] bg-[var(--color-bg-surface)] p-4 sm:p-5">

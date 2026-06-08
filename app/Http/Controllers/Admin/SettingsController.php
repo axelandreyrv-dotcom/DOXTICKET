@@ -17,7 +17,6 @@ class SettingsController extends Controller
     {
         $form = $publicSettings->formValues();
         $backupForm = $backupPolicy->formValues();
-        $donationLinks = $publicSettings->donationLinks();
 
         return view('admin.settings.index', [
             'settings' => [
@@ -25,7 +24,6 @@ class SettingsController extends Controller
                 'version' => config('doxticket.version', 'dev'),
                 'github_repository' => $form['github_repository'] ?: 'Sin configurar',
                 'telemetry_enabled' => SystemSetting::get('telemetry.enabled', false) === true,
-                'donation_links_count' => count($donationLinks),
                 'mail_from' => config('mail.from.address') ?: 'Sin configurar',
                 'mail_mailer' => config('mail.default') ?: 'Sin configurar',
                 'backup_recent_success_hours' => $backupForm['backup_recent_success_hours'],
@@ -44,9 +42,6 @@ class SettingsController extends Controller
         $validated = $request->validate([
             'public_url' => ['nullable', 'string', 'max:255', $this->publicUrlRule($publicSettings)],
             'github_repository' => ['nullable', 'string', 'max:120', 'regex:/^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/'],
-            'donation_paypal_url' => ['nullable', 'string', 'max:255', $this->publicUrlRule($publicSettings)],
-            'donation_github_sponsors_url' => ['nullable', 'string', 'max:255', $this->publicUrlRule($publicSettings)],
-            'donation_buy_me_a_coffee_url' => ['nullable', 'string', 'max:255', $this->publicUrlRule($publicSettings)],
             'backup_recent_success_hours' => ['required', 'integer', 'min:1', 'max:168'],
             'backup_retention_days' => ['required', 'integer', 'min:1', 'max:365'],
             'backup_schedule_enabled' => ['nullable', 'boolean'],
@@ -56,9 +51,6 @@ class SettingsController extends Controller
         ], [
             'public_url' => 'URL pública',
             'github_repository' => 'repositorio de releases',
-            'donation_paypal_url' => 'enlace de PayPal',
-            'donation_github_sponsors_url' => 'enlace de GitHub Sponsors',
-            'donation_buy_me_a_coffee_url' => 'enlace de Buy Me a Coffee',
             'backup_recent_success_hours' => 'horas para backup reciente',
             'backup_retention_days' => 'dias de retencion de backups',
             'backup_schedule_enabled' => 'backup automático',

@@ -11,7 +11,6 @@ Definir con precision que entra en la primera version usable de DoxTicket y que 
 - README bilingue.
 - `SECURITY.md`, `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`.
 - GitHub Releases e imagenes Docker versionadas.
-- Donaciones discretas: PayPal, GitHub Sponsors y Buy Me a Coffee.
 
 ### Instalacion
 - Docker Compose como camino principal.

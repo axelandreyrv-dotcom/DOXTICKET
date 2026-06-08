@@ -91,7 +91,7 @@ Las imagenes Docker ejecutan el codigo y assets generados dentro del build: `app
 | `/admin/users/{user}` | Eliminacion suave protegida de usuario global |
 | `/admin/memberships/{membership}` | Actualizacion protegida de rol y estado de membership |
 | `/admin/memberships/{membership}` | Eliminacion suave protegida de acceso a empresa |
-| `/admin/settings` | Configuracion protegida de instalacion sin exponer secretos; permite guardar URL publica, repositorio de releases, donaciones, politica basica de backups y backup automatico local |
+| `/admin/settings` | Configuracion protegida de instalacion sin exponer secretos; permite guardar URL publica, repositorio de releases, politica basica de backups y backup automatico local |
 | `/admin/health` | Resumen protegido de salud de la instalacion |
 | `/admin/backups` | Ejecucion manual protegida de backup local |
 | `/admin/rollback` | Preflight protegido de rollback manual condicionado a backup valido |
@@ -145,12 +145,11 @@ Las imagenes Docker ejecutan el codigo y assets generados dentro del build: `app
 - Busqueda libre en `/admin/audit` por accion, empresa, actor o sujeto, con filtros por accion, empresa, actor y rango de fechas.
 - Exportacion CSV protegida desde `/admin/audit/export`, respetando busqueda/filtros, metadatos sanitizados, limite v1 de 5000 filas y evento `admin.audit.exported`.
 - Auditoria automatica de acciones superadmin criticas: empresas, usuarios, memberships, telemetria, backups, rollback y chequeos manuales de updates.
-- Configuracion `/admin/settings` para revisar y guardar URL publica, repositorio de releases, enlaces de donacion, politica basica de backups y backup automatico local como valores publicos no secretos, ademas de version, telemetria y SMTP global sin mostrar credenciales.
+- Configuracion `/admin/settings` para revisar y guardar URL publica, repositorio de releases, politica basica de backups y backup automatico local como valores publicos no secretos, ademas de version, telemetria y SMTP global sin mostrar credenciales.
 - Ruta `/admin/health` con checks de `APP_KEY`, `APP_DEBUG`, setup bloqueado, base de datos, cache, colas, scheduler, workers, storage, SMTP global, cuentas de correo y backups sin exponer secretos; la ventana de backup reciente se configura desde `/admin/settings`.
 - Chequeo diario y manual desde `/admin` de GitHub Releases usando el repositorio guardado en `/admin/settings` o `DOXTICKET_GITHUB_REPOSITORY` como fallback, guardando solo estado local sin enviar datos de tenants.
 - Historial base de backups en `backup_runs`, ultimo backup visible en `/admin`, historial reciente sin rutas privadas, ejecucion manual local desde `/admin/backups`, backup automatico local opcional desde scheduler, pruning diario de retencion local y boton rollback visible con preflight protegido en `/admin/rollback`, condicionado a backup valido.
 - Telemetria opcional, apagada por defecto, activada explicitamente en `/setup` o `/admin`, con resumen visible de privacidad y sin envio de contenido sensible.
-- Donaciones discretas y opcionales en `/admin` mediante enlaces `http`/`https` configurados por `DOXTICKET_DONATION_PAYPAL_URL`, `DOXTICKET_DONATION_GITHUB_SPONSORS_URL`, `DOXTICKET_DONATION_BUY_ME_A_COFFEE_URL` o guardados por superadmin en `/admin/settings`.
 
 ---
 
@@ -171,7 +170,7 @@ Las imagenes Docker ejecutan el codigo y assets generados dentro del build: `app
 - **Logo:** `Brand/DoxTicketSVG.svg`
 - **Logo publico / favicon SVG:** `public/brand/doxticket.svg`
 - Toda instalacion debe mantener el texto **Powered by DoxTicket** en el footer.
-- `doxticket.com` se proyecta como hub oficial del proyecto: documentacion, releases, seguridad, roadmap y donaciones.
+- `doxticket.com` se proyecta como hub oficial del proyecto: documentacion, releases, seguridad y roadmap.
 
 ---
 

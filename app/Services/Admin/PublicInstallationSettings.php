@@ -13,10 +13,7 @@ class PublicInstallationSettings
     {
         return [
             'public_url' => $this->publicStringValue('installation.public_url', config('app.url')),
-            'github_repository' => $this->stringValue('updates.github_repository', config('doxticket.updates.github_repository', 'doxsuite/doxticket')),
-            'donation_paypal_url' => $this->publicStringValue('donations.paypal_url', config('doxticket.donations.paypal_url')),
-            'donation_github_sponsors_url' => $this->publicStringValue('donations.github_sponsors_url', config('doxticket.donations.github_sponsors_url')),
-            'donation_buy_me_a_coffee_url' => $this->publicStringValue('donations.buy_me_a_coffee_url', config('doxticket.donations.buy_me_a_coffee_url')),
+            'github_repository' => $this->stringValue('updates.github_repository', config('doxticket.updates.github_repository', 'axelandreyrv-dotcom/DOXTICKET')),
         ];
     }
 
@@ -29,28 +26,7 @@ class PublicInstallationSettings
     {
         $repository = trim((string) ($this->formValues()['github_repository'] ?? ''));
 
-        return $repository !== '' ? $repository : 'doxsuite/doxticket';
-    }
-
-    /**
-     * @return array<int, array{label: string, url: string}>
-     */
-    public function donationLinks(): array
-    {
-        $links = [
-            'PayPal' => $this->formValues()['donation_paypal_url'],
-            'GitHub Sponsors' => $this->formValues()['donation_github_sponsors_url'],
-            'Buy Me a Coffee' => $this->formValues()['donation_buy_me_a_coffee_url'],
-        ];
-
-        return collect($links)
-            ->filter(fn ($url): bool => is_string($url) && $this->isPublicUrl($url))
-            ->map(fn (string $url, string $label): array => [
-                'label' => $label,
-                'url' => $url,
-            ])
-            ->values()
-            ->all();
+        return $repository !== '' ? $repository : 'axelandreyrv-dotcom/DOXTICKET';
     }
 
     /**
@@ -62,9 +38,6 @@ class PublicInstallationSettings
         $mapping = [
             'public_url' => 'installation.public_url',
             'github_repository' => 'updates.github_repository',
-            'donation_paypal_url' => 'donations.paypal_url',
-            'donation_github_sponsors_url' => 'donations.github_sponsors_url',
-            'donation_buy_me_a_coffee_url' => 'donations.buy_me_a_coffee_url',
         ];
         $changedKeys = [];
 

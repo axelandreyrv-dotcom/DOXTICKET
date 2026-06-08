@@ -9,7 +9,6 @@ use App\Models\SystemSetting;
 use App\Models\Ticket;
 use App\Models\User;
 use App\Services\Admin\BackupStatus;
-use App\Services\Admin\PublicInstallationSettings;
 use App\Services\Admin\SystemHealthChecker;
 use Illuminate\Contracts\View\View;
 
@@ -18,7 +17,6 @@ class AdminDashboardController extends Controller
     public function __invoke(
         SystemHealthChecker $healthChecker,
         BackupStatus $backupStatus,
-        PublicInstallationSettings $publicSettings,
     ): View {
         $latestBackup = $backupStatus->latestSuccessful();
 
@@ -41,7 +39,6 @@ class AdminDashboardController extends Controller
                 'rollback_available' => $backupStatus->rollbackAvailable(),
             ],
             'backupStatus' => $backupStatus,
-            'donations' => $publicSettings->donationLinks(),
             'version' => config('doxticket.version', 'dev'),
         ]);
     }

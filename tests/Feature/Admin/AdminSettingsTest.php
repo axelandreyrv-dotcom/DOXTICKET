@@ -32,9 +32,6 @@ class AdminSettingsTest extends TestCase
         Config::set('app.url', 'https://doxticket.test');
         Config::set('doxticket.version', 'v1.0.0');
         Config::set('doxticket.updates.github_repository', 'doxsuite/doxticket');
-        Config::set('doxticket.donations.paypal_url', 'https://paypal.me/doxticket');
-        Config::set('doxticket.donations.github_sponsors_url', null);
-        Config::set('doxticket.donations.buy_me_a_coffee_url', 'javascript:alert(1)');
         SystemSetting::put('telemetry.enabled', true);
 
         $superadmin = User::factory()->create([
@@ -52,18 +49,13 @@ class AdminSettingsTest extends TestCase
             ->assertSee('doxsuite/doxticket')
             ->assertSee('Telemetría')
             ->assertSee('Activa')
-            ->assertSee('Donaciones')
-            ->assertSee('1 enlace configurado')
-            ->assertDontSee('javascript:alert', false);
+            ->assertSee('Correo global');
     }
 
     public function test_superadmin_can_update_public_installation_settings(): void
     {
         Config::set('app.url', 'https://old.example.test');
         Config::set('doxticket.updates.github_repository', 'doxsuite/doxticket');
-        Config::set('doxticket.donations.paypal_url', null);
-        Config::set('doxticket.donations.github_sponsors_url', null);
-        Config::set('doxticket.donations.buy_me_a_coffee_url', null);
 
         $superadmin = User::factory()->create([
             'is_superadmin' => true,
@@ -74,9 +66,6 @@ class AdminSettingsTest extends TestCase
             ->post('/admin/settings', [
                 'public_url' => 'https://helpdesk.example.test',
                 'github_repository' => 'acme/doxticket',
-                'donation_paypal_url' => 'https://paypal.me/doxticket',
-                'donation_github_sponsors_url' => 'https://github.com/sponsors/doxticket',
-                'donation_buy_me_a_coffee_url' => 'https://buymeacoffee.com/doxticket',
                 'backup_recent_success_hours' => 48,
                 'backup_retention_days' => 30,
                 'backup_schedule_enabled' => '1',
@@ -87,9 +76,6 @@ class AdminSettingsTest extends TestCase
 
         $this->assertSame('https://helpdesk.example.test', SystemSetting::get('installation.public_url'));
         $this->assertSame('acme/doxticket', SystemSetting::get('updates.github_repository'));
-        $this->assertSame('https://paypal.me/doxticket', SystemSetting::get('donations.paypal_url'));
-        $this->assertSame('https://github.com/sponsors/doxticket', SystemSetting::get('donations.github_sponsors_url'));
-        $this->assertSame('https://buymeacoffee.com/doxticket', SystemSetting::get('donations.buy_me_a_coffee_url'));
         $this->assertSame(48, SystemSetting::get('backups.recent_success_hours'));
         $this->assertSame(30, SystemSetting::get('backups.retention_days'));
         $this->assertTrue(SystemSetting::get('backups.schedule_enabled'));
@@ -102,9 +88,6 @@ class AdminSettingsTest extends TestCase
         $this->assertSame([
             'installation.public_url',
             'updates.github_repository',
-            'donations.paypal_url',
-            'donations.github_sponsors_url',
-            'donations.buy_me_a_coffee_url',
             'backups.recent_success_hours',
             'backups.retention_days',
             'backups.schedule_enabled',
@@ -147,9 +130,6 @@ class AdminSettingsTest extends TestCase
             ->post('/admin/settings', [
                 'public_url' => 'javascript:alert(1)',
                 'github_repository' => 'bad repo',
-                'donation_paypal_url' => 'javascript:alert(1)',
-                'donation_github_sponsors_url' => 'ftp://example.test/sponsor',
-                'donation_buy_me_a_coffee_url' => 'https://buymeacoffee.com/doxticket',
                 'backup_recent_success_hours' => 0,
                 'backup_retention_days' => 366,
                 'backup_schedule_enabled' => '1',
@@ -159,8 +139,6 @@ class AdminSettingsTest extends TestCase
             ->assertInvalid([
                 'public_url',
                 'github_repository',
-                'donation_paypal_url',
-                'donation_github_sponsors_url',
                 'backup_recent_success_hours',
                 'backup_retention_days',
                 'backup_schedule_hour',
@@ -178,7 +156,6 @@ class AdminSettingsTest extends TestCase
         Config::set('mail.mailers.smtp.password', 'smtp-secret-value');
         SystemSetting::put('installation.public_url', 'https://helpdesk.example.test');
         SystemSetting::put('updates.github_repository', 'acme/doxticket');
-        SystemSetting::put('donations.paypal_url', 'https://paypal.me/doxticket');
 
         $superadmin = User::factory()->create([
             'is_superadmin' => true,
@@ -190,7 +167,6 @@ class AdminSettingsTest extends TestCase
             ->assertOk()
             ->assertSee('https://helpdesk.example.test')
             ->assertSee('acme/doxticket')
-            ->assertSee('https://paypal.me/doxticket')
             ->assertDontSee('smtp-secret-value');
     }
 

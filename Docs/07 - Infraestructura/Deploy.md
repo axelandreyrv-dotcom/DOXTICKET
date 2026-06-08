@@ -66,9 +66,6 @@ MAIL_USERNAME=
 MAIL_PASSWORD=
 MAIL_FROM_ADDRESS=
 
-DOXTICKET_DONATION_PAYPAL_URL=
-DOXTICKET_DONATION_GITHUB_SPONSORS_URL=
-DOXTICKET_DONATION_BUY_ME_A_COFFEE_URL=
 DOXTICKET_ATTACHMENT_MAX_BYTES=10485760
 DOXTICKET_IMAP_VALIDATE_CERT=true
 DOXTICKET_GITHUB_REPOSITORY=axelandreyrv-dotcom/DOXTICKET
@@ -85,7 +82,6 @@ DOXTICKET_MICROSOFT_REDIRECT_URI="${APP_URL}/app/settings/mail/oauth/microsoft36
 `APP_URL` puede ser dominio o IP local.
 `DOXTICKET_HTTP_PORT` define el puerto HTTP publicado por Docker; por ejemplo `8088` expone `http://127.0.0.1:8088`.
 `MAIL_MAILER=log` sirve para QA local y escribe correos en logs; para invitaciones y resets reales debe configurarse `MAIL_MAILER=smtp` con un SMTP global valido.
-Las variables `DOXTICKET_DONATION_*` son opcionales y solo aceptan URLs `http`/`https`; si se dejan vacias no aparece el panel de donaciones en `/admin`.
 `DOXTICKET_ATTACHMENT_MAX_BYTES` controla el tamano maximo de adjuntos entrantes y manuales; el valor por defecto es 10 MB.
 `DOXTICKET_IMAP_VALIDATE_CERT=true` mantiene validacion TLS de IMAP. Solo en QA local, si un antivirus/proxy corporativo intercepta TLS y rompe IMAP con un certificado local no confiable, puede usarse `false` temporalmente para agregar `/novalidate-cert`; no se recomienda en produccion.
 Las variables OAuth solo son necesarias si se conectara Gmail o Microsoft 365; los secretos deben quedarse en `.env` y no en frontend, docs publicas ni repositorio.

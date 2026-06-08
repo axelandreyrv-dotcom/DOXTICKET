@@ -7,12 +7,6 @@ return [
         'github_repository' => env('DOXTICKET_GITHUB_REPOSITORY', 'doxsuite/doxticket'),
     ],
 
-    'donations' => [
-        'paypal_url' => env('DOXTICKET_DONATION_PAYPAL_URL'),
-        'github_sponsors_url' => env('DOXTICKET_DONATION_GITHUB_SPONSORS_URL'),
-        'buy_me_a_coffee_url' => env('DOXTICKET_DONATION_BUY_ME_A_COFFEE_URL'),
-    ],
-
     'attachments' => [
         'max_bytes' => env('DOXTICKET_ATTACHMENT_MAX_BYTES', 10 * 1024 * 1024),
     ],

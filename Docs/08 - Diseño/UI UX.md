@@ -83,7 +83,7 @@ Para self-hosted, la pantalla publica de una instalacion no debe vender un servi
 - Mantener el instalador inicial usable con teclado, labels reales y errores asociados a campos.
 - Asociar errores de login a sus campos y anunciarlos igual que en la app autenticada.
 - Mostrar `Powered by DoxTicket`.
-- En una web oficial futura, `doxticket.com` sera hub de docs/releases/donaciones.
+- En una web oficial futura, `doxticket.com` sera hub de docs/releases.
 
 ## Accesibilidad
 - WCAG AA.

@@ -56,7 +56,6 @@ No loguear campos:
 ## Repositorio
 - `.gitignore` incluye `.env`, `.env.*`, storage y caches.
 - CI debe tener scanner de secretos.
-- Las URLs publicas de donacion pueden vivir en `.env` por configuracion de instalacion, pero no son secretos; la app solo renderiza enlaces `http`/`https` validos.
 
 ## Rotacion
 - SMTP global: cambiar `.env`, limpiar cache, probar health.

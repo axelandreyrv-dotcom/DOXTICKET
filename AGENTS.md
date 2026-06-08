@@ -13,7 +13,7 @@ Permite que departamentos de TI instalen su propio sistema de tickets, conecten 
 
 - **Modelo:** open source self-hosted.
 - **Licencia:** AGPLv3.
-- **Sitio oficial futuro:** `doxticket.com` como hub de proyecto, documentacion, releases y donaciones.
+- **Sitio oficial futuro:** `doxticket.com` como hub de proyecto, documentacion y releases.
 - **Correo de seguridad:** `axelandreyrv@outlook.com`
 - **Branding:** `Brand/DoxTicketSVG.svg`
 - **Logo publico / favicon:** `public/brand/doxticket.svg`
@@ -114,8 +114,6 @@ Estas decisiones estan tomadas. No proponer alternativas sin justificacion docum
 - El repositorio se publicara en GitHub.
 - Los usuarios deben instalar versiones publicadas mediante Releases e imagenes Docker versionadas, no commits aleatorios.
 - El proyecto no promete DoxTicket Cloud en v1.
-- Las donaciones son discretas: PayPal, GitHub Sponsors y Buy Me a Coffee.
-- Los enlaces de donacion se configuran por `.env` con `DOXTICKET_DONATION_*` o desde `/admin/settings` como valores publicos no sensibles; solo se muestran si son URLs `http`/`https` validas.
 - Toda instalacion debe mantener **Powered by DoxTicket** en el footer.
 
 ### Licencia
@@ -233,7 +231,7 @@ Estas decisiones estan tomadas. No proponer alternativas sin justificacion docum
 - La exportacion CSV de auditoria queda limitada a 5000 filas por solicitud en v1.
 - Las acciones superadmin de crear/editar/cambiar estado/eliminar empresas, invitar usuarios, activar/desactivar usuarios, actualizar memberships, actualizar settings publicos, cambiar telemetria, ejecutar backups, solicitar rollback y revisar updates deben registrar audit logs.
 - Los metadatos de audit logs deben sanitizarse antes de guardarse y antes de mostrarse si sus claves parecen contener contrasenas, tokens, secretos, cookies, autorizacion o credenciales.
-- `/admin/settings` muestra URL publica, version, repositorio de releases, telemetria, donaciones, politica basica de backups, backup automatico local y SMTP global sin exponer credenciales; los superadmins pueden guardar URL publica, repositorio de releases, enlaces de donacion, ventana de backup reciente, dias de retencion local, activacion del backup automatico y hora diaria como settings publicos no secretos.
+- `/admin/settings` muestra URL publica, version, repositorio de releases, telemetria, politica basica de backups, backup automatico local y SMTP global sin exponer credenciales; los superadmins pueden guardar URL publica, repositorio de releases, ventana de backup reciente, dias de retencion local, activacion del backup automatico y hora diaria como settings publicos no secretos.
 - `/admin/health` muestra health base de `APP_KEY`, `APP_DEBUG`, setup bloqueado, PostgreSQL, cache/Redis, colas, scheduler, workers, storage, SMTP global, cuentas de correo y backups; los mensajes visibles no deben exponer secretos y la ventana de backup reciente se toma de `system_settings.backups.recent_success_hours`.
 - Scheduler y workers se observan con heartbeats en cache; ausencia o antiguedad mayor a 10 minutos debe marcar warning.
 - El chequeo de version usa GitHub Releases del repositorio efectivo: `system_settings.updates.github_repository` si fue guardado desde `/admin/settings`, o `DOXTICKET_GITHUB_REPOSITORY` como fallback; se ejecuta en cola/scheduler y guarda el resultado en `system_settings.updates.latest`.

@@ -22,7 +22,6 @@ Estado implementado actual:
 - `/admin` permite ejecutar un chequeo manual de actualizaciones desde una accion protegida para superadmins.
 - `/admin` muestra el ultimo backup exitoso registrado, historial reciente de backups, permite ejecutar backup manual local y mantiene un boton rollback visible; queda deshabilitado si no hay backup/version valida.
 - `/admin` muestra el estado de telemetria opcional, resume que datos no se envian y permite activar/desactivar desde una accion protegida.
-- `/admin` muestra una seccion discreta de donaciones solo cuando existen enlaces `http`/`https` configurados; URLs no seguras se ocultan.
 - `/admin` enlaza a Empresas como seccion administrativa separada del shell de usuario.
 - `/admin` enlaza a Usuarios como seccion administrativa separada del shell de usuario.
 - `/admin` enlaza a Configuracion como seccion administrativa de instalacion separada del shell de usuario.
@@ -97,15 +96,14 @@ Estado implementado actual:
 - Revisar parametros de instalacion.
 - Mostrar version instalada y repositorio de releases.
 - Mostrar estado de telemetria y permitir activarla/desactivarla.
-- Mostrar conteo de enlaces de donacion validos.
 - Mostrar SMTP global sin credenciales.
 
 Estado implementado actual:
-- `/admin/settings` muestra URL publica, version instalada, repositorio de releases, estado de telemetria, conteo de enlaces de donacion `http`/`https`, mailer y remitente global.
-- `POST /admin/settings` permite a superadmins guardar URL publica, repositorio de releases y enlaces de donacion como valores publicos no secretos en `system_settings`.
+- `/admin/settings` muestra URL publica, version instalada, repositorio de releases, estado de telemetria, mailer y remitente global.
+- `POST /admin/settings` permite a superadmins guardar URL publica y repositorio de releases como valores publicos no secretos en `system_settings`.
 - `POST /admin/settings` tambien permite guardar politica basica de backups: horas para considerar un backup como reciente y dias de retencion local documentada.
 - `POST /admin/settings` permite activar/desactivar backup automatico local y definir la hora diaria; queda apagado por defecto.
-- Los valores guardados desde `/admin/settings` tienen prioridad sobre `.env` para el repositorio de releases y enlaces de donacion; `.env` queda como fallback.
+- Los valores guardados desde `/admin/settings` tienen prioridad sobre `.env` para el repositorio de releases; `.env` queda como fallback.
 - La actualizacion de settings publicos registra `admin.settings.updated` con las claves modificadas, sin guardar secretos.
 - La vista no muestra tokens, contrasenas, hosts sensibles privados ni secretos `.env`.
 - La accion de telemetria reutiliza `POST /admin/telemetry`.
@@ -160,14 +158,6 @@ Estado implementado actual:
 - El cambio de telemetria registra `admin.telemetry.updated` con valor anterior y nuevo.
 - El panel indica que no se envian nombres, correos, asuntos, cuerpos, adjuntos ni secretos.
 - Todavia no existe envio remoto de reportes; esta fase solo controla consentimiento local y transparencia.
-
-### Donaciones
-- Links discretos a PayPal, GitHub Sponsors y Buy Me a Coffee.
-
-Estado implementado actual:
-- Los enlaces se configuran con `DOXTICKET_DONATION_PAYPAL_URL`, `DOXTICKET_DONATION_GITHUB_SPONSORS_URL`, `DOXTICKET_DONATION_BUY_ME_A_COFFEE_URL` o desde `/admin/settings`.
-- La seccion `Apoyar DoxTicket` aparece en `/admin` solo si al menos un enlace es una URL publica `http`/`https`.
-- No se integra billing ni se guardan datos financieros.
 
 ### Auditoria
 - Busqueda por accion, empresa, usuario y fecha.

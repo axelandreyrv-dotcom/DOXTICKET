@@ -63,7 +63,6 @@ Laravel 13.x + Blade + Livewire + Filament 5.x
 - IMAP/SMTP generico.
 - Gmail y Microsoft 365.
 - GitHub Releases para comprobar versiones.
-- Donaciones mediante enlaces externos (PayPal, GitHub Sponsors, Buy Me a Coffee), sin integrar pagos en la app.
 
 ## Patrones clave
 

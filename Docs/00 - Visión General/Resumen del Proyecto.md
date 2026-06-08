@@ -47,7 +47,6 @@ DoxTicket mantiene el correo como canal principal, pero le agrega estados, respo
 - Idiomas: espanol por defecto e ingles disponible.
 - Correo: cuenta global SMTP del sistema + una cuenta de soporte por empresa.
 - Tickets por correo, tickets manuales, workspace de Tickets, SLA, KB interna, adjuntos, fusion de tickets.
-- Donaciones discretas: PayPal, GitHub Sponsors y Buy Me a Coffee.
 
 ## Fuera de v1
 - Billing integrado, planes pagados, trial y suscripciones.

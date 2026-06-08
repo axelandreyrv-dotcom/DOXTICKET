@@ -62,4 +62,22 @@ class CompanySelectionTest extends TestCase
             ->get('/app/dashboard')
             ->assertRedirect('/app/tickets');
     }
+
+    public function test_user_without_active_companies_is_redirected_to_company_selector_instead_of_forbidden(): void
+    {
+        $user = User::factory()->create();
+        $company = Company::factory()->create();
+        Membership::factory()->for($user)->for($company)->create(['status' => 'active']);
+        $company->delete();
+
+        $this->actingAs($user)
+            ->get('/app/tickets')
+            ->assertRedirect('/app/companies')
+            ->assertSessionHas('status', 'No tienes empresas activas. Solicita acceso o crea una empresa desde el panel admin.');
+
+        $this->actingAs($user)
+            ->get('/app/companies')
+            ->assertOk()
+            ->assertSee('No tienes empresas activas.');
+    }
 }

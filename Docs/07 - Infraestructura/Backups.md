@@ -13,7 +13,7 @@ Definir estrategia de backups.
 - Backups configurables desde `/admin`.
 - Historial en `backup_runs`.
 - Verificacion de backup reciente antes de actualizar.
-- Restauracion documentada.
+- Restauracion manual documentada; no hay importacion de backup desde UI en v1.
 
 Estado implementado actual:
 - Tabla `backup_runs` implementada.
@@ -26,7 +26,7 @@ Estado implementado actual:
 - Los artefactos se guardan en el disco `private`, bajo `backups/{uuid}`, junto a un `manifest.json`.
 - En SQLite de desarrollo/test se copia el archivo de base de datos; en PostgreSQL se usa `pg_dump` si esta disponible en el servidor.
 - `/admin/health` marca warning si no existe backup exitoso dentro de la ventana configurada.
-- Empaquetado de adjuntos, cifrado avanzado, destinos externos y restauracion automatizada quedan pendientes.
+- Empaquetado completo de adjuntos, cifrado avanzado, destinos externos e importacion/restauracion automatizada desde UI quedan pendientes.
 
 ## Destinos
 - Local.
@@ -51,12 +51,13 @@ Scripts de `pg_dump`, compresion y cifrado recomendados.
 - No guardar secretos en logs.
 
 ## Restauracion
-1. Detener app.
-2. Restaurar PostgreSQL.
-3. Restaurar adjuntos.
-4. Restaurar `.env`.
-5. Ejecutar migraciones necesarias.
-6. Revisar `/admin/health`.
+1. Detener app y workers.
+2. Restaurar `.env` y configuracion Docker/servidor.
+3. Restaurar PostgreSQL con `pg_restore` si el backup fue generado con `pg_dump --format=custom`; en SQLite, reemplazar el archivo respaldado.
+4. Restaurar `storage/app/private`, incluyendo adjuntos y artefactos privados que deban conservarse.
+5. Levantar base/cache/colas y ejecutar `php artisan migrate --force`.
+6. Limpiar caches si aplica: `php artisan config:clear && php artisan cache:clear`.
+7. Revisar `/admin/health`, cuentas de correo y permisos de storage.
 
 ## RTO/RPO recomendados
 - RTO: <= 4 horas.

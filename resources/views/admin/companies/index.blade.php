@@ -19,7 +19,7 @@
                     </div>
                     <h1 class="mt-2 text-3xl font-semibold tracking-normal text-pretty">Empresas</h1>
                     <p class="mt-2 max-w-2xl text-sm leading-6 text-[var(--color-text-secondary)]">
-                        Vista global de tenants de la instalacion. Los conteos se calculan sin depender de la empresa activa del usuario.
+                        Vista global de tenants de la instalación. Los conteos se calculan sin depender de la empresa activa del usuario.
                     </p>
                 </div>
                 <div class="flex flex-wrap gap-2">
@@ -128,7 +128,7 @@
                         </article>
                     @empty
                         <p class="px-4 py-4 text-sm text-[var(--color-text-secondary)] sm:px-5">
-                            Todavia no hay empresas registradas.
+                            Todavía no hay empresas registradas.
                         </p>
                     @endforelse
                 </div>

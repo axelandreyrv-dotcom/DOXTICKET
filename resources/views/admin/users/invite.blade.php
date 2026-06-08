@@ -82,9 +82,9 @@
                                 'border-[var(--color-border-default)]' => ! $errors->has('role'),
                                 'border-[var(--color-danger)]' => $errors->has('role'),
                             ]) @if ($errors->has('role')) aria-invalid="true" aria-describedby="role-error" @endif>
-                                <option value="agent" @selected(old('role', 'agent') === 'agent')>agent</option>
-                                <option value="supervisor" @selected(old('role') === 'supervisor')>supervisor</option>
-                                <option value="admin" @selected(old('role') === 'admin')>admin</option>
+                                <option value="agent" @selected(old('role', 'agent') === 'agent')>Agente</option>
+                                <option value="supervisor" @selected(old('role') === 'supervisor')>Supervisor</option>
+                                <option value="admin" @selected(old('role') === 'admin')>Administrador</option>
                             </select>
                             @error('role')
                                 <p id="role-error" class="mt-2 text-sm text-[var(--color-danger)]" role="alert">{{ $message }}</p>
@@ -93,7 +93,7 @@
                     </div>
 
                     <p class="mt-4 rounded-md border border-[var(--color-border-default)] bg-white px-3 py-2 text-sm leading-6 text-[var(--color-text-secondary)]">
-                        En esta fase se registra la invitacion y la membership. El envio real de correo se conectara al SMTP global.
+                        El usuario recibira una invitacion por el SMTP global. Supervisor puede coordinar trabajo y gestionar articulos internos; Administrador gestiona la empresa.
                     </p>
 
                     <div class="mt-5 flex flex-wrap justify-end gap-2 border-t border-[var(--color-border-default)] pt-5">

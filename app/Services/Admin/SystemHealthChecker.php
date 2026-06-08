@@ -79,7 +79,7 @@ class SystemHealthChecker
         try {
             DB::select('select 1');
 
-            return new HealthCheckResult('database', 'PostgreSQL', 'ok', 'Conexion de base de datos disponible.');
+            return new HealthCheckResult('database', 'PostgreSQL', 'ok', 'Conexión de base de datos disponible.');
         } catch (Throwable) {
             return new HealthCheckResult('database', 'PostgreSQL', 'failed', 'No se pudo conectar a la base de datos.');
         }
@@ -117,7 +117,7 @@ class SystemHealthChecker
             'Colas',
             $failedJobs > 0 ? 'warning' : 'ok',
             $failedJobs > 0
-                ? "{$failedJobs} job(s) fallidos requieren revision."
+                ? "{$failedJobs} job(s) fallidos requieren revisión."
                 : 'Sin jobs fallidos registrados.',
         );
     }
@@ -213,7 +213,7 @@ class SystemHealthChecker
                 'backups',
                 'Backups',
                 'warning',
-                "No hay backup exitoso reciente en las ultimas {$recentSuccessHours} horas. Revisa la configuracion antes de actualizar.",
+                "No hay backup exitoso reciente en las últimas {$recentSuccessHours} horas. Revisa la configuración antes de actualizar.",
             );
         }
 
@@ -223,7 +223,7 @@ class SystemHealthChecker
             'backups',
             'Backups',
             'ok',
-            'Ultimo backup exitoso disponible en '.$latest?->destination.'.',
+            'Último backup exitoso disponible en '.$latest?->destination.'.',
         );
     }
 

@@ -47,7 +47,7 @@ class GitHubReleaseUpdateChecker
                 'update_available' => $latestVersion !== '' && $this->isNewer($latestVersion, $installedVersion),
                 'release_url' => $this->publicGitHubUrl($release['html_url'] ?? null),
                 'release_name' => $this->plainText($release['name'] ?? $latestVersion),
-                'changelog' => $this->plainText(Str::limit((string) ($release['body'] ?? ''), 500, '...')),
+                'changelog' => $this->plainText(Str::limit((string) ($release['body'] ?? ''), 500, '…')),
                 'error' => null,
             ];
         } catch (Throwable) {

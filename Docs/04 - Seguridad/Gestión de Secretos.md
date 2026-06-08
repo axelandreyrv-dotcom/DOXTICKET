@@ -23,9 +23,13 @@ Definir como se almacenan, despliegan y rotan secretos.
 - Password SMTP/IMAP.
 - OAuth access/refresh tokens.
 
+## Secretos por usuario
+- Secreto TOTP de 2FA.
+- Codigos de recuperacion 2FA.
+
 Todos cifrados con Laravel encryption.
 
-Estado implementado actual: `mail_accounts.password_encrypted`, `oauth_access_token` y `oauth_refresh_token` usan casts cifrados de Eloquent; el formulario de settings nunca renderiza la contrasena guardada. El flujo OAuth usa `state` aleatorio en sesion para evitar mezclar proveedor/empresa durante callbacks, consume ese `state` una sola vez y sanitiza errores antes de guardarlos en `last_error`.
+Estado implementado actual: `mail_accounts.password_encrypted`, `oauth_access_token`, `oauth_refresh_token`, `users.two_factor_secret` y `users.two_factor_recovery_codes` usan casts cifrados de Eloquent; el formulario de settings nunca renderiza contrasenas guardadas. El flujo OAuth usa `state` aleatorio en sesion para evitar mezclar proveedor/empresa durante callbacks, consume ese `state` una sola vez y sanitiza errores antes de guardarlos en `last_error`.
 
 ## Docker
 - `.env` local del usuario.

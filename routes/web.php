@@ -5,8 +5,10 @@ use App\Http\Controllers\App\AttachmentController;
 use App\Http\Controllers\App\KnowledgeBaseController;
 use App\Http\Controllers\App\SettingsController;
 use App\Http\Controllers\App\TicketController;
+use App\Http\Controllers\App\TwoFactorController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\PasswordResetController;
+use App\Http\Controllers\Auth\TwoFactorChallengeController;
 use App\Http\Controllers\Tenant\CompanySelectionController;
 use App\Models\SystemSetting;
 use Illuminate\Support\Facades\Route;
@@ -34,6 +36,10 @@ Route::middleware('guest')->group(function (): void {
     Route::post('/password/reset', [PasswordResetController::class, 'update'])
         ->middleware('throttle:login')
         ->name('password.update');
+    Route::get('/two-factor-challenge', [TwoFactorChallengeController::class, 'create'])->name('two-factor.login');
+    Route::post('/two-factor-challenge', [TwoFactorChallengeController::class, 'store'])
+        ->middleware('throttle:login')
+        ->name('two-factor.login.store');
 });
 
 Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
@@ -68,6 +74,9 @@ Route::middleware('auth')->group(function (): void {
         Route::patch('/app/tickets/{ticket}/properties', [TicketController::class, 'updateProperties'])->name('app.tickets.properties.update');
         Route::get('/app/attachments/{attachment}/download', [AttachmentController::class, 'download'])->name('app.attachments.download');
         Route::get('/app/settings', [SettingsController::class, 'index'])->name('app.settings');
+        Route::post('/app/settings/two-factor/start', [TwoFactorController::class, 'start'])->name('app.settings.two-factor.start');
+        Route::post('/app/settings/two-factor/confirm', [TwoFactorController::class, 'confirm'])->name('app.settings.two-factor.confirm');
+        Route::delete('/app/settings/two-factor', [TwoFactorController::class, 'destroy'])->name('app.settings.two-factor.destroy');
         Route::post('/app/settings/mail', [SettingsController::class, 'storeMail'])->name('app.settings.mail.store');
         Route::post('/app/settings/mail/test', [SettingsController::class, 'testMail'])->name('app.settings.mail.test');
         Route::post('/app/settings/mail/oauth/{provider}/redirect', [SettingsController::class, 'redirectOAuth'])->name('app.settings.mail.oauth.redirect');

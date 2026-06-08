@@ -48,6 +48,8 @@ Estado implementado actual:
 - Si falla el procesamiento a mitad de lote, conserva el ultimo `last_uid` procesado con exito y deja los siguientes para reintento.
 - `ImapMailboxClient` normaliza mensajes crudos de IMAP hacia `InboundMailMessage`.
 - `NativeImapConnection` usa la extension PHP IMAP para leer mensajes nuevos por UID, respetando `mail_accounts.last_uid`.
+- Para compatibilidad con servidores IMAP y PHP IMAP, `NativeImapConnection` solicita UIDs con criterio `ALL` y filtra en PHP los UIDs ya procesados en vez de usar criterios `UID n:*`.
+- `NativeImapConnection` valida certificados TLS por defecto. `DOXTICKET_IMAP_VALIDATE_CERT=false` solo se permite como excepcion temporal de QA local cuando antivirus/proxy TLS rompen la cadena de certificados; no es una configuracion recomendada para produccion.
 - `RoutingMailboxClient` enruta cuentas `imap_smtp` hacia IMAP y cuentas `gmail`/`microsoft365` hacia `OAuthMailboxClient`.
 - `OAuthMailboxClient` lista mensajes de Inbox por API OAuth, los entrega en orden antiguo-a-reciente hasta `last_uid` y normaliza headers, remitente, asunto, cuerpo, fecha y adjuntos hacia `InboundMailMessage`.
 - Los adjuntos encontrados en partes MIME se normalizan junto al mensaje y se entregan al procesador de correo.

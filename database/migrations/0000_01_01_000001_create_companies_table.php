@@ -13,7 +13,7 @@ return new class extends Migration
             $table->uuid('uuid')->unique();
             $table->string('name', 160);
             $table->string('slug', 80)->unique();
-            $table->char('country', 2)->nullable();
+            $table->string('country', 120)->nullable();
             $table->string('phone', 40)->nullable();
             $table->string('status', 32)->default('active');
             $table->string('logo_path')->nullable();

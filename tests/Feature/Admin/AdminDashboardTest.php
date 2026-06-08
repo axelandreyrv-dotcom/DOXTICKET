@@ -94,7 +94,7 @@ class AdminDashboardTest extends TestCase
         $this->actingAs($superadmin)
             ->get('/admin')
             ->assertOk()
-            ->assertSee('Nueva version estable disponible')
+            ->assertSee('Nueva versión estable disponible')
             ->assertSee('v1.1.0')
             ->assertSee('Ver release');
     }

@@ -32,7 +32,7 @@ Trazar las fases planificadas de DoxTicket como proyecto open source self-hosted
 - Login centralizado. **Base implementada.**
 - Selector de empresa para usuarios con multiples membresias. **Base implementada.**
 - Middleware de tenant por `company_id`. **Base implementada.**
-- 2FA opcional.
+- 2FA opcional. **Base implementada con TOTP, codigos de recuperacion cifrados y reto de login.**
 
 **Entregable:** una instalacion nueva queda operativa y segura.
 
@@ -97,11 +97,11 @@ Trazar las fases planificadas de DoxTicket como proyecto open source self-hosted
 **Entregable:** equipos miden cumplimiento y documentan soluciones internas.
 
 ## Fase 8 — Pulido, accesibilidad e i18n
-- Revision visual completa.
-- Accesibilidad WCAG AA.
-- Espanol e ingles completos.
-- Documentacion de usuario y administrador.
-- Primer release estable usable.
+- Revision visual completa. **Base aplicada en shell publico, app, admin, settings y textos visibles criticos.**
+- Accesibilidad WCAG AA. **Base implementada con skip links, `aria-current`, flashes anunciables, errores inline asociados y confirmaciones accesibles.**
+- Espanol por defecto e ingles disponible como locale base. **La UI principal v1 queda en espanol; ingles completo queda como trabajo de localizacion posterior.**
+- Documentacion de usuario y administrador. **Base agregada en guias operativas y checklist de release.**
+- Primer release estable usable. **Pendiente de QA con buzones reales SMTP/IMAP y checklist de produccion.**
 
 **Entregable:** version estable lista para uso real.
 

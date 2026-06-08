@@ -58,7 +58,7 @@ class AdminAuditTest extends TestCase
         $this->actingAs($superadmin)
             ->get('/admin/audit')
             ->assertOk()
-            ->assertSee('Auditoria')
+            ->assertSee('Auditoría')
             ->assertSee('membership.accepted')
             ->assertSee('QA Company')
             ->assertSee('Ana Mesa')
@@ -104,7 +104,7 @@ class AdminAuditTest extends TestCase
         $this->actingAs($superadmin)
             ->get('/admin')
             ->assertOk()
-            ->assertSee('Auditoria')
+            ->assertSee('Auditoría')
             ->assertSee('href="'.route('admin.audit.index').'"', false);
     }
 

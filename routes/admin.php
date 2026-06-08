@@ -28,7 +28,10 @@ Route::middleware(['auth', 'superadmin'])->group(function (): void {
     Route::get('/users/invite', [UserController::class, 'invite'])->name('users.invite');
     Route::post('/users/invite', [UserController::class, 'storeInvite'])->name('users.invite.store');
     Route::post('/users/{user}/status', [UserController::class, 'updateStatus'])->name('users.status');
+    Route::post('/users/{user}/password-reset', [UserController::class, 'sendPasswordReset'])->name('users.password-reset');
+    Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
     Route::put('/memberships/{membership}', [MembershipController::class, 'update'])->name('memberships.update');
+    Route::delete('/memberships/{membership}', [MembershipController::class, 'destroy'])->name('memberships.destroy');
     Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
     Route::post('/settings', [SettingsController::class, 'update'])->name('settings.update');
     Route::post('/backups', [BackupController::class, 'store'])->name('backups.store');

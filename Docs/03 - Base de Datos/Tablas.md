@@ -42,7 +42,7 @@ Claves publicas no secretas actuales:
 - `id`, `uuid`
 - `name` VARCHAR(160) NOT NULL
 - `slug` VARCHAR(80) UNIQUE NOT NULL
-- `country` CHAR(2) NULL
+- `country` VARCHAR(120) NULL
 - `phone` VARCHAR(40) NULL
 - `status` VARCHAR(32) NOT NULL DEFAULT `active` — `active|disabled|archived`
 - `logo_path` VARCHAR(255) NULL
@@ -219,6 +219,7 @@ Estados visibles v1: `new|open|pending|resolved|closed`. Estados internos futuro
 - La creacion manual de tickets no acepta `company_id` confiable desde input del usuario; el valor se deriva de la membresia activa en sesion.
 - `mail_accounts` guarda credenciales por empresa cifradas y no expone secretos en vistas.
 - `mail_accounts` conserva metadatos OAuth para Gmail/Microsoft 365: tokens cifrados, scopes, usuario proveedor, expiracion y fecha de conexion.
+- `users.two_factor_secret` y `users.two_factor_recovery_codes` se guardan cifrados mediante casts de Eloquent; `two_factor_confirmed_at` indica que el secreto ya fue validado por codigo TOTP.
 - `tickets.ticket_type` clasifica el ticket por pregunta, incidente, problema o solicitud sin alterar el origen real guardado en `source`.
 - `ticket_messages.external_image_urls` conserva las URLs externas bloqueadas para apertura manual desde el detalle del ticket, sin cargarlas automaticamente.
 - `kb_articles` guarda Markdown original y HTML cacheado sanitizado; agentes solo consultan publicados y admin/supervisor pueden crear.

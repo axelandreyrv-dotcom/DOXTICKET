@@ -54,15 +54,15 @@ class SettingsController extends Controller
         ], [
             'github_repository.regex' => 'Use el formato propietario/repositorio.',
         ], [
-            'public_url' => 'URL publica',
+            'public_url' => 'URL pública',
             'github_repository' => 'repositorio de releases',
             'donation_paypal_url' => 'enlace de PayPal',
             'donation_github_sponsors_url' => 'enlace de GitHub Sponsors',
             'donation_buy_me_a_coffee_url' => 'enlace de Buy Me a Coffee',
             'backup_recent_success_hours' => 'horas para backup reciente',
             'backup_retention_days' => 'dias de retencion de backups',
-            'backup_schedule_enabled' => 'backup automatico',
-            'backup_schedule_hour' => 'hora del backup automatico',
+            'backup_schedule_enabled' => 'backup automático',
+            'backup_schedule_hour' => 'hora del backup automático',
         ]);
 
         $changedKeys = array_merge(
@@ -90,7 +90,7 @@ class SettingsController extends Controller
             }
 
             if (! is_string($value) || ! $publicSettings->isPublicUrl($value)) {
-                $fail('Use una URL publica http o https valida.');
+                $fail('Use una URL pública http o https válida.');
             }
         };
     }

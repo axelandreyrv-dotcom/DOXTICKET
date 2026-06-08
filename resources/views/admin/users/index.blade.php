@@ -19,7 +19,7 @@
                     </div>
                     <h1 class="mt-2 text-3xl font-semibold tracking-normal text-pretty">Usuarios</h1>
                     <p class="mt-2 max-w-2xl text-sm leading-6 text-[var(--color-text-secondary)]">
-                        Vista global de identidades y membresias. La pertenencia a empresas se mantiene separada del permiso superadmin.
+                        Vista global de identidades y membresías. La pertenencia a empresas se mantiene separada del permiso superadmin.
                     </p>
                 </div>
                 <div class="flex flex-wrap gap-2">
@@ -71,39 +71,56 @@
 
                             <div class="grid gap-2">
                                 @forelse ($user->memberships as $membership)
-                                    <form method="POST" action="{{ route('admin.memberships.update', $membership) }}" data-confirm="Cambiar esta membresia puede afectar el acceso del usuario a la empresa. ¿Continuar?" class="min-w-0 rounded-md border border-[var(--color-border-default)] bg-white px-3 py-2">
-                                        @csrf
-                                        @method('PUT')
+                                    <div class="min-w-0 rounded-md border border-[var(--color-border-default)] bg-white px-3 py-2">
                                         <p class="truncate font-medium">{{ $membership->company?->name ?? 'Empresa no disponible' }}</p>
-                                        <div class="mt-2 grid gap-2 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto] sm:items-end">
-                                            <div class="min-w-0">
-                                                <label for="membership-{{ $membership->id }}-role" class="block text-xs font-medium text-[var(--color-text-muted)]">Rol</label>
-                                                <select id="membership-{{ $membership->id }}-role" name="role" class="mt-1 w-full rounded-md border border-[var(--color-border-default)] bg-white px-2 py-1.5 text-xs text-[var(--color-text-primary)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-action-primary)]">
-                                                    <option value="admin" @selected($membership->role === 'admin')>admin</option>
-                                                    <option value="supervisor" @selected($membership->role === 'supervisor')>supervisor</option>
-                                                    <option value="agent" @selected($membership->role === 'agent')>agent</option>
-                                                </select>
-                                            </div>
+                                        <form method="POST" action="{{ route('admin.memberships.update', $membership) }}" data-confirm="Cambiar esta membresía puede afectar el acceso del usuario a la empresa. ¿Continuar?">
+                                            @csrf
+                                            @method('PUT')
+                                            <div class="mt-2 grid gap-2 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto] sm:items-end">
+                                                <div class="min-w-0">
+                                                    <label for="membership-{{ $membership->id }}-role" class="block text-xs font-medium text-[var(--color-text-muted)]">Rol</label>
+                                                    <select id="membership-{{ $membership->id }}-role" name="role" class="mt-1 w-full rounded-md border border-[var(--color-border-default)] bg-white px-2 py-1.5 text-xs text-[var(--color-text-primary)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-action-primary)]">
+                                                        <option value="admin" @selected($membership->role === 'admin')>Administrador</option>
+                                                        <option value="supervisor" @selected($membership->role === 'supervisor')>Supervisor</option>
+                                                        <option value="agent" @selected($membership->role === 'agent')>Agente</option>
+                                                    </select>
+                                                </div>
 
-                                            <div class="min-w-0">
-                                                <label for="membership-{{ $membership->id }}-status" class="block text-xs font-medium text-[var(--color-text-muted)]">Estado</label>
-                                                <select id="membership-{{ $membership->id }}-status" name="status" class="mt-1 w-full rounded-md border border-[var(--color-border-default)] bg-white px-2 py-1.5 text-xs text-[var(--color-text-primary)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-action-primary)]">
-                                                    <option value="active" @selected($membership->status === 'active')>active</option>
-                                                    <option value="disabled" @selected($membership->status === 'disabled')>disabled</option>
-                                                </select>
-                                            </div>
+                                                <div class="min-w-0">
+                                                    <label for="membership-{{ $membership->id }}-status" class="block text-xs font-medium text-[var(--color-text-muted)]">Estado</label>
+                                                    <select id="membership-{{ $membership->id }}-status" name="status" class="mt-1 w-full rounded-md border border-[var(--color-border-default)] bg-white px-2 py-1.5 text-xs text-[var(--color-text-primary)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-action-primary)]">
+                                                        <option value="active" @selected($membership->status === 'active')>Activo</option>
+                                                        <option value="disabled" @selected($membership->status === 'disabled')>Desactivado</option>
+                                                    </select>
+                                                </div>
 
-                                            <button type="submit" class="rounded-md border border-[var(--color-border-default)] px-2.5 py-1.5 text-xs font-medium text-[var(--color-text-secondary)] hover:border-[var(--color-border-strong)] hover:text-[var(--color-text-primary)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-action-primary)]">
-                                                Guardar
+                                                <button type="submit" class="rounded-md border border-[var(--color-border-default)] px-2.5 py-1.5 text-xs font-medium text-[var(--color-text-secondary)] hover:border-[var(--color-border-strong)] hover:text-[var(--color-text-primary)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-action-primary)]">
+                                                    Guardar
+                                                </button>
+                                            </div>
+                                        </form>
+
+                                        <form method="POST" action="{{ route('admin.memberships.destroy', $membership) }}" data-confirm="Eliminar este acceso quita al usuario de la empresa. ¿Continuar?" class="mt-2">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="rounded-md border border-[var(--color-border-default)] px-2.5 py-1.5 text-xs font-medium text-[var(--color-danger)] hover:border-[var(--color-danger)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-action-primary)]">
+                                                Eliminar acceso
                                             </button>
-                                        </div>
-                                    </form>
+                                        </form>
+                                    </div>
                                 @empty
-                                    <p class="text-[var(--color-text-muted)]">Sin membresias</p>
+                                    <p class="text-[var(--color-text-muted)]">Sin membresías</p>
                                 @endforelse
                             </div>
 
                             <div class="flex flex-wrap gap-2">
+                                <form method="POST" action="{{ route('admin.users.password-reset', $user) }}" data-confirm="Enviar un enlace para definir o restablecer la contraseña de este usuario. ¿Continuar?">
+                                    @csrf
+                                    <button type="submit" class="rounded-md border border-[var(--color-border-default)] px-2.5 py-1.5 text-xs font-medium text-[var(--color-text-secondary)] hover:border-[var(--color-border-strong)] hover:text-[var(--color-text-primary)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-action-primary)]">
+                                        Enviar enlace
+                                    </button>
+                                </form>
+
                                 @if ($user->is_active)
                                     <form method="POST" action="{{ route('admin.users.status', $user) }}" data-confirm="Cambiar el estado global de este usuario puede afectar su acceso. ¿Continuar?">
                                         @csrf
@@ -121,11 +138,19 @@
                                         </button>
                                     </form>
                                 @endif
+
+                                <form method="POST" action="{{ route('admin.users.destroy', $user) }}" data-confirm="Eliminar este usuario desactiva su identidad global y elimina sus accesos a empresas. ¿Continuar?">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="rounded-md border border-[var(--color-border-default)] px-2.5 py-1.5 text-xs font-medium text-[var(--color-danger)] hover:border-[var(--color-danger)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-action-primary)]">
+                                        Eliminar
+                                    </button>
+                                </form>
                             </div>
                         </article>
                     @empty
                         <p class="px-4 py-4 text-sm text-[var(--color-text-secondary)] sm:px-5">
-                            Todavia no hay usuarios registrados.
+                            Todavía no hay usuarios registrados.
                         </p>
                     @endforelse
                 </div>

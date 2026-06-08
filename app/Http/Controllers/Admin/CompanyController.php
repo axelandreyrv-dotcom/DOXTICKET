@@ -164,7 +164,7 @@ class CompanyController extends Controller
                 'regex:/^[a-z0-9]+(?:-[a-z0-9]+)*$/',
                 Rule::unique('companies', 'slug')->ignore($company?->id),
             ],
-            'country' => ['nullable', 'string', 'size:2'],
+            'country' => ['nullable', 'string', 'max:120'],
             'phone' => ['nullable', 'string', 'max:40'],
             'status' => ['required', Rule::in(['active', 'disabled', 'archived'])],
             'locale_default' => ['required', Rule::in(['es', 'en'])],
@@ -173,7 +173,7 @@ class CompanyController extends Controller
         return [
             'name' => $validated['name'],
             'slug' => $validated['slug'],
-            'country' => isset($validated['country']) ? strtoupper($validated['country']) : null,
+            'country' => isset($validated['country']) ? trim($validated['country']) : null,
             'phone' => $validated['phone'] ?? null,
             'status' => $validated['status'],
             'locale_default' => $validated['locale_default'],

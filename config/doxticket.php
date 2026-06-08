@@ -17,6 +17,10 @@ return [
         'max_bytes' => env('DOXTICKET_ATTACHMENT_MAX_BYTES', 10 * 1024 * 1024),
     ],
 
+    'mail' => [
+        'imap_validate_cert' => env('DOXTICKET_IMAP_VALIDATE_CERT', true),
+    ],
+
     'oauth' => [
         'state_ttl_minutes' => env('DOXTICKET_OAUTH_STATE_TTL_MINUTES', 10),
         'providers' => [

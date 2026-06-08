@@ -6,8 +6,10 @@ use App\Mail\Admin\UserInvitationMail;
 use App\Models\Company;
 use App\Models\Membership;
 use App\Models\User;
+use App\Notifications\Auth\ResetPasswordNotification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
 
 class AdminUsersTest extends TestCase
@@ -100,6 +102,73 @@ class AdminUsersTest extends TestCase
         $this->assertTrue($user->fresh()->is_active);
     }
 
+    public function test_superadmin_can_send_password_setup_link_to_user(): void
+    {
+        Notification::fake();
+
+        $superadmin = User::factory()->create([
+            'is_superadmin' => true,
+            'is_active' => true,
+        ]);
+        $user = User::factory()->create([
+            'email' => 'axel@example.test',
+            'is_active' => true,
+        ]);
+
+        $this->actingAs($superadmin)
+            ->post("/admin/users/{$user->id}/password-reset")
+            ->assertRedirect('/admin/users')
+            ->assertSessionHas('status', 'Enlace de contraseña enviado.');
+
+        Notification::assertSentTo($user, ResetPasswordNotification::class);
+        $this->assertDatabaseHas('audit_logs', [
+            'action' => 'admin.user.password_reset_sent',
+            'actor_user_id' => $superadmin->id,
+            'subject_type' => User::class,
+            'subject_id' => $user->id,
+        ]);
+    }
+
+    public function test_superadmin_can_soft_delete_user_and_memberships(): void
+    {
+        $superadmin = User::factory()->create([
+            'is_superadmin' => true,
+            'is_active' => true,
+        ]);
+        $company = Company::factory()->create();
+        $user = User::factory()->create(['is_active' => true]);
+        $membership = Membership::factory()->for($company)->for($user)->create();
+
+        $this->actingAs($superadmin)
+            ->delete("/admin/users/{$user->id}")
+            ->assertRedirect('/admin/users')
+            ->assertSessionHas('status', 'Usuario eliminado.');
+
+        $this->assertSoftDeleted('users', ['id' => $user->id]);
+        $this->assertSoftDeleted('memberships', ['id' => $membership->id]);
+        $this->assertDatabaseHas('audit_logs', [
+            'action' => 'admin.user.deleted',
+            'actor_user_id' => $superadmin->id,
+            'subject_type' => User::class,
+            'subject_id' => $user->id,
+        ]);
+    }
+
+    public function test_superadmin_cannot_delete_own_account(): void
+    {
+        $superadmin = User::factory()->create([
+            'is_superadmin' => true,
+            'is_active' => true,
+        ]);
+
+        $this->actingAs($superadmin)
+            ->delete("/admin/users/{$superadmin->id}")
+            ->assertRedirect('/admin/users')
+            ->assertSessionHas('status', 'No puedes eliminar tu propia cuenta.');
+
+        $this->assertNotSoftDeleted('users', ['id' => $superadmin->id]);
+    }
+
     public function test_superadmin_cannot_deactivate_own_account(): void
     {
         $superadmin = User::factory()->create([
@@ -129,6 +198,7 @@ class AdminUsersTest extends TestCase
             ->get('/admin/users')
             ->assertOk()
             ->assertSee('data-confirm="Cambiar el estado global de este usuario puede afectar su acceso. ¿Continuar?"', false)
+            ->assertSee('Enviar enlace')
             ->assertSee('id="confirm-dialog"', false)
             ->assertSee('aria-labelledby="confirm-dialog-title"', false)
             ->assertSee('aria-describedby="confirm-dialog-message"', false);
@@ -158,6 +228,52 @@ class AdminUsersTest extends TestCase
 
         $this->assertSame('supervisor', $membership->role);
         $this->assertSame('disabled', $membership->status);
+    }
+
+    public function test_superadmin_can_soft_delete_membership(): void
+    {
+        $superadmin = User::factory()->create([
+            'is_superadmin' => true,
+            'is_active' => true,
+        ]);
+        $company = Company::factory()->create();
+        $agent = User::factory()->create();
+        $membership = Membership::factory()->for($company)->for($agent)->create([
+            'role' => 'agent',
+            'status' => 'active',
+        ]);
+
+        $this->actingAs($superadmin)
+            ->delete("/admin/memberships/{$membership->id}")
+            ->assertRedirect('/admin/users')
+            ->assertSessionHas('status', 'Acceso a empresa eliminado.');
+
+        $this->assertSoftDeleted('memberships', ['id' => $membership->id]);
+        $this->assertDatabaseHas('audit_logs', [
+            'action' => 'admin.membership.deleted',
+            'actor_user_id' => $superadmin->id,
+            'subject_type' => Membership::class,
+            'subject_id' => $membership->id,
+        ]);
+    }
+
+    public function test_users_panel_hides_memberships_for_deleted_companies(): void
+    {
+        $superadmin = User::factory()->create([
+            'is_superadmin' => true,
+            'is_active' => true,
+        ]);
+        $company = Company::factory()->create(['name' => 'Empresa Eliminada']);
+        $user = User::factory()->create(['name' => 'Agente QA']);
+        Membership::factory()->for($company)->for($user)->create();
+        $company->delete();
+
+        $this->actingAs($superadmin)
+            ->get('/admin/users')
+            ->assertOk()
+            ->assertSee('Agente QA')
+            ->assertDontSee('Empresa no disponible')
+            ->assertDontSee('Empresa Eliminada');
     }
 
     public function test_membership_role_and_status_must_be_allowed_values(): void
@@ -220,7 +336,10 @@ class AdminUsersTest extends TestCase
             ->assertSee('action="'.route('admin.memberships.update', $membership).'"', false)
             ->assertSee('name="role"', false)
             ->assertSee('name="status"', false)
-            ->assertSee('data-confirm="Cambiar esta membresia puede afectar el acceso del usuario a la empresa. ¿Continuar?"', false);
+            ->assertSee('Administrador')
+            ->assertSee('Supervisor')
+            ->assertSee('Agente')
+            ->assertSee('data-confirm="Cambiar esta membresía puede afectar el acceso del usuario a la empresa. ¿Continuar?"', false);
     }
 
     public function test_superadmin_can_view_invite_user_form(): void

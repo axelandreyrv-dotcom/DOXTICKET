@@ -7,6 +7,7 @@ use App\Contracts\Mail\OAuthTokenClient;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Mail\StoreMailAccountRequest;
 use App\Models\MailAccount;
+use App\Services\Auth\Totp;
 use App\Services\Mail\OAuthAuthorizationUrlFactory;
 use App\Services\Mail\OAuthStateStore;
 use App\Services\Mail\OAuthTokenStore;
@@ -20,9 +21,15 @@ class SettingsController extends Controller
 {
     public function index(): View
     {
+        $user = request()->user();
+        $totp = app(Totp::class);
+
         return view('app.settings.index', [
             'company' => app(TenantContext::class)->company(),
             'mailAccount' => MailAccount::query()->first(),
+            'twoFactorProvisioningUri' => filled($user?->two_factor_secret) && ! $user?->hasTwoFactorEnabled()
+                ? $totp->provisioningUri((string) $user->email, (string) $user->two_factor_secret)
+                : null,
         ]);
     }
 

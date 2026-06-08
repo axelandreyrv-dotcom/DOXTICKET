@@ -106,16 +106,16 @@
                         </div>
 
                         <div>
-                            <label for="country" class="block text-sm font-semibold">Pais</label>
+                            <label for="country" class="block text-sm font-semibold">País</label>
                             <input
                                 id="country"
                                 name="country"
                                 type="text"
-                                maxlength="2"
+                                maxlength="120"
                                 value="{{ old('country', $company->country) }}"
                                 autocomplete="country"
                                 @class([
-                                    'mt-2 w-full rounded-md border bg-white px-3 py-2 text-sm uppercase outline-none focus:border-[var(--color-action-primary)] focus:ring-2 focus:ring-[var(--color-action-primary)]/15',
+                                    'mt-2 w-full rounded-md border bg-white px-3 py-2 text-sm outline-none focus:border-[var(--color-action-primary)] focus:ring-2 focus:ring-[var(--color-action-primary)]/15',
                                     'border-[var(--color-border-default)]' => ! $errors->has('country'),
                                     'border-[var(--color-danger)]' => $errors->has('country'),
                                 ])

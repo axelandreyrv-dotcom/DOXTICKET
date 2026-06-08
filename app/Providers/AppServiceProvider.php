@@ -9,6 +9,7 @@ use App\Contracts\Mail\OAuthTokenClient;
 use App\Services\Mail\ImapMailboxClient;
 use App\Services\Mail\NativeImapConnection;
 use App\Services\Mail\OAuthHttpTokenClient;
+use App\Services\Mail\OAuthMailboxClient;
 use App\Services\Mail\RoutingMailboxClient;
 use App\Services\Mail\SupportMailAccountTester;
 use App\Support\Tenant\TenantContext;

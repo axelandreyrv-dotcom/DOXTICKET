@@ -19,11 +19,11 @@
                     </div>
                     <h1 class="mt-2 text-3xl font-semibold tracking-normal text-pretty">Estado del sistema</h1>
                     <p class="mt-2 max-w-2xl text-sm leading-6 text-[var(--color-text-secondary)]">
-                        Resumen operativo de la instalacion self-hosted. Los errores visibles no exponen secretos.
+                        Resumen operativo de la instalación self-hosted. Los errores visibles no exponen secretos.
                     </p>
                 </div>
                 <div class="text-left sm:text-right">
-                    <p class="text-sm text-[var(--color-text-muted)]">Version instalada</p>
+                    <p class="text-sm text-[var(--color-text-muted)]">Versión instalada</p>
                     <p class="mt-1 font-mono text-sm font-semibold text-[var(--color-text-primary)]">{{ $version }}</p>
                 </div>
             </header>
@@ -49,7 +49,7 @@
             <section aria-labelledby="admin-sections-heading" class="pb-8">
                 <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
                     <article class="rounded-lg border border-[var(--color-border-default)] bg-[var(--color-bg-surface)] p-4 sm:p-5">
-                        <p class="text-xs font-medium uppercase tracking-[0.08em] text-[var(--color-text-muted)]">Administracion</p>
+                        <p class="text-xs font-medium uppercase tracking-[0.08em] text-[var(--color-text-muted)]">Administración</p>
                         <h2 id="admin-sections-heading" class="mt-2 text-lg font-semibold">Empresas</h2>
                         <p class="mt-2 text-sm leading-6 text-[var(--color-text-secondary)]">
                             Revisa tenants, estado operativo, correo activo, miembros y tickets desde el portal admin.
@@ -63,7 +63,7 @@
                         <p class="text-xs font-medium uppercase tracking-[0.08em] text-[var(--color-text-muted)]">Acceso</p>
                         <h2 class="mt-2 text-lg font-semibold">Usuarios</h2>
                         <p class="mt-2 text-sm leading-6 text-[var(--color-text-secondary)]">
-                            Revisa usuarios globales, superadmins y membresias por empresa sin depender del tenant activo.
+                            Revisa usuarios globales, superadmins y membresías por empresa sin depender del tenant activo.
                         </p>
                         <a href="{{ route('admin.users.index') }}" class="mt-4 inline-flex rounded-md border border-[var(--color-border-default)] px-3 py-2 text-sm font-medium text-[var(--color-text-secondary)] hover:border-[var(--color-border-strong)] hover:text-[var(--color-text-primary)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-action-primary)]">
                             Abrir usuarios
@@ -71,10 +71,10 @@
                     </article>
 
                     <article class="rounded-lg border border-[var(--color-border-default)] bg-[var(--color-bg-surface)] p-4 sm:p-5">
-                        <p class="text-xs font-medium uppercase tracking-[0.08em] text-[var(--color-text-muted)]">Instalacion</p>
+                        <p class="text-xs font-medium uppercase tracking-[0.08em] text-[var(--color-text-muted)]">Instalación</p>
                         <h2 class="mt-2 text-lg font-semibold">Configuración</h2>
                         <p class="mt-2 text-sm leading-6 text-[var(--color-text-secondary)]">
-                            Revisa version, repositorio de releases, telemetria, donaciones y correo global sin exponer secretos.
+                            Revisa versión, repositorio de releases, telemetría, donaciones y correo global sin exponer secretos.
                         </p>
                         <a href="{{ route('admin.settings.index') }}" class="mt-4 inline-flex rounded-md border border-[var(--color-border-default)] px-3 py-2 text-sm font-medium text-[var(--color-text-secondary)] hover:border-[var(--color-border-strong)] hover:text-[var(--color-text-primary)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-action-primary)]">
                             Abrir configuración
@@ -83,12 +83,12 @@
 
                     <article class="rounded-lg border border-[var(--color-border-default)] bg-[var(--color-bg-surface)] p-4 sm:p-5">
                         <p class="text-xs font-medium uppercase tracking-[0.08em] text-[var(--color-text-muted)]">Trazabilidad</p>
-                        <h2 class="mt-2 text-lg font-semibold">Auditoria</h2>
+                        <h2 class="mt-2 text-lg font-semibold">Auditoría</h2>
                         <p class="mt-2 text-sm leading-6 text-[var(--color-text-secondary)]">
                             Revisa eventos operativos y administrativos con metadatos redactados antes de mostrarse.
                         </p>
                         <a href="{{ route('admin.audit.index') }}" class="mt-4 inline-flex rounded-md border border-[var(--color-border-default)] px-3 py-2 text-sm font-medium text-[var(--color-text-secondary)] hover:border-[var(--color-border-strong)] hover:text-[var(--color-text-primary)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-action-primary)]">
-                            Abrir auditoria
+                            Abrir auditoría
                         </a>
                     </article>
                 </div>
@@ -101,22 +101,22 @@
                             <p class="text-xs font-medium uppercase tracking-[0.08em] text-[var(--color-text-muted)]">Updates</p>
                             <h2 id="updates-heading" class="mt-2 text-lg font-semibold">
                                 @if (($updateStatus['update_available'] ?? false) === true)
-                                    Nueva version estable disponible
+                                    Nueva versión estable disponible
                                 @elseif (($updateStatus['error'] ?? null) !== null)
-                                    No se pudo revisar la version
+                                    No se pudo revisar la versión
                                 @else
-                                    Version estable revisada
+                                    Versión estable revisada
                                 @endif
                             </h2>
                             <p class="mt-2 text-sm leading-6 text-[var(--color-text-secondary)]">
                                 @if (($updateStatus['update_available'] ?? false) === true)
-                                    Hay una release estable {{ $updateStatus['latest_version'] ?? '' }} para esta instalacion. Revisa backups antes de actualizar.
+                                    Hay una release estable {{ $updateStatus['latest_version'] ?? '' }} para esta instalación. Revisa backups antes de actualizar.
                                 @elseif (($updateStatus['error'] ?? null) !== null)
                                     {{ $updateStatus['error'] }}
                                 @elseif ($updateStatus)
-                                    No hay una version estable nueva registrada.
+                                    No hay una versión estable nueva registrada.
                                 @else
-                                    Aun no hay resultado local del chequeo diario de GitHub Releases.
+                                    Aún no hay resultado local del chequeo diario de GitHub Releases.
                                 @endif
                             </p>
                         </div>
@@ -150,10 +150,10 @@
                             <h2 id="telemetry-heading" class="mt-2 text-lg font-semibold">Telemetría</h2>
                             <p class="mt-2 text-sm leading-6 text-[var(--color-text-secondary)]">
                                 Estado: <span class="font-semibold text-[var(--color-text-primary)]">{{ $telemetry['enabled'] ? 'Activa' : 'Apagada' }}</span>.
-                                No envia nombres, correos, asuntos, cuerpos, adjuntos ni secretos.
+                                No envía nombres, correos, asuntos, cuerpos, adjuntos ni secretos.
                             </p>
                             <p class="mt-2 text-sm leading-6 text-[var(--color-text-secondary)]">
-                                Cuando se active, solo podra reportar version instalada, entorno tecnico basico y eventos anonimos de salud.
+                                Cuando se active, solo podrá reportar versión instalada, entorno técnico básico y eventos anónimos de salud.
                             </p>
                         </div>
 
@@ -176,7 +176,7 @@
                                 <p class="text-xs font-medium uppercase tracking-[0.08em] text-[var(--color-text-muted)]">Open source</p>
                                 <h2 id="donations-heading" class="mt-2 text-lg font-semibold">Apoyar DoxTicket</h2>
                                 <p class="mt-2 max-w-2xl text-sm leading-6 text-[var(--color-text-secondary)]">
-                                    Links opcionales para apoyar el desarrollo. No activan billing ni cambian funciones de la instalacion.
+                                    Links opcionales para apoyar el desarrollo. No activan billing ni cambian funciones de la instalación.
                                 </p>
                             </div>
 
@@ -204,6 +204,9 @@
                                 @else
                                     Sin backup exitoso registrado. Configura y verifica backups antes de actualizar.
                                 @endif
+                            </p>
+                            <p class="mt-2 text-sm leading-6 text-[var(--color-text-secondary)]">
+                                El backup local actual guarda base de datos y manifiesto. Para reinstalar, también conserva y restaura manualmente `storage/app/private` y `.env`. V1 no importa backups desde la UI.
                             </p>
                         </div>
 
@@ -265,7 +268,7 @@
                         </article>
                     @empty
                         <p class="px-4 py-4 text-sm text-[var(--color-text-secondary)] sm:px-5">
-                            Todavia no hay ejecuciones de backup registradas.
+                            Todavía no hay ejecuciones de backup registradas.
                         </p>
                     @endforelse
                 </div>

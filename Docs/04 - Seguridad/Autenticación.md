@@ -36,9 +36,11 @@ Definir login, recuperacion, sesiones, verificacion y 2FA.
 ### Estado implementado
 - Login POST valida correo/contrasena en servidor.
 - Fallo de credenciales usa mensaje generico.
+- Si el usuario tiene 2FA activo, login redirige a `/two-factor-challenge` despues de validar contrasena y antes de regenerar la sesion definitiva.
 - Login correcto regenera la sesion y registra `last_login_at`.
 - Si hay una sola membership activa, se guarda `active_membership_id`.
 - Si hay varias memberships activas, redirige a `/app/companies`.
+- Si no hay memberships activas porque las empresas fueron eliminadas o desactivadas, las rutas `/app/*` redirigen a `/app/companies` con aviso en vez de mostrar 403.
 - `/logout` invalida sesion y token CSRF.
 - Rate limit base aplicado a `/login`.
 
@@ -46,7 +48,11 @@ Definir login, recuperacion, sesiones, verificacion y 2FA.
 - TOTP.
 - Opcional para todos los roles en v1.
 - Codigos de recuperacion cifrados.
-- Puede activarse despues desde perfil.
+- Puede activarse desde `/app/settings`.
+- El secreto TOTP se genera con bytes aleatorios, se guarda cifrado y solo se confirma cuando el usuario introduce un codigo valido.
+- Los codigos de recuperacion se guardan cifrados, se muestran al usuario y se consumen una sola vez.
+- La desactivacion exige contrasena actual.
+- El reto `/two-factor-challenge` acepta codigo TOTP o codigo de recuperacion y no autentica al usuario si el reto falla.
 
 ## Recuperacion de contrasena
 - Token de un solo uso.
@@ -61,6 +67,7 @@ Estado implementado actual:
 - `/password/reset/{token}` muestra el formulario publico para definir/restablecer contrasena con email precargado cuando viene desde invitacion.
 - `POST /password/reset` valida token, email y confirmacion de contrasena en servidor, guarda hash nuevo y elimina el token mediante el broker de Laravel.
 - Al completar reset valido, las memberships `invited` del usuario pasan a `active` sin aceptar `company_id` del cliente.
+- Los superadmins pueden enviar enlaces de definicion/restablecimiento de contrasena desde `/admin/users`; el sistema nunca revela contrasenas temporales ni tokens en pantalla.
 - La aceptacion de invitacion guarda `accepted_at` y registra `membership.accepted` en `audit_logs`.
 - Las invitaciones de usuarios nuevos generan token de reset y no revelan la contrasena aleatoria inicial.
 - El formulario usa errores inline accesibles y `autocomplete="new-password"` en campos de contrasena.

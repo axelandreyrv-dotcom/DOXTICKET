@@ -96,8 +96,8 @@ tests/
 
 ## Estado implementado actual
 - `tests/Feature/Admin/AdminDashboardTest.php` cubre acceso superadmin, health, updates cacheados, chequeo manual protegido de actualizaciones, logo/favicons de marca y enlaces de donacion configurables sin renderizar URLs inseguras.
-- `tests/Feature/Admin/AdminCompaniesTest.php` cubre acceso protegido a `/admin/companies`, resumen operativo cross-tenant, creacion de empresas, slug unico, edicion sin depender de empresa activa, cambio de estado permitido, eliminacion suave protegida con limpieza de `last_active_company_id`, confirmacion accesible y enlaces de gestion.
-- `tests/Feature/Admin/AdminUsersTest.php` cubre acceso protegido a `/admin/users`, listado de usuarios globales con membresias, enlace desde dashboard, activacion/desactivacion de usuario, bloqueo de autodesactivacion superadmin, edicion de rol/estado de membership, bloqueo para no dejar una empresa sin admin activo, registro de invitaciones nuevas/existentes con correo SMTP global, enlace de definicion de contrasena solo para usuarios nuevos, bloqueo de duplicados y confirmacion accesible.
+- `tests/Feature/Admin/AdminCompaniesTest.php` cubre acceso protegido a `/admin/companies`, resumen operativo cross-tenant, creacion de empresas con pais como texto libre, slug unico, edicion sin depender de empresa activa, cambio de estado permitido, eliminacion suave protegida con limpieza de `last_active_company_id`, confirmacion accesible y enlaces de gestion.
+- `tests/Feature/Admin/AdminUsersTest.php` cubre acceso protegido a `/admin/users`, listado de usuarios globales con membresias, ocultamiento de membresias de empresas eliminadas, labels humanos de rol, envio de enlace de contrasena por superadmin, enlace desde dashboard, activacion/desactivacion de usuario, eliminacion suave de usuarios, bloqueo de autodesactivacion/autoeliminacion superadmin, edicion/eliminacion de memberships, bloqueo para no dejar una empresa sin admin activo, registro de invitaciones nuevas/existentes con correo SMTP global, enlace de definicion de contrasena solo para usuarios nuevos, bloqueo de duplicados y confirmacion accesible.
 - `tests/Feature/Admin/AdminAuditTest.php` cubre acceso protegido a `/admin/audit`, listado de eventos globales, busqueda libre por accion/empresa/actor/sujeto, filtros por accion/empresa/actor/fecha, preservacion de valores del formulario, exportacion CSV protegida con filtros y metadatos sanitizados, auditoria de la propia exportacion, enlace desde dashboard y redaccion de metadatos sensibles.
 - `tests/Feature/Admin/AdminActionAuditTest.php` cubre audit logs generados por acciones superadmin criticas: empresas incluyendo eliminacion suave, invitaciones, estado de usuarios, memberships, telemetria, backup manual, rollback y updates.
 - `tests/Feature/Admin/AdminSettingsTest.php` cubre acceso protegido a `/admin/settings`, resumen seguro de configuracion de instalacion, guardado de settings publicos no secretos, politica de backups manual/automatico local, rechazo de URLs inseguras/repositorios invalidos/rangos invalidos, auditoria de cambios y enlace desde el dashboard admin.
@@ -108,6 +108,7 @@ tests/
 - `tests/Unit/Admin/GitHubReleaseUpdateCheckerTest.php` cubre uso del repositorio efectivo guardado en `system_settings` para consultar GitHub Releases, con fallback de configuracion.
 - `tests/Feature/PublicNavigationTest.php` cubre navegacion publica sin Setup visible, estado publico del instalador basado en `setup.completed`, acciones no duplicadas en login y logo/favicons de marca en el shell publico. `tests/Feature/ExampleTest.php` mantiene la regresion basica de que `/` responde 200 aunque aun no existan tablas migradas.
 - `tests/Feature/Auth/LoginTest.php` cubre login multiempresa, exclusion de memberships de empresas eliminadas, error generico de credenciales, localizacion en espanol y errores inline accesibles en `/login`.
+- `tests/Feature/Auth/TwoFactorAuthenticationTest.php` cubre reto 2FA posterior al password, login con TOTP, consumo unico de codigos de recuperacion, activacion/desactivacion desde `/app/settings` y cifrado del secreto.
 - `tests/Feature/Auth/PasswordResetTest.php` cubre enlace desde login, solicitud publica de reset con respuesta generica, envio de notificacion DoxTicket en espanol al usuario existente, no envio para correo desconocido, formulario publico de definicion/restablecimiento de contrasena con token, actualizacion segura de hash, activacion de memberships `invited`, `accepted_at` y audit log `membership.accepted`.
 - `tests/Feature/Setup/InitialSetupTest.php` cubre creacion inicial, bloqueo posterior de `/setup` y errores inline accesibles del instalador.
 - `tests/Feature/Activity/ActivityPanelTest.php` cubre listado de actividad, aislamiento por tenant, filtros y enlace en navegacion.
@@ -154,6 +155,15 @@ tests/
 - Guardar screenshots y snapshots locales en `output/playwright/`.
 - `output/playwright/` y `.playwright-cli/` son artifacts locales y no deben versionarse.
 - Revisar consola del navegador, overflow horizontal, presencia de `Powered by DoxTicket` y estados responsive.
+
+## QA Docker
+- Crear `.env.docker` desde `.env.docker.example` y generar `APP_KEY`.
+- Levantar con `docker compose --env-file .env.docker up -d --build`.
+- Ejecutar migraciones con `docker compose --env-file .env.docker exec app php artisan migrate --force`.
+- Ejecutar caches de runtime con `docker compose --env-file .env.docker exec app php artisan optimize`.
+- Reconstruir con `--build` despues de cambios de codigo o assets; los contenedores PHP no montan el repo completo para evitar latencia alta en Docker Desktop para Windows y el contenedor `web` sirve los assets generados dentro de la imagen.
+- Verificar que el contenedor `app` tenga `imap`, `pdo_pgsql` y `redis` en `php -m`.
+- Completar `/setup`, entrar a `/login`, abrir `/app/tickets` y validar `/admin` con una cuenta superadmin.
 
 ## Relacion
 - `04 - Seguridad/Checklist Producción.md`

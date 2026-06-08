@@ -26,7 +26,7 @@ No hay estados de trial/pago en v1.
 
 ## Configuracion
 - Nombre.
-- Pais/telefono opcional.
+- Pais como texto libre y telefono opcional.
 - Logo opcional.
 - Locale.
 - Categorias.

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -28,9 +29,24 @@ class AuthenticatedSessionController extends Controller
             ]);
         }
 
+        $user = $request->user();
+
+        if ($user->hasTwoFactorEnabled()) {
+            Auth::logout();
+            $request->session()->put('login.two_factor_user_id', $user->id);
+            $request->session()->put('login.remember', $request->boolean('remember'));
+            $request->session()->regenerateToken();
+
+            return redirect('/two-factor-challenge');
+        }
+
         $request->session()->regenerate();
 
-        $user = $request->user();
+        return $this->completeLogin($request, $user);
+    }
+
+    public function completeLogin(Request $request, User $user): RedirectResponse
+    {
         $user->forceFill(['last_login_at' => now()])->save();
 
         $memberships = $user->activeMemberships()

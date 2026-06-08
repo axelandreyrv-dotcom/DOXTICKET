@@ -24,7 +24,8 @@ Checklist para instalaciones productivas o releases estables.
 - [ ] Rate limit en login/setup/reset.
 - [ ] Session ID rota al login.
 - [ ] Recuperacion con token de un solo uso.
-- [ ] 2FA disponible.
+- [x] 2FA disponible.
+- [ ] 2FA recomendado para superadmins.
 
 ## Multiempresa
 - [ ] Middleware tenant activo.
@@ -76,6 +77,7 @@ Checklist para instalaciones productivas o releases estables.
 
 ## Tests y calidad
 - [ ] Suite de tests pasa.
+- [ ] Tests de 2FA pasan.
 - [ ] Static analysis pasa.
 - [ ] Build assets pasa.
 - [ ] Secret scan pasa.

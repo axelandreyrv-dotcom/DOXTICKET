@@ -36,6 +36,7 @@ RUN apk add --no-cache \
         libpq \
         libzip \
         oniguruma \
+        postgresql-client \
         tzdata \
     && apk add --no-cache --virtual .build-deps \
         $PHPIZE_DEPS \
@@ -74,3 +75,11 @@ USER www-data
 EXPOSE 9000
 
 CMD ["php-fpm"]
+
+FROM nginx:1.29-alpine AS web
+
+WORKDIR /var/www/html
+
+COPY --from=vendor /app/public /var/www/html/public
+COPY --from=assets /app/public/build /var/www/html/public/build
+COPY docker/nginx/default.conf /etc/nginx/conf.d/default.conf

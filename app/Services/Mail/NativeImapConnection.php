@@ -28,6 +28,11 @@ class NativeImapConnection implements ImapConnection
 
             foreach ($uids as $uid) {
                 $uid = (int) $uid;
+
+                if (! $this->shouldFetchUid($account, $uid)) {
+                    continue;
+                }
+
                 $headers = imap_fetchheader($connection, $uid, FT_UID) ?: '';
                 $messageParts = $this->messageParts($connection, $uid);
 
@@ -52,6 +57,10 @@ class NativeImapConnection implements ImapConnection
             default => '/notls',
         };
 
+        if (! (bool) config('doxticket.mail.imap_validate_cert', true)) {
+            $security .= '/novalidate-cert';
+        }
+
         $folder = trim((string) ($account->folder_in ?: 'INBOX')) ?: 'INBOX';
 
         return sprintf('{%s:%d/imap%s}%s', $account->host_imap, $account->port_imap, $security, $folder);
@@ -59,11 +68,16 @@ class NativeImapConnection implements ImapConnection
 
     private function searchCriteria(MailAccount $account): string
     {
-        if (ctype_digit((string) $account->last_uid) && (int) $account->last_uid > 0) {
-            return 'UID '.((int) $account->last_uid + 1).':*';
+        return 'ALL';
+    }
+
+    private function shouldFetchUid(MailAccount $account, int $uid): bool
+    {
+        if (! ctype_digit((string) $account->last_uid) || (int) $account->last_uid <= 0) {
+            return true;
         }
 
-        return 'ALL';
+        return $uid > (int) $account->last_uid;
     }
 
     /**

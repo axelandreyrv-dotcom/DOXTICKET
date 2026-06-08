@@ -23,7 +23,10 @@ class UserController extends Controller
     public function index(): View
     {
         $users = User::query()
-            ->with(['memberships.company'])
+            ->with(['memberships' => fn ($query) => $query
+                ->whereHas('company')
+                ->with('company')
+                ->orderBy('id')])
             ->orderBy('name')
             ->paginate(25);
 
@@ -142,5 +145,66 @@ class UserController extends Controller
         return redirect()
             ->route('admin.users.index')
             ->with('status', 'Estado de usuario actualizado.');
+    }
+
+    public function sendPasswordReset(Request $request, User $user, AuditLogger $auditLogger): RedirectResponse
+    {
+        try {
+            $user->sendPasswordResetNotification(Password::broker()->createToken($user));
+        } catch (Throwable) {
+            return redirect()
+                ->route('admin.users.index')
+                ->with('status', 'No se pudo enviar el enlace. Revisa SMTP global.');
+        }
+
+        $auditLogger->record($request, 'admin.user.password_reset_sent', $user, [
+            'target_user_id' => $user->id,
+            'mailer' => config('mail.default'),
+        ]);
+
+        $status = config('mail.default') === 'log'
+            ? 'Enlace de contraseña enviado. En local se escribio en storage/logs/laravel.log.'
+            : 'Enlace de contraseña enviado.';
+
+        return redirect()
+            ->route('admin.users.index')
+            ->with('status', $status);
+    }
+
+    public function destroy(Request $request, User $user, AuditLogger $auditLogger): RedirectResponse
+    {
+        if ($request->user()?->is($user)) {
+            return redirect()
+                ->route('admin.users.index')
+                ->with('status', 'No puedes eliminar tu propia cuenta.');
+        }
+
+        if ($user->is_superadmin && $this->wouldDeleteLastActiveSuperadmin($user)) {
+            return redirect()
+                ->route('admin.users.index')
+                ->with('status', 'No puedes eliminar el último superadmin activo.');
+        }
+
+        $membershipIds = $user->memberships()->pluck('id')->all();
+        $user->memberships()->delete();
+        $user->delete();
+
+        $auditLogger->record($request, 'admin.user.deleted', $user, [
+            'deleted_membership_ids' => $membershipIds,
+            'was_superadmin' => $user->is_superadmin,
+        ]);
+
+        return redirect()
+            ->route('admin.users.index')
+            ->with('status', 'Usuario eliminado.');
+    }
+
+    private function wouldDeleteLastActiveSuperadmin(User $user): bool
+    {
+        return User::query()
+            ->whereKeyNot($user->id)
+            ->where('is_superadmin', true)
+            ->where('is_active', true)
+            ->exists() === false;
     }
 }

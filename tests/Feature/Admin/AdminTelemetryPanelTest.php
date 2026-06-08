@@ -25,7 +25,7 @@ class AdminTelemetryPanelTest extends TestCase
             ->assertOk()
             ->assertSee('Telemetría')
             ->assertSee('Apagada')
-            ->assertSee('No envia nombres, correos, asuntos, cuerpos, adjuntos ni secretos');
+            ->assertSee('No envía nombres, correos, asuntos, cuerpos, adjuntos ni secretos');
     }
 
     public function test_superadmin_can_enable_and_disable_telemetry(): void

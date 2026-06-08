@@ -38,6 +38,27 @@ class MembershipController extends Controller
             ->with('status', 'Membresia actualizada.');
     }
 
+    public function destroy(Request $request, Membership $membership, AuditLogger $auditLogger): RedirectResponse
+    {
+        if ($this->wouldLeaveCompanyWithoutActiveAdmin($membership, 'agent', 'disabled')) {
+            return redirect()
+                ->route('admin.users.index')
+                ->with('status', 'No puedes dejar la empresa sin un admin activo.');
+        }
+
+        $before = $membership->only(['company_id', 'user_id', 'role', 'status']);
+
+        $membership->delete();
+
+        $auditLogger->record($request, 'admin.membership.deleted', $membership, [
+            'before' => $before,
+        ]);
+
+        return redirect()
+            ->route('admin.users.index')
+            ->with('status', 'Acceso a empresa eliminado.');
+    }
+
     private function wouldLeaveCompanyWithoutActiveAdmin(Membership $membership, string $role, string $status): bool
     {
         if ($membership->role !== 'admin' || ($role === 'admin' && $status === 'active')) {

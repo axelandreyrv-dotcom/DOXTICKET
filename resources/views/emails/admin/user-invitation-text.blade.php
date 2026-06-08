@@ -9,6 +9,6 @@ Define tu contraseña aquí:
 
 Entra a {{ url('/login') }} con tu correo {{ $membership->user->email }}.
 
-Si no esperabas esta invitacion, ignora este mensaje o contacta al administrador de la instalacion.
+Si no esperabas esta invitación, ignora este mensaje o contacta al administrador de la instalación.
 
 Powered by DoxTicket

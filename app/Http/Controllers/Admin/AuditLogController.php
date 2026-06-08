@@ -56,7 +56,7 @@ class AuditLogController extends Controller
                     fputcsv($output, [
                         $log->created_at?->toIso8601String(),
                         $log->action,
-                        $log->company?->name ?? 'Instalacion',
+                        $log->company?->name ?? 'Instalación',
                         $this->actorLabel($log),
                         $this->subjectLabel($log),
                         json_encode($this->sanitizeMeta($log->meta ?? []), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
@@ -113,7 +113,7 @@ class AuditLogController extends Controller
             ->through(fn (AuditLog $log): array => [
                 'created_at' => $log->created_at,
                 'action' => $log->action,
-                'company' => $log->company?->name ?? 'Instalacion',
+                'company' => $log->company?->name ?? 'Instalación',
                 'actor' => $this->actorLabel($log),
                 'subject' => $this->subjectLabel($log),
                 'meta' => $this->sanitizeMeta($log->meta ?? []),

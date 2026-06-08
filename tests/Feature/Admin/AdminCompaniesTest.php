@@ -108,6 +108,30 @@ class AdminCompaniesTest extends TestCase
         ]);
     }
 
+    public function test_superadmin_can_create_company_with_full_country_name(): void
+    {
+        $superadmin = User::factory()->create([
+            'is_superadmin' => true,
+            'is_active' => true,
+        ]);
+
+        $this->actingAs($superadmin)
+            ->post('/admin/companies', [
+                'name' => 'Once Mil Uno',
+                'slug' => 'once-mil-uno',
+                'country' => 'Costa Rica',
+                'locale_default' => 'es',
+                'status' => 'active',
+            ])
+            ->assertRedirect('/admin/companies');
+
+        $this->assertDatabaseHas('companies', [
+            'name' => 'Once Mil Uno',
+            'slug' => 'once-mil-uno',
+            'country' => 'Costa Rica',
+        ]);
+    }
+
     public function test_company_slug_must_be_unique_when_created_from_admin_panel(): void
     {
         $superadmin = User::factory()->create([

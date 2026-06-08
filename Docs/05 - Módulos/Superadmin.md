@@ -36,7 +36,7 @@ Estado implementado actual:
 Estado implementado actual:
 - `/admin/companies` lista empresas para superadmins con estado, slug, conteo de miembros, conteo de tickets y correo activo si existe.
 - La vista usa consultas cross-tenant controladas desde el portal admin y no depende del selector normal de empresa.
-- `/admin/companies/create` permite crear una empresa con nombre, slug unico, pais, idioma por defecto y estado inicial.
+- `/admin/companies/create` permite crear una empresa con nombre, slug unico, pais como texto libre, idioma por defecto y estado inicial.
 - `/admin/companies/{company}/edit` permite editar datos base de la empresa sin cambiar usuarios, correo ni tickets.
 - `POST /admin/companies/{company}/status` permite cambiar estado entre `active`, `disabled` y `archived`.
 - `DELETE /admin/companies/{company}` elimina suavemente la empresa, limpia `last_active_company_id` de usuarios afectados y conserva datos para auditoria.
@@ -52,6 +52,7 @@ Estado implementado actual:
 
 Estado implementado actual:
 - `/admin/users` lista usuarios globales, email, estado activo/inactivo, marca superadmin y membresias con empresa, rol y estado.
+- `/admin/users` oculta membresias de empresas eliminadas para evitar accesos huerfanos como "Empresa no disponible".
 - La vista usa consultas globales protegidas por `auth` + `superadmin` y no depende de la empresa activa.
 - `/admin/users/invite` permite registrar una invitacion a empresa con nombre, correo, empresa y rol.
 - Si el correo ya existe, se reutiliza el usuario global y se agrega una membership `invited`; si no existe, se crea usuario activo con contrasena aleatoria no revelada.
@@ -60,9 +61,13 @@ Estado implementado actual:
 - Las invitaciones de usuarios nuevos generan token de definicion de contrasena y enlace `/password/reset/{token}`; usuarios existentes reciben el acceso normal a `/login`.
 - Si SMTP global falla, la invitacion queda registrada y el panel muestra un aviso generico para revisar la configuracion global.
 - `POST /admin/users/{user}/status` permite activar/desactivar usuarios globales.
+- `POST /admin/users/{user}/password-reset` permite enviar un enlace para definir/restablecer contrasena sin revelar credenciales; en local con `MAIL_MAILER=log`, el correo se escribe en `storage/logs/laravel.log`.
 - `PUT /admin/memberships/{membership}` permite editar rol `admin`, `supervisor` o `agent` y estado `active` o `disabled` de una membership existente.
-- Invitar usuarios, cambiar estado global de usuario y actualizar memberships registran eventos `admin.user.invited`, `admin.user.status_changed` y `admin.membership.updated`.
-- Un superadmin no puede desactivar su propia cuenta desde `/admin/users`.
+- `DELETE /admin/users/{user}` permite eliminar suavemente un usuario global y sus membresias, bloqueando la propia cuenta y el ultimo superadmin activo.
+- `DELETE /admin/memberships/{membership}` permite eliminar suavemente un acceso a empresa.
+- Los roles se muestran como Administrador, Supervisor y Agente. Supervisor es el rol intermedio para coordinar trabajo y gestionar contenido interno sin permisos completos de administrador de empresa.
+- Invitar usuarios, enviar enlaces de contrasena, cambiar estado global de usuario, eliminar usuarios, actualizar memberships y eliminar memberships registran eventos `admin.user.invited`, `admin.user.password_reset_sent`, `admin.user.status_changed`, `admin.user.deleted`, `admin.membership.updated` y `admin.membership.deleted`.
+- Un superadmin no puede desactivar ni eliminar su propia cuenta desde `/admin/users`.
 - El portal bloquea cambios que dejarian una empresa sin al menos una membership `admin` activa.
 - Los cambios de estado desde la UI muestran confirmacion accesible antes de enviar la accion.
 - Gestion avanzada de superadmins y reasignacion de tickets quedan pendientes.
@@ -119,6 +124,7 @@ Estado implementado actual:
 - `App\Jobs\Admin\RunScheduledBackupJob` permite backup automatico local opcional: el scheduler lo evalua cada hora, respeta la hora configurada y no ejecuta mas de un backup `scheduled` por dia.
 - `App\Jobs\Admin\RunBackupRetentionPruneJob` aplica diariamente la retencion local configurada; borra artefactos privados de backups antiguos y marca el registro como `pruned`.
 - `/admin/rollback` ejecuta un preflight protegido por `auth` + `superadmin`; si no existe backup valido redirige con aviso, y si existe prepara el rollback manual sin restaurar automaticamente.
+- La restauracion despues de reinstalar es manual en v1: detener la app, restaurar el dump de PostgreSQL o el archivo SQLite segun corresponda, restaurar `storage/app/private`, restaurar `.env`, ejecutar migraciones pendientes y revisar `/admin/health`.
 - Backups manuales y preflights de rollback registran eventos `admin.backup.manual_run`, `admin.rollback.preflight_requested` o `admin.rollback.preflight_failed`.
 - En SQLite de desarrollo/test se copia el archivo de base de datos; en PostgreSQL se usa `pg_dump` con salida privada local.
 - `/admin/health` marca warning si no hay backup exitoso dentro de la ventana configurada en `/admin/settings`.

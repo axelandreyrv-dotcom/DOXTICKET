@@ -3,9 +3,9 @@
         <div class="flex flex-wrap items-end justify-between gap-4">
             <div>
                 <p class="text-xs font-semibold uppercase text-[var(--color-text-muted)]">Configuración</p>
-                <h1 class="mt-2 text-2xl font-semibold">Correo de soporte</h1>
+                <h1 class="mt-2 text-2xl font-semibold">Configuración</h1>
                 <p class="mt-1 max-w-2xl text-sm leading-6 text-[var(--color-text-secondary)]">
-                    Una cuenta por empresa para recibir solicitudes y enviar respuestas con marcador visible.
+                    Seguridad de cuenta y correo de soporte de la empresa activa.
                 </p>
             </div>
             @if ($mailAccount)
@@ -32,6 +32,95 @@
                 {{ $mailAccount->last_error }}
             </div>
         @endif
+
+        <section class="mt-6 rounded-lg border border-[var(--color-border-default)] bg-[var(--color-bg-surface)] p-4 sm:p-5">
+            <div class="flex flex-wrap items-start justify-between gap-3">
+                <div>
+                    <p class="text-xs font-semibold uppercase text-[var(--color-text-muted)]">Seguridad</p>
+                    <h2 class="mt-2 text-lg font-semibold">Verificación 2FA</h2>
+                    <p class="mt-1 max-w-2xl text-sm leading-6 text-[var(--color-text-secondary)]">
+                        Protege tu cuenta con una app autenticadora. Los códigos de recuperación sirven si pierdes acceso al dispositivo.
+                    </p>
+                </div>
+                <span class="rounded-full px-2 py-1 text-xs font-medium {{ auth()->user()->hasTwoFactorEnabled() ? 'bg-[var(--color-success-bg)] text-[var(--color-success)]' : 'bg-[var(--color-info-bg)] text-[var(--color-info)]' }}">
+                    {{ auth()->user()->hasTwoFactorEnabled() ? 'Activo' : 'Inactivo' }}
+                </span>
+            </div>
+
+            @if ($twoFactorProvisioningUri)
+                <div class="mt-4 rounded-md border border-[var(--color-border-default)] bg-[var(--color-bg-surface-alt)] p-3 text-sm">
+                    <p class="font-medium">Agrega este secreto en tu app autenticadora.</p>
+                    <p class="mt-2 break-all font-mono text-xs text-[var(--color-text-secondary)]">{{ auth()->user()->two_factor_secret }}</p>
+                    <p class="mt-2 break-all text-xs text-[var(--color-text-muted)]">{{ $twoFactorProvisioningUri }}</p>
+                </div>
+
+                <form method="POST" action="{{ route('app.settings.two-factor.confirm') }}" class="mt-4 grid gap-3 sm:grid-cols-[1fr_auto]">
+                    @csrf
+                    <div>
+                        <label for="two_factor_code" class="block text-sm font-medium text-[var(--color-text-secondary)]">Código de verificación</label>
+                        <input id="two_factor_code" name="code" type="text" inputmode="numeric" autocomplete="one-time-code" spellcheck="false" required @error('code') aria-invalid="true" aria-describedby="code-error" @enderror class="mt-1 w-full rounded-md border border-[var(--color-border-default)] bg-[var(--color-bg-surface)] px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-focus)]">
+                        <x-ui.field-error field="code" />
+                    </div>
+                    <div class="flex items-end">
+                        <button type="submit" class="w-full rounded-md bg-[var(--color-action-primary)] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[var(--color-action-primary-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-focus)] sm:w-auto">
+                            Activar 2FA
+                        </button>
+                    </div>
+                </form>
+            @elseif (auth()->user()->hasTwoFactorEnabled())
+                <div class="mt-4 rounded-md bg-[var(--color-bg-surface-alt)] p-3 text-sm text-[var(--color-text-secondary)]">
+                    2FA está activo. Guarda tus códigos de recuperación en un lugar seguro.
+                </div>
+
+                @if (is_array(auth()->user()->two_factor_recovery_codes) && count(auth()->user()->two_factor_recovery_codes) > 0)
+                    <div class="mt-4 grid gap-2 rounded-md border border-[var(--color-border-default)] p-3">
+                        <p class="text-sm font-medium">Códigos de recuperación</p>
+                        <div class="grid gap-1 sm:grid-cols-2">
+                            @foreach (auth()->user()->two_factor_recovery_codes as $recoveryCode)
+                                <code class="rounded bg-[var(--color-bg-surface-alt)] px-2 py-1 text-xs">{{ $recoveryCode }}</code>
+                            @endforeach
+                        </div>
+                    </div>
+                @endif
+
+                <form method="POST" action="{{ route('app.settings.two-factor.destroy') }}" class="mt-4 grid gap-3 sm:grid-cols-[1fr_auto]">
+                    @csrf
+                    @method('DELETE')
+                    <div>
+                        <label for="disable_two_factor_password" class="block text-sm font-medium text-[var(--color-text-secondary)]">Contraseña actual</label>
+                        <input id="disable_two_factor_password" type="password" name="current_password" autocomplete="current-password" required @error('current_password') aria-invalid="true" aria-describedby="current_password-error" @enderror class="mt-1 w-full rounded-md border border-[var(--color-border-default)] bg-[var(--color-bg-surface)] px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-focus)]">
+                        <x-ui.field-error field="current_password" />
+                    </div>
+                    <div class="flex items-end">
+                        <button type="submit" data-confirm="Desactivar 2FA reducirá la protección de tu cuenta." class="w-full rounded-md border border-red-200 bg-white px-4 py-2 text-sm font-semibold text-[var(--color-danger)] transition hover:bg-red-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-focus)] sm:w-auto">
+                            Desactivar 2FA
+                        </button>
+                    </div>
+                </form>
+            @else
+                <form method="POST" action="{{ route('app.settings.two-factor.start') }}" class="mt-4 grid gap-3 sm:grid-cols-[1fr_auto]">
+                    @csrf
+                    <div>
+                        <label for="enable_two_factor_password" class="block text-sm font-medium text-[var(--color-text-secondary)]">Contraseña actual</label>
+                        <input id="enable_two_factor_password" type="password" name="current_password" autocomplete="current-password" required @error('current_password') aria-invalid="true" aria-describedby="current_password-error" @enderror class="mt-1 w-full rounded-md border border-[var(--color-border-default)] bg-[var(--color-bg-surface)] px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-focus)]">
+                        <x-ui.field-error field="current_password" />
+                    </div>
+                    <div class="flex items-end">
+                        <button type="submit" class="w-full rounded-md border border-[var(--color-border-default)] bg-[var(--color-bg-surface)] px-4 py-2 text-sm font-semibold text-[var(--color-text-primary)] transition hover:bg-[var(--color-bg-surface-alt)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-focus)] sm:w-auto">
+                            Preparar 2FA
+                        </button>
+                    </div>
+                </form>
+            @endif
+        </section>
+
+        <div class="mt-8">
+            <p class="text-xs font-semibold uppercase text-[var(--color-text-muted)]">Correo</p>
+            <h2 class="mt-2 text-lg font-semibold">Correo de soporte</h2>
+            <p class="mt-1 max-w-2xl text-sm leading-6 text-[var(--color-text-secondary)]">
+                Una cuenta por empresa para recibir solicitudes y enviar respuestas con marcador visible.
+            </p>
+        </div>
 
         <form method="POST" action="{{ url('/app/settings/mail') }}" class="mt-6 grid gap-5 rounded-lg border border-[var(--color-border-default)] bg-[var(--color-bg-surface)] p-4 sm:p-5">
             @csrf

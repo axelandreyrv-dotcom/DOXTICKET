@@ -41,7 +41,8 @@ class EnsureTenantContext
             return redirect('/app/companies');
         }
 
-        abort(403);
+        return redirect('/app/companies')
+            ->with('status', 'No tienes empresas activas. Solicita acceso o crea una empresa desde el panel admin.');
     }
 
     private function validMembershipForUser(int $membershipId, int $userId): ?Membership

@@ -1,7 +1,7 @@
 <x-layouts.public-shell :title="'Setup | '.config('app.name', 'DoxTicket')">
     <section class="grid flex-1 gap-8 py-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-start lg:py-16">
         <div class="max-w-xl">
-            <p class="text-xs font-semibold uppercase tracking-[0.14em] text-[var(--color-text-muted)]">Instalacion inicial</p>
+            <p class="text-xs font-semibold uppercase tracking-[0.14em] text-[var(--color-text-muted)]">Instalación inicial</p>
             <h1 class="mt-4 text-3xl font-semibold tracking-normal text-[var(--color-text-primary)] sm:text-4xl">Preparar DoxTicket</h1>
             <p class="mt-4 max-w-prose text-sm leading-6 text-[var(--color-text-secondary)]">
                 Crea la primera empresa y el superadmin de esta instalación.
@@ -14,7 +14,7 @@
                 </div>
                 <div class="rounded-lg border border-[var(--color-border-default)] bg-[var(--color-bg-surface)] p-4">
                     <p class="font-medium">Aislamiento base</p>
-                    <p class="mt-1 text-[var(--color-text-secondary)]">La empresa inicial queda lista con una membresia admin.</p>
+                    <p class="mt-1 text-[var(--color-text-secondary)]">La empresa inicial queda lista con una membresía admin.</p>
                 </div>
             </div>
         </div>
@@ -67,7 +67,7 @@
                     <input type="checkbox" name="telemetry_enabled" value="1" @checked(old('telemetry_enabled')) class="mt-0.5 size-4 rounded border-[var(--color-border-default)] text-[var(--color-action-primary)] focus-visible:ring-[var(--color-focus)]">
                     <span>
                         <span class="block font-medium">Activar telemetria opcional</span>
-                        <span class="mt-1 block text-[var(--color-text-secondary)]">No envia correos, nombres, tickets, adjuntos ni secretos.</span>
+                        <span class="mt-1 block text-[var(--color-text-secondary)]">No envía correos, nombres, tickets, adjuntos ni secretos.</span>
                     </span>
                 </label>
 

@@ -74,7 +74,14 @@ class User extends Authenticatable
             'is_superadmin' => 'boolean',
             'is_active' => 'boolean',
             'last_login_at' => 'datetime',
+            'two_factor_secret' => 'encrypted',
+            'two_factor_recovery_codes' => 'encrypted:array',
             'two_factor_confirmed_at' => 'datetime',
         ];
+    }
+
+    public function hasTwoFactorEnabled(): bool
+    {
+        return filled($this->two_factor_secret) && $this->two_factor_confirmed_at !== null;
     }
 }

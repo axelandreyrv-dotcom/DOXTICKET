@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Auditoria | {{ config('app.name', 'DoxTicket') }}</title>
+        <title>Auditoría | {{ config('app.name', 'DoxTicket') }}</title>
         <link rel="icon" type="image/svg+xml" href="{{ asset('brand/doxticket.svg') }}">
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
@@ -17,7 +17,7 @@
                         <img src="{{ asset('brand/doxticket.svg') }}" alt="" width="32" height="32" class="size-8 shrink-0" aria-hidden="true">
                         <p class="text-sm font-medium uppercase tracking-[0.08em] text-[var(--color-text-muted)]">Superadmin</p>
                     </div>
-                    <h1 class="mt-2 text-3xl font-semibold tracking-normal text-pretty">Auditoria</h1>
+                    <h1 class="mt-2 text-3xl font-semibold tracking-normal text-pretty">Auditoría</h1>
                     <p class="mt-2 max-w-2xl text-sm leading-6 text-[var(--color-text-secondary)]">
                         Historial global de eventos administrativos y operativos. Los metadatos sensibles se redactan antes de mostrarse.
                     </p>
@@ -28,7 +28,7 @@
             </header>
 
             <section aria-labelledby="audit-heading" class="py-6">
-                <h2 id="audit-heading" class="sr-only">Listado de auditoria</h2>
+                <h2 id="audit-heading" class="sr-only">Listado de auditoría</h2>
 
                 <form method="GET" action="{{ route('admin.audit.index') }}" class="mb-4 rounded-lg border border-[var(--color-border-default)] bg-[var(--color-bg-surface)] p-4" aria-labelledby="audit-filters-heading">
                     <div class="mb-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
@@ -45,12 +45,12 @@
 
                     <label class="mb-3 grid gap-1 text-sm font-medium text-[var(--color-text-secondary)]">
                         Buscar
-                        <input type="search" name="q" value="{{ $filters['q'] }}" placeholder="Accion, empresa, actor o sujeto..." autocomplete="off" class="rounded-md border border-[var(--color-border-default)] bg-[var(--color-bg-surface)] px-3 py-2 text-sm text-[var(--color-text-primary)] focus:border-[var(--color-action-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-action-primary)]/20">
+                        <input type="search" name="q" value="{{ $filters['q'] }}" placeholder="Acción, empresa, actor o sujeto…" autocomplete="off" class="rounded-md border border-[var(--color-border-default)] bg-[var(--color-bg-surface)] px-3 py-2 text-sm text-[var(--color-text-primary)] focus:border-[var(--color-action-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-action-primary)]/20">
                     </label>
 
                     <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
                         <label class="grid gap-1 text-sm font-medium text-[var(--color-text-secondary)]">
-                            Accion
+                            Acción
                             <select name="action" class="rounded-md border border-[var(--color-border-default)] bg-[var(--color-bg-surface)] px-3 py-2 text-sm text-[var(--color-text-primary)] focus:border-[var(--color-action-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-action-primary)]/20">
                                 <option value="">Todas</option>
                                 @foreach ($actions as $action)
@@ -98,7 +98,7 @@
                 <div class="overflow-hidden rounded-lg border border-[var(--color-border-default)] bg-[var(--color-bg-surface)]">
                     <div class="grid gap-3 border-b border-[var(--color-border-default)] px-4 py-3 text-xs font-semibold uppercase tracking-[0.06em] text-[var(--color-text-muted)] sm:grid-cols-[10rem_11rem_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1.2fr)] sm:px-5">
                         <span>Fecha</span>
-                        <span>Accion</span>
+                        <span>Acción</span>
                         <span>Empresa</span>
                         <span>Actor</span>
                         <span>Detalle</span>
@@ -133,7 +133,7 @@
                         </article>
                     @empty
                         <p class="px-4 py-4 text-sm text-[var(--color-text-secondary)] sm:px-5">
-                            Todavia no hay eventos de auditoria registrados.
+                            Todavía no hay eventos de auditoría registrados.
                         </p>
                     @endforelse
                 </div>

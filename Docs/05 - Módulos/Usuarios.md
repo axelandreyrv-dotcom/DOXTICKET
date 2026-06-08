@@ -38,11 +38,15 @@ Estado implementado actual:
 - Email unico global.
 - Un usuario puede pertenecer a varias empresas.
 - El rol vive en `memberships.role`.
+- Roles visibles: Administrador, Supervisor y Agente. Supervisor es el rol intermedio para coordinar trabajo y gestionar contenido interno sin permisos completos de administrador de empresa.
 - Desactivar una membership quita acceso solo a esa empresa.
 - Desactivar el usuario global invalida acceso a todas.
 - El portal `/admin/users` permite a superadmins revisar usuarios globales, superadmins y membresias sin depender del tenant activo.
-- El portal `/admin/users` permite activar/desactivar usuarios globales, pero bloquea que un superadmin desactive su propia cuenta.
-- El portal `/admin/users` permite cambiar rol y estado de memberships existentes; solo acepta roles `admin`, `supervisor`, `agent` y estados `active`, `disabled`.
+- El portal `/admin/users` permite enviar un enlace para definir/restablecer contrasena a usuarios existentes. No se muestran ni generan contrasenas visibles para admins.
+- El portal `/admin/users` oculta membresias de empresas eliminadas para evitar accesos huerfanos visibles.
+- El portal `/admin/users` permite activar/desactivar y eliminar suavemente usuarios globales, pero bloquea que un superadmin desactive o elimine su propia cuenta.
+- El portal `/admin/users` permite cambiar rol/estado y eliminar suavemente memberships existentes; solo acepta roles `admin`, `supervisor`, `agent` y estados `active`, `disabled`.
+- Cada usuario puede activar 2FA personal desde `/app/settings`; la activacion requiere contrasena actual, codigo TOTP valido y guarda codigos de recuperacion cifrados.
 - No dejar empresa sin admin activo.
 - Desactivar usuario invalida sesiones.
 - Tickets asignados apuntan a `assigned_to_membership_id`.
@@ -72,6 +76,7 @@ Estado implementado actual:
 - `user.reactivated`
 - `user.password_changed`
 - `user.two_factor_enabled`
+- `user.two_factor_disabled`
 
 ## Relacion con otros documentos
 - `04 - Seguridad/Autenticación.md`

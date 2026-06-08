@@ -65,6 +65,7 @@ No seedear configuracion comercial de billing en v1.
 - Migracion inicial de `mail_accounts` creada para una cuenta IMAP/SMTP por empresa.
 - `mail_accounts.password_encrypted` y futuros tokens OAuth se manejan cifrados por el modelo Eloquent.
 - Migracion incremental agregada para metadatos OAuth de `mail_accounts`: `oauth_provider_user_id`, `oauth_scopes` y `oauth_connected_at`.
+- Migracion incremental agregada para ampliar `companies.country` de codigo ISO de 2 caracteres a nombre libre de hasta 120 caracteres.
 - Las bases locales SQLite de desarrollo (`database/*.sqlite`) deben quedar fuera de Git.
 
 ## Reglas de cambio

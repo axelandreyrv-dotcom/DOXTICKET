@@ -46,6 +46,7 @@ Permite que departamentos de TI instalen su propio sistema de tickets, conecten 
 | `/` | Entrada publica de la instalacion con estado de setup segun `system_settings.setup.completed`; si la tabla aun no existe, muestra instalador pendiente sin fallar |
 | `/setup` | Instalador inicial; debe bloquearse tras finalizar |
 | `/login` | Login centralizado |
+| `/two-factor-challenge` | Reto publico de 2FA tras validar correo y contrasena |
 | `/password/forgot` | Solicitud publica de enlace de restablecimiento con respuesta generica |
 | `/password/reset/{token}` | Formulario publico para definir/restablecer contrasena con token |
 | `/password/reset` | Actualizacion publica de contrasena via POST con token valido |
@@ -71,6 +72,9 @@ Permite que departamentos de TI instalen su propio sistema de tickets, conecten 
 | `/app/tickets/{ticket}/properties` | Cambio validado de estado, prioridad, tipo y agente |
 | `/app/attachments/{uuid}/download` | Descarga protegida de adjunto privado por UUID dentro del tenant |
 | `/app/settings` | Configuracion del tenant |
+| `/app/settings/two-factor/start` | Preparacion protegida de 2FA personal con contrasena actual |
+| `/app/settings/two-factor/confirm` | Confirmacion protegida de 2FA personal con codigo TOTP |
+| `/app/settings/two-factor` | Desactivacion protegida de 2FA personal via DELETE |
 | `/app/settings/mail` | Guardado de cuenta IMAP/SMTP del tenant |
 | `/app/settings/mail/test` | Prueba manual IMAP/SMTP de la cuenta activa del tenant |
 | `/app/settings/mail/oauth/{provider}/redirect` | Inicio protegido del flujo OAuth para Gmail o Microsoft 365 desde la empresa activa |
@@ -88,7 +92,10 @@ Permite que departamentos de TI instalen su propio sistema de tickets, conecten 
 | `/admin/users/invite` | Formulario protegido para registrar invitacion de usuario a empresa |
 | `/admin/users/invite` | Registro protegido de invitacion, membership y envio de correo via POST |
 | `/admin/users/{user}/status` | Activacion/desactivacion protegida de usuario global via POST |
+| `/admin/users/{user}/password-reset` | Envio protegido de enlace para definir/restablecer contrasena via POST |
+| `/admin/users/{user}` | Eliminacion suave protegida de usuario global via DELETE |
 | `/admin/memberships/{membership}` | Actualizacion protegida de rol y estado de membership via PUT |
+| `/admin/memberships/{membership}` | Eliminacion suave protegida de acceso a empresa via DELETE |
 | `/admin/settings` | Configuracion protegida de instalacion para superadmins sin exponer secretos; permite guardar valores publicos no sensibles, politica basica de backups y backup automatico local via POST |
 | `/admin/health` | Resumen protegido de salud de la instalacion para superadmins |
 | `/admin/backups` | Ejecucion manual protegida de backup local para superadmins |
@@ -130,6 +137,10 @@ Estas decisiones estan tomadas. No proponer alternativas sin justificacion docum
 
 ### Instalacion
 - Docker Compose es el camino principal.
+- Docker Compose usa `.env.docker`, creado desde `.env.docker.example`, para separar la instalacion self-hosted del `.env` local de desarrollo. `.env.docker` no se versiona.
+- En Docker Compose, los contenedores PHP (`app`, `worker`, `scheduler`) ejecutan el codigo copiado dentro de la imagen y no montan el repositorio completo en QA/produccion; solo persisten `storage/` y `bootstrap/cache` como volumenes nombrados para evitar latencia alta de Laravel en Docker Desktop para Windows.
+- En Docker Compose, el contenedor `web` tambien se construye como imagen y sirve `public/` y `public/build` desde el mismo build para evitar assets desincronizados con Vite.
+- Despues de cambios de codigo o assets en Docker, se debe reconstruir con `docker compose --env-file .env.docker up -d --build` y ejecutar `php artisan optimize` dentro del contenedor `app`.
 - Tambien debe existir documentacion de instalacion manual en Ubuntu.
 - `/setup` pide idioma primero, valida entorno, crea superadmin y una empresa inicial.
 - Espanol es el idioma por defecto; los mensajes de validacion visibles deben usar el idioma activo y nombres de campos entendibles.
@@ -138,6 +149,7 @@ Estas decisiones estan tomadas. No proponer alternativas sin justificacion docum
 - Las invitaciones de usuarios nuevos deben incluir un enlace con token para definir contrasena sin revelar credenciales.
 - La solicitud publica de restablecimiento de contrasena debe responder de forma generica para no revelar si un correo existe.
 - Los correos de restablecimiento de contrasena deben usar notificacion propia de DoxTicket en espanol, no la plantilla default del framework.
+- 2FA es opcional en v1 y se activa por usuario desde `/app/settings`; el reto se exige despues de validar contrasena y antes de resolver empresa activa.
 
 ### Correo
 - La estabilidad del correo entrante es la prioridad v1.
@@ -204,12 +216,17 @@ Estas decisiones estan tomadas. No proponer alternativas sin justificacion docum
 - `/admin/companies` permite a superadmins crear empresas, editar datos base, cambiar estado entre `active`, `disabled` y `archived`, y eliminar suavemente empresas sin depender de la empresa activa.
 - Eliminar una empresa desde `/admin/companies` usa soft delete, limpia `last_active_company_id` de usuarios afectados, olvida la membresia activa de la sesion del actor si corresponde y conserva datos para auditoria.
 - `/admin/users` muestra usuarios globales, superadmins y membresias por empresa sin depender de la empresa activa; permite activar/desactivar usuarios globales sin permitir que un superadmin desactive su propia cuenta.
+- `/admin/users` oculta membresias de empresas eliminadas y muestra roles como Administrador, Supervisor y Agente. Supervisor es el rol intermedio para coordinar trabajo y gestionar contenido interno sin ser administrador completo de la empresa.
+- `/admin/users/{user}/password-reset` permite a superadmins enviar un enlace de definicion/restablecimiento de contrasena a usuarios existentes sin revelar contrasenas.
+- Los usuarios pueden activar 2FA personal con TOTP desde `/app/settings`; el secreto y codigos de recuperacion se guardan cifrados.
+- `/admin/users/{user}` permite eliminar suavemente usuarios globales y sus membresias, bloqueando la eliminacion de la propia cuenta y del ultimo superadmin activo.
 - `/admin/users/invite` permite registrar invitaciones: reutiliza usuario global existente o crea uno nuevo, crea membership `invited`, evita duplicados por empresa y envia correo de invitacion por SMTP global sin revelar contrasenas.
 - Si la invitacion crea un usuario nuevo, el correo incluye enlace `/password/reset/{token}` con token Laravel para definir contrasena; usuarios existentes reciben enlace normal a `/login`.
 - Al definir/restablecer contrasena con token valido, las memberships `invited` del usuario se activan sin aceptar `company_id` desde el cliente.
 - La aceptacion de invitacion debe guardar `accepted_at` y audit log `membership.accepted`.
 - Si el envio de correo de invitacion falla, la invitacion queda registrada y el panel muestra un aviso generico sin exponer secretos SMTP.
 - `/admin/memberships/{membership}` permite a superadmins cambiar rol `admin`, `supervisor` o `agent` y estado `active` o `disabled`, bloqueando dejar una empresa sin admin activo.
+- `/admin/memberships/{membership}` permite eliminar suavemente un acceso a empresa, bloqueando dejar una empresa sin admin activo.
 - `/admin/audit` permite a superadmins revisar eventos de `audit_logs` con empresa, actor, sujeto, accion y metadatos redactados para no exponer contrasenas, tokens ni secretos.
 - `/admin/audit` permite busqueda libre por accion, empresa, actor o sujeto, y filtros por accion, empresa, actor y rango de fechas sin depender de la empresa activa del usuario.
 - `/admin/audit/export` permite exportar CSV con los mismos filtros de auditoria y metadatos sanitizados, sin guardar artefactos en disco, y registra `admin.audit.exported`.
@@ -225,6 +242,7 @@ Estas decisiones estan tomadas. No proponer alternativas sin justificacion docum
 - `/admin` muestra el ultimo backup exitoso desde `backup_runs` y mantiene visible el boton rollback; la accion queda condicionada a `meta.rollback_available=true`.
 - `/admin` muestra historial reciente de backups sin exponer rutas privadas de artefactos.
 - `/admin/backups` permite a superadmins ejecutar un backup local manual; el artefacto queda en el disco privado y el resultado se registra en `backup_runs`.
+- La restauracion de backups en v1 es manual: restaurar dump de base de datos, `storage/app/private` y `.env` antes de levantar la app. No existe importacion de backup desde UI en v1.
 - El backup automatico local queda apagado por defecto; si se activa desde `/admin/settings`, `RunScheduledBackupJob` se evalua cada hora desde scheduler y ejecuta como maximo un backup `scheduled` por dia a la hora configurada.
 - `RunBackupRetentionPruneJob` se ejecuta diariamente y aplica `system_settings.backups.retention_days` sobre backups locales exitosos; elimina artefactos privados antiguos y marca el registro `backup_runs.status=pruned` sin habilitar rollback.
 - `/admin/rollback` permite a superadmins ejecutar un preflight protegido de rollback manual; en v1 no restaura automaticamente, solo confirma que existe backup valido y dirige a la guia manual.
@@ -245,6 +263,7 @@ Estas decisiones estan tomadas. No proponer alternativas sin justificacion docum
 ### Secretos
 - Prohibido incluir claves reales, tokens, contrasenas o secretos en frontend, vistas, JS compilado o repositorio.
 - Toda clave debe vivir en `.env`.
+- En Docker, las claves de la instalacion viven en `.env.docker`; solo `.env.docker.example` puede versionarse.
 - `.env` esta en `.gitignore`. Verificar siempre antes de publicar.
 
 ### Inputs

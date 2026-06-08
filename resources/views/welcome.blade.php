@@ -37,7 +37,7 @@
                 </div>
 
                 <aside class="rounded-lg border border-[var(--color-border-default)] bg-[var(--color-bg-surface)] p-5">
-                    <h2 class="text-sm font-semibold text-[var(--color-text-primary)]">Estado de la instalacion</h2>
+                    <h2 class="text-sm font-semibold text-[var(--color-text-primary)]">Estado de la instalación</h2>
                     <dl class="mt-5 space-y-4 text-sm">
                         <div class="flex items-center justify-between gap-4">
                             <dt class="text-[var(--color-text-muted)]">Instalador</dt>

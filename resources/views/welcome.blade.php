@@ -19,8 +19,8 @@
                     <p class="mt-1 text-sm text-[var(--color-text-muted)]">Helpdesk IT self-hosted</p>
                 </div>
                 <nav class="flex items-center gap-2" aria-label="Accesos principales">
-                    <a class="rounded-md bg-[var(--color-action-primary)] px-3 py-2 text-sm font-medium text-white transition hover:bg-[var(--color-action-primary-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-focus)]" href="{{ url('/login') }}">
-                        Login
+                    <a class="rounded-md bg-[var(--color-action-primary)] px-3 py-2 text-sm font-medium text-white transition hover:bg-[var(--color-action-primary-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-focus)]" href="{{ auth()->check() ? route('app.entry') : url('/login') }}">
+                        {{ auth()->check() ? 'Ir al panel' : 'Login' }}
                     </a>
                 </nav>
             </header>

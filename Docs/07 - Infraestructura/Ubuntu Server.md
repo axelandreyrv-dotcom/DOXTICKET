@@ -267,6 +267,7 @@ Antes de actualizar, confirmar backup reciente desde `/admin` o por procedimient
 - `php -m` muestra `imap`, `pdo_pgsql` y `redis`.
 - SMTP global configurado desde `/admin/settings` y probado si se usaran invitaciones/reset reales.
 - Cuenta IMAP/SMTP de empresa probada desde `/app/settings`.
+- Boton `Revisar correo ahora` probado con un correo real; si manual funciona y automatico no, revisar Supervisor/scheduler y worker `default,mail`.
 - Backups funcionando.
 
 ## Relacion

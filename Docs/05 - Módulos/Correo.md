@@ -23,6 +23,7 @@ Estado implementado actual:
 - Ruta UI implementada: `/app/settings`.
 - Guardado implementado: `POST /app/settings/mail`.
 - Prueba manual implementada: `POST /app/settings/mail/test`.
+- Revision manual de bandeja implementada: `POST /app/settings/mail/sync`.
 - Los errores inline del formulario de correo se anuncian con `role="alert"` y quedan asociados al campo con `aria-invalid` y `aria-describedby`.
 - Los campos tecnicos del formulario de correo declaran metadatos de navegador explicitos: hosts, usuario, correo y carpeta desactivan autocompletado/correccion; puertos usan entrada numerica; la contrasena usa `autocomplete="new-password"` para evitar rellenos accidentales.
 - El formulario configura IMAP y SMTP generico para la empresa activa.
@@ -31,7 +32,8 @@ Estado implementado actual:
 - Al actualizar la cuenta, dejar la contrasena vacia conserva el secreto existente.
 - En v1 se refuerza una sola cuenta de soporte por empresa.
 - La confirmacion automatica queda configurable, activa por defecto y se envia al crear tickets por correo si la cuenta SMTP del tenant esta disponible.
-- El boton `Probar Conexion` valida IMAP/SMTP de la cuenta activa y guarda errores sanitizados en `last_error`.
+- El boton `Probar conexión` valida IMAP/SMTP de la cuenta activa y guarda errores sanitizados en `last_error`.
+- El boton `Revisar correo ahora` ejecuta manualmente la ingesta de la cuenta activa usando el mismo job tenant-safe que corre por scheduler; muestra `last_sync_at`, ultimo UID y errores sanitizados para diagnosticar por que un correo aun no creo ticket.
 
 ## Ingesta
 1. Job con lock por `mail_account_id`.
@@ -45,6 +47,7 @@ Estado implementado actual:
 
 Estado implementado actual:
 - `IngestMailboxJob` se despacha cada minuto para cuentas activas.
+- `IngestMailboxJob` tambien puede ejecutarse manualmente desde `/app/settings` para diagnostico puntual; el scheduler y los workers siguen siendo el camino normal de produccion.
 - El job delega lectura a `MailboxClient` y procesamiento a `InboundMailProcessor`.
 - En exito actualiza `last_uid` solo hacia adelante, limpia `last_error` y marca `last_sync_at`.
 - En error guarda `last_error` sanitizado y no expone contrasenas, tokens ni usuario.

@@ -6,6 +6,7 @@ use App\Contracts\Mail\MailAccountTester;
 use App\Contracts\Mail\OAuthTokenClient;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Mail\StoreMailAccountRequest;
+use App\Jobs\Mail\IngestMailboxJob;
 use App\Models\MailAccount;
 use App\Services\Auth\Totp;
 use App\Services\Mail\OAuthAuthorizationUrlFactory;
@@ -80,6 +81,26 @@ class SettingsController extends Controller
         $account->forceFill(['last_error' => null])->save();
 
         return redirect('/app/settings')->with('status', 'mail-test-ok');
+    }
+
+    public function syncMail(): RedirectResponse
+    {
+        $account = MailAccount::query()->first();
+
+        if ($account === null) {
+            return redirect('/app/settings')
+                ->withErrors(['mail_account' => 'Guarda una cuenta de correo antes de revisar la bandeja.']);
+        }
+
+        IngestMailboxJob::dispatchSync($account->id);
+        $account->refresh();
+
+        if ($account->last_error !== null) {
+            return redirect('/app/settings')
+                ->withErrors(['mail_sync' => $account->last_error]);
+        }
+
+        return redirect('/app/settings')->with('status', 'mail-sync-completed');
     }
 
     public function redirectOAuth(

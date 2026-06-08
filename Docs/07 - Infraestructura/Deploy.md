@@ -132,6 +132,7 @@ Si el preflight pasa, el superadmin debe seguir la guia manual de restauracion c
 - Worker escuchando `default,mail`.
 - SMTP global probado u omitido.
 - Ingesta de correo de prueba OK.
+- `Revisar correo ahora` desde `/app/settings` procesa una bandeja de prueba; si funciona manualmente pero no automatico, revisar scheduler y worker `default,mail`.
 - Extension PHP IMAP habilitada si se usa IMAP/SMTP generico.
 
 ## Relacion

@@ -49,6 +49,7 @@ Las imagenes Docker ejecutan el codigo y assets generados dentro del build: `app
 | `/password/reset/{token}` | Formulario publico para definir/restablecer contrasena con token |
 | `/password/reset` | Actualizacion publica de contrasena via POST |
 | `/logout` | Cierre de sesion |
+| `/app/entry` | Entrada autenticada centralizada hacia admin, tickets o selector de empresa |
 | `/app/companies` | Selector de empresa activa |
 | `/app/dashboard` | Ruta heredada que redirige a `/app/tickets` |
 | `/app/activity` | Historial operativo de la empresa activa |
@@ -73,6 +74,7 @@ Las imagenes Docker ejecutan el codigo y assets generados dentro del build: `app
 | `/app/settings/two-factor` | Desactivacion protegida de 2FA personal via DELETE |
 | `/app/settings/mail` | Guardado de cuenta IMAP/SMTP del tenant |
 | `/app/settings/mail/test` | Prueba manual IMAP/SMTP de la cuenta activa |
+| `/app/settings/mail/sync` | Revision manual protegida de bandeja para diagnostico de ingesta |
 | `/app/settings/mail/oauth/{provider}/redirect` | Inicio OAuth para Gmail o Microsoft 365 |
 | `/app/settings/mail/oauth/{provider}/callback` | Callback OAuth con validacion de `state` y guardado cifrado de tokens |
 | `/admin` | Panel superadmin de la instalacion |
@@ -105,9 +107,11 @@ Las imagenes Docker ejecutan el codigo y assets generados dentro del build: `app
 - Multiempresa por `company_id`.
 - Usuarios globales con email unico y membresias por empresa.
 - Un usuario puede pertenecer a varias empresas con roles distintos.
+- Entrada autenticada centralizada: la portada muestra `Login` solo para invitados, muestra `Ir al panel` para sesiones activas y `/login` autenticado redirige hacia `/app/entry`.
 - Una cuenta de soporte por empresa.
 - Configuracion base de cuenta IMAP/SMTP por empresa.
 - Prueba manual IMAP/SMTP desde Settings con errores sanitizados.
+- Revision manual de bandeja desde Settings para diagnosticar ingesta sin esperar al scheduler, usando la cuenta activa de la empresa.
 - SMTP global del sistema para invitaciones, reset y alertas.
 - Solicitud publica de restablecimiento de contrasena con respuesta generica para evitar enumeracion de usuarios y correo DoxTicket en espanol.
 - 2FA opcional por usuario con TOTP, reto posterior al password, codigos de recuperacion cifrados y gestion desde `/app/settings`.

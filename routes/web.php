@@ -6,6 +6,7 @@ use App\Http\Controllers\App\KnowledgeBaseController;
 use App\Http\Controllers\App\SettingsController;
 use App\Http\Controllers\App\TicketController;
 use App\Http\Controllers\App\TwoFactorController;
+use App\Http\Controllers\Auth\AuthenticatedEntryController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\PasswordResetController;
 use App\Http\Controllers\Auth\TwoFactorChallengeController;
@@ -23,8 +24,9 @@ Route::get('/', function () {
     ]);
 });
 
+Route::get('/login', [AuthenticatedSessionController::class, 'create'])->name('login');
+
 Route::middleware('guest')->group(function (): void {
-    Route::get('/login', [AuthenticatedSessionController::class, 'create'])->name('login');
     Route::post('/login', [AuthenticatedSessionController::class, 'store'])
         ->middleware('throttle:login')
         ->name('login.store');
@@ -47,6 +49,7 @@ Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
     ->name('logout');
 
 Route::middleware('auth')->group(function (): void {
+    Route::get('/app/entry', AuthenticatedEntryController::class)->name('app.entry');
     Route::get('/app/companies', [CompanySelectionController::class, 'index'])->name('app.companies');
     Route::post('/app/companies/select', [CompanySelectionController::class, 'store'])->name('app.companies.select');
 
@@ -79,6 +82,7 @@ Route::middleware('auth')->group(function (): void {
         Route::delete('/app/settings/two-factor', [TwoFactorController::class, 'destroy'])->name('app.settings.two-factor.destroy');
         Route::post('/app/settings/mail', [SettingsController::class, 'storeMail'])->name('app.settings.mail.store');
         Route::post('/app/settings/mail/test', [SettingsController::class, 'testMail'])->name('app.settings.mail.test');
+        Route::post('/app/settings/mail/sync', [SettingsController::class, 'syncMail'])->name('app.settings.mail.sync');
         Route::post('/app/settings/mail/oauth/{provider}/redirect', [SettingsController::class, 'redirectOAuth'])->name('app.settings.mail.oauth.redirect');
         Route::get('/app/settings/mail/oauth/{provider}/callback', [SettingsController::class, 'callbackOAuth'])->name('app.settings.mail.oauth.callback');
     });

@@ -36,6 +36,7 @@ Definir estrategia de pruebas.
 - Configuracion SMTP global desde admin sin renderizar secretos guardados.
 - Base de conocimiento tenant-safe, permisos por rol y sanitizacion Markdown.
 - Accesibilidad base del shell autenticado: navegacion etiquetada, pagina activa y portal admin fuera del shell de usuario.
+- Entrada autenticada centralizada desde portada/login hacia admin, tickets o selector de empresa.
 - Mensajes flash del shell autenticado anunciables con `role="status"` y sin duplicados visibles.
 - Errores inline de formularios asociados a campos con `aria-invalid`, `aria-describedby` y `role="alert"`.
 - Localizacion de validaciones visibles en espanol por defecto.
@@ -107,8 +108,9 @@ tests/
 - `tests/Unit/Admin/SystemHealthCheckerTest.php` cubre checks de salud de instalacion, incluyendo que la ventana configurable de backup reciente afecte el estado de backups.
 - `tests/Unit/Admin/GlobalMailConfigurationTest.php` cubre que los valores SMTP globales guardados en base de datos se apliquen a `config('mail')` y que `.env`/configuracion base se conserve si no hay settings guardados.
 - `tests/Unit/Admin/GitHubReleaseUpdateCheckerTest.php` cubre uso del repositorio efectivo guardado en `system_settings` para consultar GitHub Releases, con fallback de configuracion.
-- `tests/Feature/PublicNavigationTest.php` cubre navegacion publica sin Setup visible, estado publico del instalador basado en `setup.completed`, acciones no duplicadas en login y logo/favicons de marca en el shell publico. `tests/Feature/ExampleTest.php` mantiene la regresion basica de que `/` responde 200 aunque aun no existan tablas migradas.
-- `tests/Feature/Auth/LoginTest.php` cubre login multiempresa, exclusion de memberships de empresas eliminadas, error generico de credenciales, localizacion en espanol y errores inline accesibles en `/login`.
+- `tests/Feature/PublicNavigationTest.php` cubre navegacion publica sin Setup visible, estado publico del instalador basado en `setup.completed`, `Login` solo para invitados, `Ir al panel` para usuarios autenticados, acciones no duplicadas en login y logo/favicons de marca en el shell publico. `tests/Feature/ExampleTest.php` mantiene la regresion basica de que `/` responde 200 aunque aun no existan tablas migradas.
+- `tests/Feature/Auth/AuthenticatedEntryTest.php` cubre `/app/entry` para superadmins, usuarios con contexto activo, usuarios con una sola empresa y usuarios que deben elegir empresa.
+- `tests/Feature/Auth/LoginTest.php` cubre login multiempresa, exclusion de memberships de empresas eliminadas, `/login` autenticado redirigido a `/app/entry`, error generico de credenciales, localizacion en espanol y errores inline accesibles en `/login`.
 - `tests/Feature/Auth/TwoFactorAuthenticationTest.php` cubre reto 2FA posterior al password, login con TOTP, consumo unico de codigos de recuperacion, activacion/desactivacion desde `/app/settings` y cifrado del secreto.
 - `tests/Feature/Auth/PasswordResetTest.php` cubre enlace desde login, solicitud publica de reset con respuesta generica, envio de notificacion DoxTicket en espanol al usuario existente, no envio para correo desconocido, formulario publico de definicion/restablecimiento de contrasena con token, actualizacion segura de hash, activacion de memberships `invited`, `accepted_at` y audit log `membership.accepted`.
 - `tests/Feature/Setup/InitialSetupTest.php` cubre creacion inicial, bloqueo posterior de `/setup` y errores inline accesibles del instalador.
@@ -125,7 +127,7 @@ tests/
 - `tests/Feature/KnowledgeBase/KnowledgeBaseTest.php` cubre busqueda y lectura tenant-safe, metadatos del buscador, creacion/edicion/archivado/borrado por admin y bloqueo de gestion para agentes.
 - `tests/Feature/KnowledgeBase/KnowledgeBaseTest.php` cubre mensajes `data-confirm` en archivar/borrar articulos y presencia del modal accesible global de confirmacion.
 - `tests/Feature/Ui/AppShellAccessibilityTest.php` cubre `aria-label`, `aria-current`, navegacion compacta sin Dashboard/Base/Admin/Empresa/Configuracion en el shell, logo/favicons de marca, mensajes flash anunciables una sola vez, errores inline asociados a campos y validacion visible en espanol.
-- `tests/Feature/Mail/MailAccountSettingsTest.php` cubre configuracion tenant-safe de cuenta IMAP/SMTP, secreto cifrado, prueba manual de conexion con errores sanitizados, errores inline accesibles y metadatos de navegador explicitos en settings.
+- `tests/Feature/Mail/MailAccountSettingsTest.php` cubre configuracion tenant-safe de cuenta IMAP/SMTP, secreto cifrado, prueba manual de conexion con errores sanitizados, revision manual de bandeja, estado de sincronizacion visible, errores inline accesibles y metadatos de navegador explicitos en settings.
 - `tests/Feature/Mail/OAuthTokenStoreTest.php` cubre almacenamiento OAuth cifrado para Gmail/Microsoft 365, preservacion de refresh token y rechazo de cuentas `imap_smtp`.
 - `tests/Feature/Mail/OAuthAuthorizationRedirectTest.php` cubre inicio OAuth tenant-safe, proveedor desconocido y credenciales faltantes.
 - `tests/Feature/Mail/OAuthCallbackTest.php` cubre callback OAuth tenant-safe, consumo de `state`, guardado de tokens y errores sanitizados.

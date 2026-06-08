@@ -51,6 +51,7 @@ Permite que departamentos de TI instalen su propio sistema de tickets, conecten 
 | `/password/reset/{token}` | Formulario publico para definir/restablecer contrasena con token |
 | `/password/reset` | Actualizacion publica de contrasena via POST con token valido |
 | `/logout` | Cierre de sesion autenticado |
+| `/app/entry` | Entrada autenticada centralizada; redirige a `/admin`, `/app/tickets` o `/app/companies` segun usuario y contexto activo |
 | `/app/companies` | Selector de empresa activa |
 | `/app/dashboard` | Ruta heredada; redirige a `/app/tickets` |
 | `/app/activity` | Panel de actividad de la empresa activa |
@@ -77,6 +78,7 @@ Permite que departamentos de TI instalen su propio sistema de tickets, conecten 
 | `/app/settings/two-factor` | Desactivacion protegida de 2FA personal via DELETE |
 | `/app/settings/mail` | Guardado de cuenta IMAP/SMTP del tenant |
 | `/app/settings/mail/test` | Prueba manual IMAP/SMTP de la cuenta activa del tenant |
+| `/app/settings/mail/sync` | Revision manual protegida de la bandeja activa del tenant para diagnostico operativo |
 | `/app/settings/mail/oauth/{provider}/redirect` | Inicio protegido del flujo OAuth para Gmail o Microsoft 365 desde la empresa activa |
 | `/app/settings/mail/oauth/{provider}/callback` | Callback OAuth protegido por `state`; intercambia `code` por tokens y los guarda cifrados en la cuenta activa |
 | `/admin` | Panel superadmin de la instalacion |
@@ -127,6 +129,7 @@ Estas decisiones estan tomadas. No proponer alternativas sin justificacion docum
 - El rol de empresa vive en `memberships.role`, no directamente en `users`.
 - Un usuario puede pertenecer a varias empresas con roles distintos.
 - Tras login, si el usuario tiene mas de una empresa, debe elegir empresa antes de entrar a `/app`.
+- La entrada autenticada centralizada vive en `/app/entry`: superadmins van a `/admin`, usuarios con contexto activo o unica empresa van a `/app/tickets`, y usuarios que deben elegir empresa van a `/app/companies`.
 - La empresa activa se resuelve desde la membresia seleccionada en sesion, no desde input del cliente.
 - No se usan subdominios por empresa en v1.
 - El tenant se resuelve por el usuario autenticado.
@@ -145,6 +148,7 @@ Estas decisiones estan tomadas. No proponer alternativas sin justificacion docum
 - `/setup` debe bloquearse automaticamente despues de terminar.
 - DoxTicket debe funcionar en LAN/intranet con dominio o IP local.
 - Las invitaciones de usuarios nuevos deben incluir un enlace con token para definir contrasena sin revelar credenciales.
+- La portada publica muestra `Login` para invitados y `Ir al panel` para usuarios autenticados; `/login` con sesion activa redirige a `/app/entry`, no a `/`.
 - La solicitud publica de restablecimiento de contrasena debe responder de forma generica para no revelar si un correo existe.
 - Los correos de restablecimiento de contrasena deben usar notificacion propia de DoxTicket en espanol, no la plantilla default del framework.
 - 2FA es opcional en v1 y se activa por usuario desde `/app/settings`; el reto se exige despues de validar contrasena y antes de resolver empresa activa.
@@ -168,6 +172,7 @@ Estas decisiones estan tomadas. No proponer alternativas sin justificacion docum
 - Las respuestas desde el detalle del ticket requieren una cuenta de correo activa de la empresa y correo de solicitante.
 - Las respuestas desde el detalle pueden incluir adjuntos seguros; se envian con el correo, se guardan en storage privado asociados al mensaje outbound y se bloquean ejecutables/scripts o archivos sobre el limite configurado antes de enviar.
 - La configuracion de correo permite probar IMAP/SMTP desde Settings; errores visibles deben sanitizar secretos.
+- La configuracion de correo permite revisar manualmente la bandeja activa desde Settings usando el mismo job de ingesta tenant-safe; esto es diagnostico operativo y no reemplaza scheduler/workers.
 - Los adjuntos entrantes por correo usan storage privado y bloquean ejecutables/scripts o archivos sobre el limite configurado sin romper la ingesta.
 - Las imagenes externas de correos se bloquean por privacidad; sus URLs pueden conservarse como metadato para apertura manual, pero no deben renderizarse inline automaticamente.
 - Se prioriza evitar duplicados sobre procesar casos ambiguos sin revision.

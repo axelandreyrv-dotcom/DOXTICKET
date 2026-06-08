@@ -59,6 +59,7 @@
                             $flashStatus === 'properties-updated' => 'Propiedades actualizadas.',
                             $flashStatus === 'mail-settings-saved' => 'Configuración guardada.',
                             $flashStatus === 'mail-test-ok' => 'Conexión IMAP/SMTP verificada.',
+                            $flashStatus === 'mail-sync-completed' => 'Correo revisado.',
                             $flashStatus === 'mail-oauth-connected' => 'Cuenta OAuth conectada.',
                             $flashStatus === 'two-factor-started' => '2FA preparado. Confirma el código para activarlo.',
                             $flashStatus === 'two-factor-enabled' => '2FA activado.',

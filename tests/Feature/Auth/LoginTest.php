@@ -93,6 +93,17 @@ class LoginTest extends TestCase
         $this->assertGuest();
     }
 
+    public function test_authenticated_get_login_redirects_to_authenticated_entry_without_home_loop(): void
+    {
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)
+            ->get('/login')
+            ->assertRedirect('/app/entry');
+
+        $this->assertNotSame(url('/'), $response->headers->get('Location'));
+    }
+
     public function test_invalid_login_message_is_shown_in_spanish(): void
     {
         $response = $this->from('/login')->post('/login', [

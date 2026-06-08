@@ -3,12 +3,14 @@
 namespace Tests\Feature\Mail;
 
 use App\Contracts\Mail\MailAccountTester;
+use App\Jobs\Mail\IngestMailboxJob;
 use App\Models\Company;
 use App\Models\MailAccount;
 use App\Models\Membership;
 use App\Models\User;
 use App\Support\Mail\MailAccountTestResult;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
@@ -187,6 +189,44 @@ class MailAccountSettingsTest extends TestCase
             ->assertSessionHas('status', 'mail-test-ok');
 
         $this->assertNull($account->refresh()->last_error);
+    }
+
+    public function test_mail_settings_show_connection_test_sync_actions_and_ingestion_status(): void
+    {
+        [$user, $company] = $this->tenantFixture();
+        $membershipId = $user->memberships()->whereBelongsTo($company)->value('id');
+
+        MailAccount::factory()->for($company)->create([
+            'from_email' => 'soporte@example.test',
+            'last_sync_at' => now()->subMinutes(5),
+            'last_uid' => '42',
+        ]);
+
+        $this->actingAs($user)
+            ->withSession(['active_membership_id' => $membershipId])
+            ->get('/app/settings')
+            ->assertOk()
+            ->assertSee('Probar conexión')
+            ->assertSee('Revisar correo ahora')
+            ->assertSee('Última sincronización')
+            ->assertSee('UID 42');
+    }
+
+    public function test_manual_mail_sync_dispatches_ingestion_for_active_company_account(): void
+    {
+        Bus::fake();
+
+        [$user, $company] = $this->tenantFixture();
+        $membershipId = $user->memberships()->whereBelongsTo($company)->value('id');
+        $account = MailAccount::factory()->for($company)->create();
+
+        $this->actingAs($user)
+            ->withSession(['active_membership_id' => $membershipId])
+            ->post(route('app.settings.mail.sync'))
+            ->assertRedirect('/app/settings')
+            ->assertSessionHas('status', 'mail-sync-completed');
+
+        Bus::assertDispatchedSync(IngestMailboxJob::class, fn (IngestMailboxJob $job): bool => $job->mailAccountId === $account->id);
     }
 
     public function test_mail_account_connection_test_records_sanitized_error_for_active_company_account(): void

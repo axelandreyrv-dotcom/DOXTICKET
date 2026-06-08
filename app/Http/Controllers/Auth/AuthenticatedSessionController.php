@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Models\User;
+use App\Services\Auth\AuthenticatedEntryDestination;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -13,8 +14,12 @@ use Illuminate\View\View;
 
 class AuthenticatedSessionController extends Controller
 {
-    public function create(): View
+    public function create(Request $request): View|RedirectResponse
     {
+        if ($request->user() !== null) {
+            return redirect()->route('app.entry');
+        }
+
         return view('auth.placeholder');
     }
 
@@ -49,28 +54,10 @@ class AuthenticatedSessionController extends Controller
     {
         $user->forceFill(['last_login_at' => now()])->save();
 
-        $memberships = $user->activeMemberships()
-            ->with('company')
-            ->orderBy('id')
-            ->get();
+        $destination = app(AuthenticatedEntryDestination::class)->resolve($request);
 
-        if ($memberships->count() === 1) {
-            $membership = $memberships->first();
-            $request->session()->put('active_membership_id', $membership->id);
-            $membership->forceFill(['last_selected_at' => now()])->save();
-            $user->forceFill(['last_active_company_id' => $membership->company_id])->save();
-
-            return redirect()->intended('/app/tickets');
-        }
-
-        if ($memberships->count() > 1) {
-            $request->session()->forget('active_membership_id');
-
-            return redirect('/app/companies');
-        }
-
-        if ($user->is_superadmin) {
-            return redirect('/admin');
+        if ($destination !== '/app/companies' || $user->activeMemberships()->exists() || $user->is_superadmin) {
+            return redirect()->intended($destination);
         }
 
         Auth::logout();

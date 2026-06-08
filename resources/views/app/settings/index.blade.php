@@ -27,7 +27,13 @@
             </div>
         @enderror
 
-        @if ($mailAccount?->last_error && ! $errors->has('mail_test'))
+        @error('mail_sync')
+            <div role="alert" aria-live="polite" class="mt-4 rounded-md border border-[var(--color-border-default)] bg-[var(--color-bg-surface)] px-4 py-3 text-sm text-[var(--color-danger)]">
+                {{ $message }}
+            </div>
+        @enderror
+
+        @if ($mailAccount?->last_error && ! $errors->has('mail_test') && ! $errors->has('mail_sync'))
             <div class="mt-4 rounded-md border border-[var(--color-border-default)] bg-[var(--color-bg-surface)] px-4 py-3 text-sm text-[var(--color-danger)]">
                 {{ $mailAccount->last_error }}
             </div>
@@ -115,11 +121,42 @@
         </section>
 
         <div class="mt-8">
-            <p class="text-xs font-semibold uppercase text-[var(--color-text-muted)]">Correo</p>
-            <h2 class="mt-2 text-lg font-semibold">Correo de soporte</h2>
-            <p class="mt-1 max-w-2xl text-sm leading-6 text-[var(--color-text-secondary)]">
-                Una cuenta por empresa para recibir solicitudes y enviar respuestas con marcador visible.
-            </p>
+            <div class="flex flex-wrap items-start justify-between gap-3">
+                <div>
+                    <p class="text-xs font-semibold uppercase text-[var(--color-text-muted)]">Correo</p>
+                    <h2 class="mt-2 text-lg font-semibold">Correo de soporte</h2>
+                    <p class="mt-1 max-w-2xl text-sm leading-6 text-[var(--color-text-secondary)]">
+                        Una cuenta por empresa para recibir solicitudes y enviar respuestas con marcador visible.
+                    </p>
+                </div>
+                @if ($mailAccount)
+                    <div class="flex flex-wrap gap-2">
+                        <button type="submit" form="mail-test-form" class="rounded-md border border-[var(--color-border-default)] bg-[var(--color-bg-surface)] px-3 py-2 text-sm font-semibold text-[var(--color-text-primary)] transition hover:bg-[var(--color-bg-surface-alt)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-focus)]">
+                            Probar conexión
+                        </button>
+                        <button type="submit" form="mail-sync-form" class="rounded-md border border-[var(--color-border-default)] bg-[var(--color-bg-surface)] px-3 py-2 text-sm font-semibold text-[var(--color-text-primary)] transition hover:bg-[var(--color-bg-surface-alt)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-focus)]">
+                            Revisar correo ahora
+                        </button>
+                    </div>
+                @endif
+            </div>
+
+            @if ($mailAccount)
+                <dl class="mt-4 grid gap-3 rounded-lg border border-[var(--color-border-default)] bg-[var(--color-bg-surface)] p-4 text-sm sm:grid-cols-3">
+                    <div>
+                        <dt class="text-[var(--color-text-muted)]">Cuenta activa</dt>
+                        <dd class="mt-1 break-all font-medium text-[var(--color-text-primary)]">{{ $mailAccount->from_email }}</dd>
+                    </div>
+                    <div>
+                        <dt class="text-[var(--color-text-muted)]">Última sincronización</dt>
+                        <dd class="mt-1 font-medium text-[var(--color-text-primary)]">{{ $mailAccount->last_sync_at?->diffForHumans() ?? 'Nunca' }}</dd>
+                    </div>
+                    <div>
+                        <dt class="text-[var(--color-text-muted)]">Último UID</dt>
+                        <dd class="mt-1 font-medium text-[var(--color-text-primary)]">{{ $mailAccount->last_uid ? 'UID '.$mailAccount->last_uid : 'Sin UID registrado' }}</dd>
+                    </div>
+                </dl>
+            @endif
         </div>
 
         <form method="POST" action="{{ url('/app/settings/mail') }}" class="mt-6 grid gap-5 rounded-lg border border-[var(--color-border-default)] bg-[var(--color-bg-surface)] p-4 sm:p-5">
@@ -218,11 +255,6 @@
             </label>
 
             <div class="flex flex-wrap justify-end gap-3">
-                @if ($mailAccount)
-                    <button type="submit" form="mail-test-form" class="rounded-md border border-[var(--color-border-default)] bg-[var(--color-bg-surface)] px-4 py-2 text-sm font-semibold text-[var(--color-text-primary)] transition hover:bg-[var(--color-bg-surface-alt)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-focus)]">
-                        Probar Conexión
-                    </button>
-                @endif
                 <button type="submit" class="rounded-md bg-[var(--color-action-primary)] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[var(--color-action-primary-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-focus)]">
                     Guardar correo
                 </button>
@@ -231,6 +263,9 @@
 
         @if ($mailAccount)
             <form id="mail-test-form" method="POST" action="{{ route('app.settings.mail.test') }}" class="hidden">
+                @csrf
+            </form>
+            <form id="mail-sync-form" method="POST" action="{{ route('app.settings.mail.sync') }}" class="hidden">
                 @csrf
             </form>
         @endif
